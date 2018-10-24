@@ -1,105 +1,127 @@
-<#
-.SYNOPSIS
-    A brief description of the function.
-
-.DESCRIPTION
-    A longer description.
-
-.INPUTS
-    Description of objects that can be piped to the function
-
-.OUTPUTS
-    Description of objects that are output by the function
-
-.EXAMPLE
-    Example of how to run the function
-
-.LINK
-    Links to further documentation
-
-.NOTES
-    Detail on what the function does, if this is needed
-#>
-
-[CmdletBinding(DefaultParameterSetName="Script")]
-param (
-    [parameter(ParameterSetName="Script",Mandatory=$false)]
-    [parameter(ParameterSetName="ScriptBlock",Mandatory=$false)]
-    # Computer to execute the command on. Defaults to localhost.
-    [string]$ComputerName,
-
-    #[parameter(ParameterSetName="Script",Mandatory=$false)]
-    #[parameter(ParameterSetName="ScriptBlock",Mandatory=$false)]
-    # Whether or not to use CredSSP to connect to remote computer. CredSSP must have already been configured in
-    # your environment for this to work; consult MS documentation. If you use this option, you will be prompted
-    # for credentials when you run this script.
-    #[switch]$CredSsp,
-
-    [parameter(ParameterSetName="Script",Mandatory=$false)]
-    [ValidateScript({Test-Path -Path $_})]
-    # Script to execute.
-    [string]$Script,
-
-    [parameter(ParameterSetName="ScriptBlock",Mandatory=$false)]
-    [ValidateNotNullOrEmpty()]
-    # ScriptBlock to execute.
-    [scriptblock]$ScriptBlock,
-
-    [parameter(ParameterSetName="Script",Mandatory=$true)]
-    [parameter(ParameterSetName="ScriptBlock",Mandatory=$true)]
-    [ValidateNotNullOrEmpty()]
-    # A short job name to include in emails to identify this execution.
-    [string]$JobName,
-
-    [parameter(ParameterSetName="Script",Mandatory=$true)]
-    [parameter(ParameterSetName="ScriptBlock",Mandatory=$true)]
-    [ValidateNotNullOrEmpty()]
-    # Specifies SMTP server used to send email
-    [string]$SmtpServer,
-
-    [parameter(ParameterSetName="Script",Mandatory=$true)]
-    [parameter(ParameterSetName="ScriptBlock",Mandatory=$true)]
-    # Specifies to send mail either Before, After, or BeforeAndAfter command execution
-    [ValidateSet("Before","After","BeforeAndAfter")] 
-    [string]$EmailMode,
-
-    [parameter(ParameterSetName="Script",Mandatory=$false)]
-    [parameter(ParameterSetName="ScriptBlock",Mandatory=$false)]
-    # TCP Port to connect to SMTP server on. Defaults to 25.
-    [int]$SmtpPort = 25,
-
-    [parameter(ParameterSetName="Script",Mandatory=$false)]
-    [parameter(ParameterSetName="ScriptBlock",Mandatory=$false)]
-    # Specifies a source address for messages. Defaults to computername@domain
-    [string]$EmailFrom = "$($env:computername)@$($env:userdnsdomain)",
-
-    [parameter(ParameterSetName="Script",Mandatory=$true)]
-    [parameter(ParameterSetName="ScriptBlock",Mandatory=$true)]
-    # Specifies a comma-separated (i.e. "a@b.com","b@b.com") list of email addresses to email upon job completion
-    [string[]]$EmailTo
-)
-
-$Eol = [System.Environment]::NewLine
-
-function New-HtmlEmailBody {
-    [CmdletBinding()]
+function Send-HtmlMailMessage {
+    [CmdletBinding(DefaultParameterSetName="Default")]
     param (
-        [parameter(Mandatory=$true)]
+        [parameter(ParameterSetName="Default",Mandatory=$true)]
+        [parameter(ParameterSetName="Button",Mandatory=$true)]
+        # Specifies the address from which the mail is sent. Enter a name (optional) and email address, such as Name <someone@example.com>. This parameter is required.
+        [string]$From,
+    
+        [parameter(ParameterSetName="Default",Mandatory=$true)]
+        [parameter(ParameterSetName="Button",Mandatory=$true)]
+        # Specifies the subject of the email message. This parameter is required.
+        [string]$Subject,
+    
+        [parameter(ParameterSetName="Default",Mandatory=$true)]
+        [parameter(ParameterSetName="Button",Mandatory=$true)]
+        # Specifies the addresses to which the mail is sent. Enter names (optional) and the email address, such as Name <someone@example.com>. This parameter is required.
+        [string[]]$To,
+
+        [parameter(ParameterSetName="Default",Mandatory=$true)]
+        [parameter(ParameterSetName="Button",Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        # Specifies a string (with optional HTML formatting) to include in the body of the message. This parameter is required.
+        [string]$BodyData,
+
+        [parameter(ParameterSetName="Default",Mandatory=$false)]
+        [parameter(ParameterSetName="Button",Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        # Specifies the path and file names of files to be attached to the email message. You can use this parameter or pipe the paths and file names to Send-HtmlMailMessage.
+        [string[]]$Attachments,
+
+        [parameter(ParameterSetName="Default",Mandatory=$false)]
+        [parameter(ParameterSetName="Button",Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        # Specifies the email addresses that receive a copy of the mail but are not listed as recipients of the message. Enter names (optional) and the email address, such as Name <someone@example.com>.
+        [string[]]$Bcc,
+
+        [parameter(ParameterSetName="Default",Mandatory=$false)]
+        [parameter(ParameterSetName="Button",Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        # Specifies the email addresses to which a carbon copy (CC) of the email message is sent. Enter names (optional) and the email address, such as Name <someone@example.com>.
+        [string[]]$Cc,
+
+        [parameter(ParameterSetName="Default",Mandatory=$false)]
+        [parameter(ParameterSetName="Button",Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        # Specifies a user account that has permission to perform this action. The default is the current user.
+        # Type a user name, such as User01 or Domain01\User01. Or, enter a PSCredential object, such as one from the Get-Credential cmdlet.
+        [pscredential]$Credential,
+
+        [parameter(ParameterSetName="Default",Mandatory=$false)]
+        [parameter(ParameterSetName="Button",Mandatory=$false)]
+        [ValidateSet("None", "OnSuccess", "OnFailure", "Delay", "Never")]
+        # Specifies the delivery notification options for the email message. You can specify multiple values. None is the default value. The alias for this parameter is dno.
+        # The delivery notifications are sent in an email message to the address specified in the value of the From parameter. The acceptable values for this parameter are:
+        # - None. No notification.
+        # - OnSuccess. Notify if the delivery is successful.
+        # - OnFailure. Notify if the delivery is unsuccessful.
+        # - Delay. Notify if the delivery is delayed.
+        # - Never. Never notify.
+        [string]$DeliveryNotificationOption,
+
+        [parameter(ParameterSetName="Default",Mandatory=$false)]
+        [parameter(ParameterSetName="Button",Mandatory=$false)]
+        [ValidateSet("ASCII", "UTF8", "UTF7", "UTF32", "Unicode", "BigEndianUnicode", "Default", "OEM")]
+        # Specifies the encoding used for the body and subject. The acceptable values for this parameter are:
+        # - ASCII
+        # - UTF8
+        # - UTF7
+        # - UTF32
+        # - Unicode
+        # - BigEndianUnicode
+        # - Default
+        # - OEM
+        # ASCII is the default.
+        [string]$Encoding,
+
+        [parameter(ParameterSetName="Default",Mandatory=$false)]
+        [parameter(ParameterSetName="Button",Mandatory=$false)]
         [ValidateNotNull()]
-        [string]$Header,
+        # Specifies an alternate port on the SMTP server. The default value is 25, which is the default SMTP port.
+        [int]$Port,
 
-        [parameter(Mandatory=$false)]
+        [parameter(ParameterSetName="Default",Mandatory=$false)]
+        [parameter(ParameterSetName="Button",Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        # Specifies the name of the SMTP server that sends the email message.
+        # The default value is the value of the $PSEmailServer preference variable. If the preference variable is not set and this parameter is omitted, the command fails.
+        [string]$SmtpServer,
+
+        [parameter(ParameterSetName="Default",Mandatory=$false)]
+        [parameter(ParameterSetName="Button",Mandatory=$false)]
+        # Indicates that the cmdlet uses the Secure Sockets Layer (SSL) protocol to establish a connection to the remote computer to send mail. By default, SSL is not used.
+        [switch]$UseSsl,
+        
+        [parameter(ParameterSetName="Default",Mandatory=$false)]
+        [parameter(ParameterSetName="Button",Mandatory=$false)]
+        [ValidateSet("High", "Normal", "Low")]
+        # Specifies the priority of the email message. The acceptable values for this parameter are:   
+        # - Normal
+        # - High
+        # - Low
+        # Normal is the default.
+        [string]$Priority,
+
+        [parameter(ParameterSetName="Default",Mandatory=$false)]
+        [parameter(ParameterSetName="Button",Mandatory=$false)]
         [ValidateNotNull()]
-        [array]$Data = "",
+        # Specifies a string (with optional HTML formatting) to include in the header of the message.
+        [string]$HeaderData = "",
 
-        [parameter(Mandatory=$false)]
+        [parameter(ParameterSetName="Default",Mandatory=$false)]
+        [parameter(ParameterSetName="Button",Mandatory=$false)]
         [ValidateNotNull()]
-        [string]$Footer = "",
+        # Specifies a string (with optional HTML formatting) to include in the body of the message.
+        [string]$FooterData = "",
 
-        [parameter(Mandatory=$false)]
-        [switch]$Button,
+        [parameter(ParameterSetName="Button",Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        # Specifies a string to use as label for an optional button.
+        [switch]$ButtonText,
 
-        [parameter(Mandatory=$false)]
+        [parameter(ParameterSetName="Button",Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        # Specifies a link to use as a target for an optional button.
         [string]$ButtonLink      
     )
     process {
@@ -403,7 +425,7 @@ function New-HtmlEmailBody {
             "                                <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`">$Eol" +
             "                                  <tbody>$Eol" +
             "                                    <tr>$Eol" +
-            "                                      <td> <a href=`"$ButtonLink`" target=`"_blank`">Call To Action</a> </td>$Eol" +
+            "                                      <td> <a href=`"$ButtonLink`" target=`"_blank`">$ButtonText</a> </td>$Eol" +
             "                                    </tr>$Eol" +
             "                                  </tbody>$Eol" +
             "                                </table>$Eol" +
@@ -448,93 +470,68 @@ function New-HtmlEmailBody {
             "    </table>$Eol" +
             "  </body>$Eol" +
             "</html>")
-        $FormattedData = ""
-        foreach ($Datum in $Data) {
-            $FormattedData += "<pre>$Datum</pre>$Eol"
-        }
 
-        if (!$Button) {
+        if (!$ButtonText) {
             $HtmlButton = ""
         }
 
-        $CompleteBody = $HtmlTop + "<p>" + $Header + "</p>" + $HtmlButton + $FormattedData +
-            $HtmlDataToFooter + $Footer + $HtmlBottom
+        $CompleteBody = $HtmlTop + $HeaderData + $BodyData + $HtmlButton +
+            $HtmlDataToFooter + $FooterData + $HtmlBottom
 
-        $CompleteBody
+        $SmmParams = @{
+            From = $From
+            To = $To
+            Subject = $Subject
+            Body = $CompleteBody
+            BodyAsHtml = $true
+            UseSsl = $true
+        }
+
+        if ($Attachments) {
+            $SmmParams += @{Attachments = $Attachments}
+        }
+
+        if ($Bcc) {
+            $SmmParams += @{Bcc = $Bcc}
+        }
+
+        if ($Cc) {
+            $SmmParams += @{Cc = $Cc}
+        }
+
+        if ($Credential) {
+            $SmmParams += @{Credential = $Credential}
+        }
+
+        if ($DeliveryNotificationOption) {
+            $SmmParams += @{DeliveryNotificationOption = $DeliveryNotificationOption}
+        }
+
+        if ($Encoding) {
+            $SmmParams += @{Encoding = $Encoding}
+        }
+
+        if ($Port) {
+            $SmmParams += @{Port = $Port}
+        }
+
+        if ($Priority) {
+            $SmmParams += @{Priority = $Priority}
+        }
+
+        if ($SmtpServer) {
+            $SmmParams += @{SmtpServer = $SmtpServer}
+        }
+
+        if ($UseSsl) {
+            $SmmParams += @{UseSsl = $UseSsl}
+        }
+
+        Send-MailMessage @SmmParams
     }
 }
 
-
-try {
-    $global:ProgressPreference = "SilentlyContinue"
-    Test-NetConnection -ComputerName $SmtpServer -Port $SmtpPort -InformationLevel Quiet | Out-Null
-    $global:ProgressPreference = "Continue"
-}
-catch {
-    throw "Unable to connect to $SmtpServer on port $SmtpPort to send email."
-}
-
-if ($ComputerName) {
-    $FriendlyComputerName = $ComputerName
-} else {
-    $FriendlyComputerName = $env:computername
-}
-
-$StartTime = Get-Date
-
-if ($EmailMode -like "Before*") {
-    $SmtpParamsBefore = @{
-        From = $EmailFrom
-        To = $EmailTo
-        Subject = "'$JobName' Started on $FriendlyComputerName"
-        Body = New-HtmlEmailBody -Header "'$JobName' Started on $FriendlyComputerName at $StartTime"
-        BodyAsHtml = $true
-        SmtpServer = $SmtpServer
-        Port = $SmtpPort
-        UseSsl = $true
-    }
-    Send-MailMessage @SMTPParamsBefore
-}
-
-$InvokeCommandParams = @{
-    ErrorVariable = $CommandVariable
-    WarningVariable = $CommandWarning
-    InformationVariable = $CommandInfo
-}
-if ($ScriptBlock) {
-    $InvokeCommandParams += @{ ScriptBlock = { & $ScriptBlock *>&1 } }
-}
-if ($Script) {
-    $InvokeCommandParams += @{ ScriptBlock = { & $Script *>&1 } }
-}
-if ($ComputerName) {
-    $InvokeCommandParams += @{ ComputerName = $ComputerName }
-}
-
-[array]$CommandOutput = Invoke-Command @InvokeCommandParams
-
-if ($EmailMode -like "*After") {
-    $EndTime = Get-Date
-    $Elapsed = $EndTime - $StartTime
-    $ElapsedString = ("$($Elapsed.days) Days $($Elapsed.Hours) Hours $($Elapsed.Minutes) Minutes " +
-        "$($Elapsed.Seconds) Seconds")
-
-    $HtmlBodyParamsAfter = @{
-        Header = "'$JobName' Finished on $FriendlyComputerName at $EndTime"
-        Data = ("Output:<br><pre>$($CommandOutput -join $Eol)</pre>")
-        Footer = "Time elapsed: $ElapsedString"
-    }
-
-    $SmtpParamsAfter = @{
-        From = $EmailFrom
-        To = $EmailTo
-        Subject = "'$JobName' Finished on $FriendlyComputerName"
-        Body =  New-HtmlEmailBody @HtmlBodyParamsAfter
-        BodyAsHtml = $true
-        SmtpServer = $SmtpServer
-        Port = $SmtpPort
-        UseSsl = $true
-    }
-
-    Send-MailMessage @SMTPParamsAfter
-}
+# Export only the functions using PowerShell standard verb-noun naming.
+# Be sure to list each exported functions in the FunctionsToExport field of the module manifest file.
+# This improves performance of command discovery in PowerShell.
+Export-ModuleMember -Function Send-HtmlMailMessage

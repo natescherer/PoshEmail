@@ -3,3 +3,6 @@ out/*
 
 # Don't track README.md until project is ready to go live
 README.md
+
+# Don't track credential XML files
+**credential.xml
