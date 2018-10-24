@@ -1,3 +1,5 @@
+$Eol = [System.Environment]::NewLine
+
 function Send-HtmlMailMessage {
     [CmdletBinding(DefaultParameterSetName="Default")]
     param (
@@ -5,12 +7,12 @@ function Send-HtmlMailMessage {
         [parameter(ParameterSetName="Button",Mandatory=$true)]
         # Specifies the address from which the mail is sent. Enter a name (optional) and email address, such as Name <someone@example.com>. This parameter is required.
         [string]$From,
-    
+
         [parameter(ParameterSetName="Default",Mandatory=$true)]
         [parameter(ParameterSetName="Button",Mandatory=$true)]
         # Specifies the subject of the email message. This parameter is required.
         [string]$Subject,
-    
+
         [parameter(ParameterSetName="Default",Mandatory=$true)]
         [parameter(ParameterSetName="Button",Mandatory=$true)]
         # Specifies the addresses to which the mail is sent. Enter names (optional) and the email address, such as Name <someone@example.com>. This parameter is required.
@@ -20,7 +22,27 @@ function Send-HtmlMailMessage {
         [parameter(ParameterSetName="Button",Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         # Specifies a string (with optional HTML formatting) to include in the body of the message. This parameter is required.
-        [string]$BodyData,
+        # Multiple paragraphs should have each paragraph wrapped as follows:
+        # - <p>Paragraph 1</p><p>Paragraph 2</p>
+        # If you need to include preformatted data, you should use the -BodyPreformatted attribute as well
+        [string]$Body,
+
+        [parameter(ParameterSetName="Default",Mandatory=$false)]
+        [parameter(ParameterSetName="Button",Mandatory=$false)]
+        [ValidateSet("Left", "Center", "Right")]
+        # Specifies how the body should be aligned. The acceptable values for this parameter are:
+        # - Left
+        # - Center
+        # - Right
+        # Left is the default.
+        [string]$BodyAlignment = "Left",
+
+        [parameter(ParameterSetName="Default",Mandatory=$false)]
+        [parameter(ParameterSetName="Button",Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        # Specifies a string of preformmated text (code, cmdlet output, etc) to include below the body of the message.
+        # This will be displayed either in a horizontally-scrolling box or, if Outlook (which can't support scrolling) wrapped with line numbers.
+        [string]$BodyPreformatted = "",
 
         [parameter(ParameterSetName="Default",Mandatory=$false)]
         [parameter(ParameterSetName="Button",Mandatory=$false)]
@@ -91,11 +113,11 @@ function Send-HtmlMailMessage {
         [parameter(ParameterSetName="Button",Mandatory=$false)]
         # Indicates that the cmdlet uses the Secure Sockets Layer (SSL) protocol to establish a connection to the remote computer to send mail. By default, SSL is not used.
         [switch]$UseSsl,
-        
+
         [parameter(ParameterSetName="Default",Mandatory=$false)]
         [parameter(ParameterSetName="Button",Mandatory=$false)]
         [ValidateSet("High", "Normal", "Low")]
-        # Specifies the priority of the email message. The acceptable values for this parameter are:   
+        # Specifies the priority of the email message. The acceptable values for this parameter are:
         # - Normal
         # - High
         # - Low
@@ -105,20 +127,30 @@ function Send-HtmlMailMessage {
         [parameter(ParameterSetName="Default",Mandatory=$false)]
         [parameter(ParameterSetName="Button",Mandatory=$false)]
         [ValidateNotNull()]
-        # Specifies a string (with optional HTML formatting) to include in the header of the message.
-        [string]$HeaderData = "",
+        # Specifies a string (with optional HTML formatting) to include in the heading of the message.
+        [string]$Heading = "",
+
+        [parameter(ParameterSetName="Default",Mandatory=$false)]
+        [parameter(ParameterSetName="Button",Mandatory=$false)]
+        [ValidateSet("Left", "Center", "Right")]
+        # Specifies how the heading should be aligned. The acceptable values for this parameter are:
+        # - Left
+        # - Center
+        # - Right
+        # Center is the default.
+        [string]$HeadingAlignment = "Center",
 
         [parameter(ParameterSetName="Default",Mandatory=$false)]
         [parameter(ParameterSetName="Button",Mandatory=$false)]
         [ValidateNotNull()]
-        # Specifies a string (with optional HTML formatting) to include in the body of the message.
-        [string]$FooterData = "",
+        # Specifies a string (with optional HTML formatting) to include in the footer of the message.
+        [string]$Footer = "",
 
         [parameter(ParameterSetName="Default",Mandatory=$false)]
         [parameter(ParameterSetName="Button",Mandatory=$false)]
         [ValidateNotNull()]
-        # Specifies a string (with optional HTML formatting) to include in the body of the message.
-        [string]$LastLineData = "Powered by <a href=`"https://github.com/natescherer/PoshEmail`">PoshEmail</a>.",
+        # Specifies a string (with optional HTML formatting) to include in the last line of the message.
+        [string]$LastLine = "Powered by <a href=`"https://github.com/natescherer/PoshEmail`">PoshEmail</a>.",
 
         [parameter(ParameterSetName="Button",Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
@@ -128,310 +160,131 @@ function Send-HtmlMailMessage {
         [parameter(ParameterSetName="Button",Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         # Specifies a link to use as a target for an optional button.
-        [string]$ButtonLink      
+        [string]$ButtonLink,
+
+        [parameter(ParameterSetName="Button",Mandatory=$false)]
+        [ValidateSet("Left", "Center", "Right")]
+        # Specifies how the button should be aligned. The acceptable values for this parameter are:
+        # - Left
+        # - Center
+        # - Right
+        # Center is the default.
+        [string]$ButtonAlignment = "Center"
     )
     process {
         $HtmlTop = ("<!doctype html>$Eol" +
             "<html>$Eol" +
             "  <head>$Eol" +
-            "    <meta name=`"viewport`" content=`"width=device-width`" />$Eol" +
-            "    <meta http-equiv=`"Content-Type`" content=`"text/html; charset=UTF-8`" />$Eol" +
-            "    <title>Simple Transactional Email</title>$Eol" +
+            "    <meta name=`"viewport`" content=`"width=device-width`">$Eol" +
+            "    <meta http-equiv=`"Content-Type`" content=`"text/html; charset=UTF-8`">$Eol" +
+            "    <title></title>$Eol" +
             "    <style>$Eol" +
-            "      /* -------------------------------------$Eol" +
-            "          GLOBAL RESETS$Eol" +
-            "      ------------------------------------- */$Eol" +
-            "      img {$Eol" +
-            "        border: none;$Eol" +
-            "        -ms-interpolation-mode: bicubic;$Eol" +
-            "        max-width: 100%; }$Eol" +
-            "$Eol" +
-            "      body {$Eol" +
-            "        background-color: #f6f6f6;$Eol" +
-            "        font-family: sans-serif;$Eol" +
-            "        -webkit-font-smoothing: antialiased;$Eol" +
-            "        font-size: 14px;$Eol" +
-            "        line-height: 1.4;$Eol" +
-            "        margin: 0;$Eol" +
-            "        padding: 0;$Eol" +
-            "        -ms-text-size-adjust: 100%;$Eol" +
-            "        -webkit-text-size-adjust: 100%; }$Eol" +
-            "$Eol" +
-            "      table {$Eol" +
-            "        border-collapse: separate;$Eol" +
-            "        mso-table-lspace: 0pt;$Eol" +
-            "        mso-table-rspace: 0pt;$Eol" +
-            "        width: 100%; }$Eol" +
-            "        table td {$Eol" +
-            "          font-family: sans-serif;$Eol" +
-            "          font-size: 14px;$Eol" +
-            "          vertical-align: top; }$Eol" +
-            "$Eol" +
-            "      /* -------------------------------------$Eol" +
-            "          BODY & CONTAINER$Eol" +
-            "      ------------------------------------- */$Eol" +
-            "$Eol" +
-            "      .body {$Eol" +
-            "        background-color: #f6f6f6;$Eol" +
-            "        width: 100%; }$Eol" +
-            "$Eol" +
-            "      /* Set a max-width, and make it display as block so it will automatically stretch to that width, but will also shrink down on a phone or something */$Eol" +
-            "      .container {$Eol" +
-            "        display: block;$Eol" +
-            "        Margin: 0 auto !important;$Eol" +
-            "        /* makes it centered */$Eol" +
-            "        max-width: 580px;$Eol" +
-            "        padding: 10px;$Eol" +
-            "        width: 580px; }$Eol" +
-            "$Eol" +
-            "      /* This should also be a block element, so that it will fill 100% of the .container */$Eol" +
-            "      .content {$Eol" +
-            "        box-sizing: border-box;$Eol" +
-            "        display: block;$Eol" +
-            "        Margin: 0 auto;$Eol" +
-            "        max-width: 580px;$Eol" +
-            "        padding: 10px; }$Eol" +
-            "$Eol" +
-            "      /* -------------------------------------$Eol" +
-            "          HEADER, FOOTER, MAIN$Eol" +
-            "      ------------------------------------- */$Eol" +
-            "      .main {$Eol" +
-            "        background: #ffffff;$Eol" +
-            "        border-radius: 3px;$Eol" +
-            "        width: 100%; }$Eol" +
-            "$Eol" +
-            "      .wrapper {$Eol" +
-            "        box-sizing: border-box;$Eol" +
-            "        padding: 20px; }$Eol" +
-            "$Eol" +
-            "      .content-block {$Eol" +
-            "        padding-bottom: 10px;$Eol" +
-            "        padding-top: 10px;$Eol" +
+            "    /* -------------------------------------$Eol" +
+            "        INLINED WITH htmlemail.io/inline$Eol" +
+            "    ------------------------------------- */$Eol" +
+            "    /* -------------------------------------$Eol" +
+            "        RESPONSIVE AND MOBILE FRIENDLY STYLES$Eol" +
+            "    ------------------------------------- */$Eol" +
+            "    @media only screen and (max-width: 620px) {$Eol" +
+            "      table[class=body] h1 {$Eol" +
+            "        font-size: 28px !important;$Eol" +
+            "        margin-bottom: 10px !important;$Eol" +
             "      }$Eol" +
+            "      table[class=body] p,$Eol" +
+            "            table[class=body] ul,$Eol" +
+            "            table[class=body] ol,$Eol" +
+            "            table[class=body] td,$Eol" +
+            "            table[class=body] span,$Eol" +
+            "            table[class=body] a {$Eol" +
+            "        font-size: 16px !important;$Eol" +
+            "      }$Eol" +
+            "      table[class=body] .wrapper,$Eol" +
+            "            table[class=body] .article {$Eol" +
+            "        padding: 10px !important;$Eol" +
+            "      }$Eol" +
+            "      table[class=body] .content {$Eol" +
+            "        padding: 0 !important;$Eol" +
+            "      }$Eol" +
+            "      table[class=body] .container {$Eol" +
+            "        padding: 0 !important;$Eol" +
+            "        width: 100% !important;$Eol" +
+            "      }$Eol" +
+            "      table[class=body] .main {$Eol" +
+            "        border-left-width: 0 !important;$Eol" +
+            "        border-radius: 0 !important;$Eol" +
+            "        border-right-width: 0 !important;$Eol" +
+            "      }$Eol" +
+            "      table[class=body] .btn table {$Eol" +
+            "        width: 100% !important;$Eol" +
+            "      }$Eol" +
+            "      table[class=body] .btn a {$Eol" +
+            "        width: 100% !important;$Eol" +
+            "      }$Eol" +
+            "      table[class=body] .img-responsive {$Eol" +
+            "        height: auto !important;$Eol" +
+            "        max-width: 100% !important;$Eol" +
+            "        width: auto !important;$Eol" +
+            "      }$Eol" +
+            "    }$Eol" +
             "$Eol" +
-            "      .footer {$Eol" +
-            "        clear: both;$Eol" +
-            "        Margin-top: 10px;$Eol" +
-            "        text-align: center;$Eol" +
-            "        width: 100%; }$Eol" +
-            "        .footer td,$Eol" +
-            "        .footer p,$Eol" +
-            "        .footer span,$Eol" +
-            "        .footer a {$Eol" +
-            "          color: #999999;$Eol" +
-            "          font-size: 12px;$Eol" +
-            "          text-align: center; }$Eol" +
-            "$Eol" +
-            "      /* -------------------------------------$Eol" +
-            "          TYPOGRAPHY$Eol" +
-            "      ------------------------------------- */$Eol" +
-            "      h1,$Eol" +
-            "      h2,$Eol" +
-            "      h3,$Eol" +
-            "      h4 {$Eol" +
-            "        color: #000000;$Eol" +
-            "        font-family: sans-serif;$Eol" +
-            "        font-weight: 400;$Eol" +
-            "        line-height: 1.4;$Eol" +
-            "        margin: 0;$Eol" +
-            "        Margin-bottom: 30px; }$Eol" +
-            "$Eol" +
-            "      h1 {$Eol" +
-            "        font-size: 35px;$Eol" +
-            "        font-weight: 300;$Eol" +
-            "        text-align: center;$Eol" +
-            "        text-transform: capitalize; }$Eol" +
-            "$Eol" +
-            "      p,$Eol" +
-            "      ul,$Eol" +
-            "      ol {$Eol" +
-            "        font-family: sans-serif;$Eol" +
-            "        font-size: 14px;$Eol" +
-            "        font-weight: normal;$Eol" +
-            "        margin: 0;$Eol" +
-            "        Margin-bottom: 15px; }$Eol" +
-            "        p li,$Eol" +
-            "        ul li,$Eol" +
-            "        ol li {$Eol" +
-            "          list-style-position: inside;$Eol" +
-            "          margin-left: 5px; }$Eol" +
-            "$Eol" +
-            "      a {$Eol" +
-            "        color: #3498db;$Eol" +
-            "        text-decoration: underline; }$Eol" +
-            "$Eol" +
-            "      /* -------------------------------------$Eol" +
-            "          BUTTONS$Eol" +
-            "      ------------------------------------- */$Eol" +
-            "      .btn {$Eol" +
-            "        box-sizing: border-box;$Eol" +
-            "        width: 100%; }$Eol" +
-            "        .btn > tbody > tr > td {$Eol" +
-            "          padding-bottom: 15px; }$Eol" +
-            "        .btn table {$Eol" +
-            "          width: auto; }$Eol" +
-            "        .btn table td {$Eol" +
-            "          background-color: #ffffff;$Eol" +
-            "          border-radius: 5px;$Eol" +
-            "          text-align: center; }$Eol" +
-            "        .btn a {$Eol" +
-            "          background-color: #ffffff;$Eol" +
-            "          border: solid 1px #3498db;$Eol" +
-            "          border-radius: 5px;$Eol" +
-            "          box-sizing: border-box;$Eol" +
-            "          color: #3498db;$Eol" +
-            "          cursor: pointer;$Eol" +
-            "          display: inline-block;$Eol" +
-            "          font-size: 14px;$Eol" +
-            "          font-weight: bold;$Eol" +
-            "          margin: 0;$Eol" +
-            "          padding: 12px 25px;$Eol" +
-            "          text-decoration: none;$Eol" +
-            "          text-transform: capitalize; }$Eol" +
-            "$Eol" +
-            "      .btn-primary table td {$Eol" +
-            "        background-color: #3498db; }$Eol" +
-            "$Eol" +
-            "      .btn-primary a {$Eol" +
-            "        background-color: #3498db;$Eol" +
-            "        border-color: #3498db;$Eol" +
-            "        color: #ffffff; }$Eol" +
-            "$Eol" +
-            "      /* -------------------------------------$Eol" +
-            "          OTHER STYLES THAT MIGHT BE USEFUL$Eol" +
-            "      ------------------------------------- */$Eol" +
-            "      .last {$Eol" +
-            "        margin-bottom: 0; }$Eol" +
-            "$Eol" +
-            "      .first {$Eol" +
-            "        margin-top: 0; }$Eol" +
-            "$Eol" +
-            "      .align-center {$Eol" +
-            "        text-align: center; }$Eol" +
-            "$Eol" +
-            "      .align-right {$Eol" +
-            "        text-align: right; }$Eol" +
-            "$Eol" +
-            "      .align-left {$Eol" +
-            "        text-align: left; }$Eol" +
-            "$Eol" +
-            "      .clear {$Eol" +
-            "        clear: both; }$Eol" +
-            "$Eol" +
-            "      .mt0 {$Eol" +
-            "        margin-top: 0; }$Eol" +
-            "$Eol" +
-            "      .mb0 {$Eol" +
-            "        margin-bottom: 0; }$Eol" +
-            "$Eol" +
-            "      .preheader {$Eol" +
-            "        color: transparent;$Eol" +
-            "        display: none;$Eol" +
-            "        height: 0;$Eol" +
-            "        max-height: 0;$Eol" +
-            "        max-width: 0;$Eol" +
-            "        opacity: 0;$Eol" +
-            "        overflow: hidden;$Eol" +
-            "        mso-hide: all;$Eol" +
-            "        visibility: hidden;$Eol" +
-            "        width: 0; }$Eol" +
-            "$Eol" +
-            "      .powered-by a {$Eol" +
-            "        text-decoration: none; }$Eol" +
-            "$Eol" +
-            "      hr {$Eol" +
-            "        border: 0;$Eol" +
-            "        border-bottom: 1px solid #f6f6f6;$Eol" +
-            "        Margin: 20px 0; }$Eol" +
-            "$Eol" +
-            "      /* -------------------------------------$Eol" +
-            "          RESPONSIVE AND MOBILE FRIENDLY STYLES$Eol" +
-            "      ------------------------------------- */$Eol" +
-            "      @media only screen and (max-width: 620px) {$Eol" +
-            "        table[class=body] h1 {$Eol" +
-            "          font-size: 28px !important;$Eol" +
-            "          margin-bottom: 10px !important; }$Eol" +
-            "        table[class=body] p,$Eol" +
-            "        table[class=body] ul,$Eol" +
-            "        table[class=body] ol,$Eol" +
-            "        table[class=body] td,$Eol" +
-            "        table[class=body] span,$Eol" +
-            "        table[class=body] a {$Eol" +
-            "          font-size: 16px !important; }$Eol" +
-            "        table[class=body] .wrapper,$Eol" +
-            "        table[class=body] .article {$Eol" +
-            "          padding: 10px !important; }$Eol" +
-            "        table[class=body] .content {$Eol" +
-            "          padding: 0 !important; }$Eol" +
-            "        table[class=body] .container {$Eol" +
-            "          padding: 0 !important;$Eol" +
-            "          width: 100% !important; }$Eol" +
-            "        table[class=body] .main {$Eol" +
-            "          border-left-width: 0 !important;$Eol" +
-            "          border-radius: 0 !important;$Eol" +
-            "          border-right-width: 0 !important; }$Eol" +
-            "        table[class=body] .btn table {$Eol" +
-            "          width: 100% !important; }$Eol" +
-            "        table[class=body] .btn a {$Eol" +
-            "          width: 100% !important; }$Eol" +
-            "        table[class=body] .img-responsive {$Eol" +
-            "          height: auto !important;$Eol" +
-            "          max-width: 100% !important;$Eol" +
-            "          width: auto !important; }}$Eol" +
-            "$Eol" +
-            "      /* -------------------------------------$Eol" +
-            "          PRESERVE THESE STYLES IN THE HEAD$Eol" +
-            "      ------------------------------------- */$Eol" +
-            "      @media all {$Eol" +
-            "        .ExternalClass {$Eol" +
-            "          width: 100%; }$Eol" +
-            "        .ExternalClass,$Eol" +
-            "        .ExternalClass p,$Eol" +
-            "        .ExternalClass span,$Eol" +
-            "        .ExternalClass font,$Eol" +
-            "        .ExternalClass td,$Eol" +
-            "        .ExternalClass div {$Eol" +
-            "          line-height: 100%; }$Eol" +
-            "        .apple-link a {$Eol" +
-            "          color: inherit !important;$Eol" +
-            "          font-family: inherit !important;$Eol" +
-            "          font-size: inherit !important;$Eol" +
-            "          font-weight: inherit !important;$Eol" +
-            "          line-height: inherit !important;$Eol" +
-            "          text-decoration: none !important; }$Eol" +
-            "        .btn-primary table td:hover {$Eol" +
-            "          background-color: #34495e !important; }$Eol" +
-            "        .btn-primary a:hover {$Eol" +
-            "          background-color: #34495e !important;$Eol" +
-            "          border-color: #34495e !important; } }$Eol" +
-            "$Eol" +
-            "    </style>$Eol" +
+            "    /* -------------------------------------$Eol" +
+            "        PRESERVE THESE STYLES IN THE HEAD$Eol" +
+            "    ------------------------------------- */$Eol" +
+            "    @media all {$Eol" +
+            "      .ExternalClass {$Eol" +
+            "        width: 100%;$Eol" +
+            "      }$Eol" +
+            "      .ExternalClass,$Eol" +
+            "            .ExternalClass p,$Eol" +
+            "            .ExternalClass span,$Eol" +
+            "            .ExternalClass font,$Eol" +
+            "            .ExternalClass td,$Eol" +
+            "            .ExternalClass div {$Eol" +
+            "        line-height: 100%;$Eol" +
+            "      }$Eol" +
+            "      .btn-primary table td:hover {$Eol" +
+            "        background-color: #34495e !important;$Eol" +
+            "      }$Eol" +
+            "      .btn-primary a:hover {$Eol" +
+            "        background-color: #34495e !important;$Eol" +
+            "        border-color: #34495e !important;$Eol" +
+            "      }$Eol" +
+            "    }$Eol" +
+            "   </style>$Eol" +
+            "   <!--[if mso]>$Eol" +
+            "   <style>$Eol" +
+            "       .linenum {$Eol" +
+            "           display: inline !important;$Eol" +
+            "        }$Eol" +
+            "   </style>$Eol" +
+            "   <![endif]-->$Eol" +
             "  </head>$Eol" +
-            "  <body class=`"`">$Eol" +
-            "    <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"body`">$Eol" +
+            "  <body class=`"`" style=`"background-color: #f6f6f6; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;`">$Eol" +
+            "    <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"body`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background-color: #f6f6f6;`">$Eol" +
             "      <tr>$Eol" +
-            "        <td>&nbsp;</td>$Eol" +
-            "        <td class=`"container`">$Eol" +
-            "          <div class=`"content`">$Eol" +
+            "        <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">&nbsp;</td>$Eol" +
+            "        <td class=`"container`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; display: block; Margin: 0 auto; max-width: 580px; padding: 10px; width: 580px;`">$Eol" +
+            "          <div class=`"content`" style=`"box-sizing: border-box; display: block; Margin: 0 auto; max-width: 580px; padding: 10px;`">$Eol" +
             "$Eol" +
             "            <!-- START CENTERED WHITE CONTAINER -->$Eol" +
-            "            <table class=`"main`">$Eol" +
+            "            <span class=`"preheader`" style=`"color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;`"></span>$Eol" +
+            "            <table class=`"main`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background: #ffffff; border-radius: 3px;`">$Eol" +
             "$Eol" +
             "              <!-- START MAIN CONTENT AREA -->$Eol" +
             "              <tr>$Eol" +
-            "                <td class=`"wrapper`">$Eol" +
-            "                  <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`">$Eol" +
+            "                <td class=`"wrapper`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; box-sizing: border-box; padding: 20px;`">$Eol" +
+            "                  <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;`">$Eol" +
             "                    <tr>$Eol" +
-            "                      <td>$Eol")
+            "                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">$Eol")
 
-        $HtmlButton = ("                        <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"btn btn-primary`">$Eol" +
+        $HtmlButton = ("                        <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"btn btn-primary`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;`">$Eol" +
             "                          <tbody>$Eol" +
             "                            <tr>$Eol" +
-            "                              <td align=`"left`">$Eol" +
-            "                                <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`">$Eol" +
+            "                              <td align=`"$ButtonAlignment`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;`">$Eol" +
+            "                                <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;`">$Eol" +
             "                                  <tbody>$Eol" +
             "                                    <tr>$Eol" +
-            "                                      <td> <a href=`"$ButtonLink`" target=`"_blank`">$ButtonText</a> </td>$Eol" +
+            "                                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #3498db; border-radius: 5px; text-align: center;`"> <a href=`"$ButtonLink`" target=`"_blank`" style=`"display: inline-block; color: #ffffff; background-color: #3498db; border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db;`">$ButtonText</a> </td>$Eol" +
             "                                    </tr>$Eol" +
             "                                  </tbody>$Eol" +
             "                                </table>$Eol" +
@@ -450,19 +303,17 @@ function Send-HtmlMailMessage {
             "            </table>$Eol" +
             "$Eol" +
             "            <!-- START FOOTER -->$Eol" +
-            "            <div class=`"footer`">$Eol" +
-            "              <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`">$Eol" +
+            "            <div class=`"footer`" style=`"clear: both; Margin-top: 10px; text-align: center; width: 100%;`">$Eol" +
+            "              <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;`">$Eol" +
             "                <tr>$Eol" +
-            "                  <td class=`"content-block`">$Eol" +
-            "                    <span class=`"apple-link`">")
+            "                  <td class=`"content-block`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$Eol")
 
-        $HtmlBottom = ("</span>$Eol" +
-            "                  </td>$Eol" +
+        $HtmlFooterToLastLine = ("                  </td>$Eol" +
             "                </tr>$Eol" +
             "                <tr>$Eol" +
-            "                  <td class=`"content-block powered-by`">$Eol" +
-            "                    $LastLineData$Eol" +
-            "                  </td>$Eol" +
+            "                  <td class=`"content-block powered-by`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$Eol")
+
+        $HtmlBottom = ("                  </td>$Eol" +
             "                </tr>$Eol" +
             "              </table>$Eol" +
             "            </div>$Eol" +
@@ -471,29 +322,50 @@ function Send-HtmlMailMessage {
             "          <!-- END CENTERED WHITE CONTAINER -->$Eol" +
             "          </div>$Eol" +
             "        </td>$Eol" +
-            "        <td>&nbsp;</td>$Eol" +
+            "        <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">&nbsp;</td>$Eol" +
             "      </tr>$Eol" +
             "    </table>$Eol" +
             "  </body>$Eol" +
-            "</html>")
+            "</html>$Eol")
 
         if (!$ButtonText) {
             $HtmlButton = ""
         }
 
-        if ($HeaderData -notlike "*<p>*") {
-            $HeaderData = "<p>$HeaderData</p>"
+        $Heading = "                        <h2 style=`"text-align: $HeadingAlignment;`">$Heading</h2>$Eol"
+
+        if ($Body -notlike "*<p>*") {
+            $Body = "<p>$Body</p>"
         }
 
-        if ($BodyData -notlike "*<p>*") {
-            $BodyData = "<p>$BodyData</p>"
+        $Footer = "$Footer$Eol"
+
+        $LastLine = "                    $LastLine$Eol"
+
+        #$Heading = $Heading -replace "<p>","                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;`">"
+        $Body = $Body -replace "<p>","                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; text-align: $BodyAlignment;`">"
+        $Body = $Body -replace "</p>","</p>$Eol"
+        if ($BodyPreformatted -ne "") {
+            $BodyReformatted = ""
+            foreach ($Line in $BodyPreformatted -split $Eol) {
+                $BodyReformatted += "<li style=`"color: red; font-family: sans-serif;`"><span style=`"color: black; font-family: monospace; white-space: pre;`">$Line</span></li>$Eol"
+            }
+            $BodyPreformatted = "<ol>$Eol$BodyReformatted</ol>$Eol"
+            $BodyPreformatted = ("</p>$Eol" +
+                "                      </td>$Eol" +
+                "                            </tr>$Eol" +
+                "                            <tr>$Eol" +
+                "                      <td width=`"500`" style=`"font-size: 14px; vertical-align: top; max-width: 500px; overflow: auto;`">$Eol") + $BodyPreformatted
+            $BodyPreformatted = $BodyPreformatted + ("$Eol</td>$Eol                            </tr>$Eol" +
+                "                            <tr>$Eol" +
+                "                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">$Eol" +
+                "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; text-align: $BodyAlignment;`">")
         }
+        $Footer = $Footer -replace "<a ","<a style=`"text-decoration: underline; color: #999999; font-size: 12px; text-align: center;`" "
+        $LastLine = $LastLine -replace "<a ","<a style=`"text-decoration: underline; color: #999999; font-size: 12px; text-align: center;`" "
 
-        $HeaderData = $HeaderData -replace "<p>","<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;`">"
-        $BodyData = $BodyData -replace "<p>","<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;`">"
-
-        $CompleteBody = $HtmlTop + $HeaderData + $HtmlButton + $BodyData  +
-            $HtmlDataToFooter + $FooterData + $HtmlBottom
+        $CompleteBody = $HtmlTop + $Heading + $Body + $BodyPreformatted + $HtmlButton +
+            $HtmlDataToFooter + $Footer + $HtmlFooterToLastLine + $LastLine + $HtmlBottom
 
         $SmmParams = @{
             From = $From
@@ -547,7 +419,5 @@ function Send-HtmlMailMessage {
     }
 }
 
-# Export only the functions using PowerShell standard verb-noun naming.
-# Be sure to list each exported functions in the FunctionsToExport field of the module manifest file.
-# This improves performance of command discovery in PowerShell.
+
 Export-ModuleMember -Function Send-HtmlMailMessage
