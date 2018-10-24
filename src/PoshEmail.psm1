@@ -114,10 +114,16 @@ function Send-HtmlMailMessage {
         # Specifies a string (with optional HTML formatting) to include in the body of the message.
         [string]$FooterData = "",
 
+        [parameter(ParameterSetName="Default",Mandatory=$false)]
+        [parameter(ParameterSetName="Button",Mandatory=$false)]
+        [ValidateNotNull()]
+        # Specifies a string (with optional HTML formatting) to include in the body of the message.
+        [string]$LastLineData = "Powered by <a href=`"https://github.com/natescherer/PoshEmail`">PoshEmail</a>.",
+
         [parameter(ParameterSetName="Button",Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         # Specifies a string to use as label for an optional button.
-        [switch]$ButtonText,
+        [string]$ButtonText,
 
         [parameter(ParameterSetName="Button",Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
@@ -455,7 +461,7 @@ function Send-HtmlMailMessage {
             "                </tr>$Eol" +
             "                <tr>$Eol" +
             "                  <td class=`"content-block powered-by`">$Eol" +
-            "                    Powered by Invoke-CommandWithEmailWrapper$Eol" +
+            "                    $LastLineData$Eol" +
             "                  </td>$Eol" +
             "                </tr>$Eol" +
             "              </table>$Eol" +
@@ -475,7 +481,18 @@ function Send-HtmlMailMessage {
             $HtmlButton = ""
         }
 
-        $CompleteBody = $HtmlTop + $HeaderData + $BodyData + $HtmlButton +
+        if ($HeaderData -notlike "*<p>*") {
+            $HeaderData = "<p>$HeaderData</p>"
+        }
+
+        if ($BodyData -notlike "*<p>*") {
+            $BodyData = "<p>$BodyData</p>"
+        }
+
+        $HeaderData = $HeaderData -replace "<p>","<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;`">"
+        $BodyData = $BodyData -replace "<p>","<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;`">"
+
+        $CompleteBody = $HtmlTop + $HeaderData + $HtmlButton + $BodyData  +
             $HtmlDataToFooter + $FooterData + $HtmlBottom
 
         $SmmParams = @{
@@ -484,7 +501,6 @@ function Send-HtmlMailMessage {
             Subject = $Subject
             Body = $CompleteBody
             BodyAsHtml = $true
-            UseSsl = $true
         }
 
         if ($Attachments) {
