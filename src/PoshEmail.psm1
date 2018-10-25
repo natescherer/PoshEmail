@@ -348,14 +348,14 @@ function Send-HtmlMailMessage {
         if ($BodyPreformatted -ne "") {
             $BodyReformatted = ""
             foreach ($Line in $BodyPreformatted -split $Eol) {
-                $BodyReformatted += "<li style=`"color: red; font-family: sans-serif;`"><span style=`"color: black; font-family: monospace; white-space: pre;`">$Line</span></li>$Eol"
+                $Line = $Line -replace " ","&ensp;"
+                $BodyReformatted += "<li style=`"color: #4169E1; font-family: monospace; font-size: 11px;`"><span style=`"color: black; font-family: monospace; font-size: 11px; white-space: pre-wrap;`">$Line</span></li>$Eol"
             }
             $BodyPreformatted = "<ol>$Eol$BodyReformatted</ol>$Eol"
-            $BodyPreformatted = ("</p>$Eol" +
-                "                      </td>$Eol" +
+            $BodyPreformatted = ("                      </td>$Eol" +
                 "                            </tr>$Eol" +
                 "                            <tr>$Eol" +
-                "                      <td width=`"500`" style=`"font-size: 14px; vertical-align: top; max-width: 500px; overflow: auto;`">$Eol") + $BodyPreformatted
+                "                      <td width=`"490`" style=`"font-size: 14px; vertical-align: top; max-width: 490px; overflow: auto; padding-top: 15px; padding-right: 15px;background-color: #DCDCDC; border: 1px solid black;`">$Eol") + $BodyPreformatted
             $BodyPreformatted = $BodyPreformatted + ("$Eol</td>$Eol                            </tr>$Eol" +
                 "                            <tr>$Eol" +
                 "                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">$Eol" +
