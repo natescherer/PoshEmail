@@ -251,19 +251,12 @@ function Send-HtmlMailMessage {
             "      }$Eol" +
             "    }$Eol" +
             "   </style>$Eol" +
-            "   <!--[if mso]>$Eol" +
-            "   <style>$Eol" +
-            "       .linenum {$Eol" +
-            "           display: inline !important;$Eol" +
-            "        }$Eol" +
-            "   </style>$Eol" +
-            "   <![endif]-->$Eol" +
             "  </head>$Eol" +
             "  <body class=`"`" style=`"background-color: #f6f6f6; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;`">$Eol" +
             "    <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"body`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background-color: #f6f6f6;`">$Eol" +
             "      <tr>$Eol" +
             "        <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">&nbsp;</td>$Eol" +
-            "        <td class=`"container`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; display: block; Margin: 0 auto; max-width: 580px; padding: 10px; width: 580px;`">$Eol" +
+            "        <td class=`"container`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; display: block; Margin: 0 auto; max-width: 580px; padding: 10px; width: 1800px;`">$Eol" +
             "          <div class=`"content`" style=`"box-sizing: border-box; display: block; Margin: 0 auto; max-width: 580px; padding: 10px;`">$Eol" +
             "$Eol" +
             "            <!-- START CENTERED WHITE CONTAINER -->$Eol" +
@@ -355,10 +348,11 @@ function Send-HtmlMailMessage {
             $BodyPreformatted = ("                      </td>$Eol" +
                 "                            </tr>$Eol" +
                 "                            <tr>$Eol" +
-                "                      <td width=`"490`" style=`"font-size: 14px; vertical-align: top; max-width: 490px; overflow: auto; padding-top: 15px; padding-right: 15px;background-color: #DCDCDC; border: 1px solid black;`">$Eol") + $BodyPreformatted
+                "                      <td width=`"100%`" style=`"font-size: 14px; vertical-align: top; max-width: 100%; overflow: auto; padding-top: 15px; padding-right: 15px;background-color: #F5F5F5; border: 1px solid black;`">$Eol") + $BodyPreformatted
             $BodyPreformatted = $BodyPreformatted + ("$Eol</td>$Eol                            </tr>$Eol" +
                 "                            <tr>$Eol" +
                 "                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">$Eol" +
+                "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; text-align: $BodyAlignment;`">&ensp;</p>" +
                 "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; text-align: $BodyAlignment;`">")
         }
         $Footer = $Footer -replace "<a ","<a style=`"text-decoration: underline; color: #999999; font-size: 12px; text-align: center;`" "
