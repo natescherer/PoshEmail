@@ -172,6 +172,12 @@ function Send-HtmlMailMessage {
         [string]$ButtonAlignment = "Center"
     )
     process {
+        if ($BodyPreformatted) {
+            $BodyWidth = "1800"
+        } else {
+            $BodyWidth = "580"
+        }
+
         $HtmlTop = ("<!doctype html>$Eol" +
             "<html>$Eol" +
             "  <head>$Eol" +
@@ -191,12 +197,15 @@ function Send-HtmlMailMessage {
             "        margin-bottom: 10px !important;$Eol" +
             "      }$Eol" +
             "      table[class=body] p,$Eol" +
-            "            table[class=body] ul,$Eol" +
-            "            table[class=body] ol,$Eol" +
-            "            table[class=body] td,$Eol" +
-            "            table[class=body] span,$Eol" +
-            "            table[class=body] a {$Eol" +
+            "      table[class=body] ul,$Eol" +
+            "      table[class=body] ol,$Eol" +
+            "      table[class=body] td,$Eol" +
+            "      table[class=body] span,$Eol" +
+            "      table[class=body] a {$Eol" +
             "        font-size: 16px !important;$Eol" +
+            "      }$Eol" +
+            "      table[class=body] .preformatted {$Eol" +
+            "        font-size: 11px !important;$Eol" +
             "      }$Eol" +
             "      table[class=body] .wrapper,$Eol" +
             "            table[class=body] .article {$Eol" +
@@ -235,11 +244,11 @@ function Send-HtmlMailMessage {
             "        width: 100%;$Eol" +
             "      }$Eol" +
             "      .ExternalClass,$Eol" +
-            "            .ExternalClass p,$Eol" +
-            "            .ExternalClass span,$Eol" +
-            "            .ExternalClass font,$Eol" +
-            "            .ExternalClass td,$Eol" +
-            "            .ExternalClass div {$Eol" +
+            "      .ExternalClass p,$Eol" +
+            "      .ExternalClass span,$Eol" +
+            "      .ExternalClass font,$Eol" +
+            "      .ExternalClass td,$Eol" +
+            "      .ExternalClass div {$Eol" +
             "        line-height: 100%;$Eol" +
             "      }$Eol" +
             "      .btn-primary table td:hover {$Eol" +
@@ -256,8 +265,8 @@ function Send-HtmlMailMessage {
             "    <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"body`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background-color: #f6f6f6;`">$Eol" +
             "      <tr>$Eol" +
             "        <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">&nbsp;</td>$Eol" +
-            "        <td class=`"container`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; display: block; Margin: 0 auto; max-width: 580px; padding: 10px; width: 1800px;`">$Eol" +
-            "          <div class=`"content`" style=`"box-sizing: border-box; display: block; Margin: 0 auto; max-width: 580px; padding: 10px;`">$Eol" +
+            "        <td class=`"container`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; display: block; margin: 0 auto; max-width: $($BodyWidth)px; padding: 10px;`">$Eol" +
+            "          <div class=`"content`" style=`"box-sizing: border-box; display: block; margin: 0 auto; max-width: 100%; padding: 10px;`">$Eol" +
             "$Eol" +
             "            <!-- START CENTERED WHITE CONTAINER -->$Eol" +
             "            <span class=`"preheader`" style=`"color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;`"></span>$Eol" +
@@ -273,7 +282,7 @@ function Send-HtmlMailMessage {
         $HtmlButton = ("                        <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"btn btn-primary`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;`">$Eol" +
             "                          <tbody>$Eol" +
             "                            <tr>$Eol" +
-            "                              <td align=`"$ButtonAlignment`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;`">$Eol" +
+            "                              <td align=`"$($ButtonAlignment.ToLower())`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;`">$Eol" +
             "                                <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;`">$Eol" +
             "                                  <tbody>$Eol" +
             "                                    <tr>$Eol" +
@@ -296,7 +305,7 @@ function Send-HtmlMailMessage {
             "            </table>$Eol" +
             "$Eol" +
             "            <!-- START FOOTER -->$Eol" +
-            "            <div class=`"footer`" style=`"clear: both; Margin-top: 10px; text-align: center; width: 100%;`">$Eol" +
+            "            <div class=`"footer`" style=`"clear: both; margin-top: 10px; text-align: center; width: 100%;`">$Eol" +
             "              <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;`">$Eol" +
             "                <tr>$Eol" +
             "                  <td class=`"content-block`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$Eol")
@@ -325,35 +334,39 @@ function Send-HtmlMailMessage {
             $HtmlButton = ""
         }
 
-        $Heading = "                        <h2 style=`"text-align: $HeadingAlignment;`">$Heading</h2>$Eol"
+        $Heading = "                        <h2 style=`"text-align: $($HeadingAlignment.ToLower());`">$Heading</h2>$Eol"
 
         if ($Body -notlike "*<p>*") {
             $Body = "<p>$Body</p>"
         }
 
-        $Footer = "$Footer$Eol"
+        if ($Footer) {
+            $Footer = "                    $Footer$Eol"
+        }
 
         $LastLine = "                    $LastLine$Eol"
 
-        #$Heading = $Heading -replace "<p>","                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;`">"
-        $Body = $Body -replace "<p>","                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; text-align: $BodyAlignment;`">"
+        $Body = $Body -replace "<p>","                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: $($BodyAlignment.ToLower());`">"
         $Body = $Body -replace "</p>","</p>$Eol"
         if ($BodyPreformatted -ne "") {
             $BodyReformatted = ""
             foreach ($Line in $BodyPreformatted -split $Eol) {
                 $Line = $Line -replace " ","&ensp;"
-                $BodyReformatted += "<li style=`"color: #4169E1; font-family: monospace; font-size: 11px;`"><span style=`"color: black; font-family: monospace; font-size: 11px; white-space: pre-wrap;`">$Line</span></li>$Eol"
+                $BodyReformatted += "                          <li style=`"color: #4169E1; font-family: monospace; font-size: 11px;`"><span class=`"preformatted`" style=`"color: black; font-family: monospace; font-size: 11px; white-space: pre-wrap;`">$Line</span></li>$Eol"
             }
-            $BodyPreformatted = "<ol>$Eol$BodyReformatted</ol>$Eol"
+
             $BodyPreformatted = ("                      </td>$Eol" +
-                "                            </tr>$Eol" +
-                "                            <tr>$Eol" +
-                "                      <td width=`"100%`" style=`"font-size: 14px; vertical-align: top; max-width: 100%; overflow: auto; padding-top: 15px; padding-right: 15px;background-color: #F5F5F5; border: 1px solid black;`">$Eol") + $BodyPreformatted
-            $BodyPreformatted = $BodyPreformatted + ("$Eol</td>$Eol                            </tr>$Eol" +
-                "                            <tr>$Eol" +
+                "                    </tr>$Eol" +
+                "                    <tr>$Eol" +
+                "                      <td class=`"preformatted`" width=`"100%`" style=`"font-size: 14px; vertical-align: top; max-width: 100%; overflow: auto; padding-top: 15px; padding-right: 15px;background-color: #F5F5F5; border: 1px solid black;`">$Eol" + 
+                "                        <ol class=`"preformatted`">$Eol" +
+                "$BodyReformatted" +
+                "                        </ol>$Eol")
+            $BodyPreformatted = $BodyPreformatted + ("                      </td>$Eol" +
+                "                    </tr>$Eol" +
+                "                    <tr>$Eol" +
                 "                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">$Eol" +
-                "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; text-align: $BodyAlignment;`">&ensp;</p>" +
-                "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px; text-align: $BodyAlignment;`">")
+                "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: $($BodyAlignment.ToLower());`">&nbsp;</p>$Eol")
         }
         $Footer = $Footer -replace "<a ","<a style=`"text-decoration: underline; color: #999999; font-size: 12px; text-align: center;`" "
         $LastLine = $LastLine -replace "<a ","<a style=`"text-decoration: underline; color: #999999; font-size: 12px; text-align: center;`" "
@@ -409,7 +422,8 @@ function Send-HtmlMailMessage {
             $SmmParams += @{UseSsl = $UseSsl}
         }
 
-        Send-MailMessage @SmmParams
+        # Using Start-Job prevents issues described here: https://stackoverflow.com/questions/43349726/send-mailmessage-closes-every-2nd-connection-when-using-attachments
+        Start-Job -ScriptBlock { Send-MailMessage @using:SmmParams } | Wait-Job | Receive-Job
     }
 }
 
