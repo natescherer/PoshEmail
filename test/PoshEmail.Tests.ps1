@@ -685,4 +685,123 @@ InModuleScope $ModuleName {
             "                        </table>")
         }
     }
+    Describe 'Invoke-CommandWithEmailWrapper' {
+        if ($IsWindows -eq $null) {$IsWindows = $true}
+        $IsntWindows = !$IsWindows
+
+        It 'PowerShell ScriptBlock' {
+            $SourcePath = "$env:temp\icwew_source"
+            $DestPath = "$env:temp\icwew_dest"
+            New-Item -Path $SourcePath -ItemType Directory
+            New-Item -Path $DestPath -ItemType Directory
+
+            [System.Security.Cryptography.RNGCryptoServiceProvider] $Rng = New-Object System.Security.Cryptography.RNGCryptoServiceProvider
+            $RndBytes = New-Object byte[] 10MB
+            $Rng.GetBytes($rndbytes)
+            [System.IO.File]::WriteAllBytes("$($SourcePath)\test1.txt", $rndbytes)
+
+            $RndBytes = New-Object byte[] 100MB
+            $Rng.GetBytes($rndbytes)
+            [System.IO.File]::WriteAllBytes("$($SourcePath)\test2.txt", $rndbytes)
+
+            $RndBytes = New-Object byte[] 1MB
+            $Rng.GetBytes($rndbytes)
+            [System.IO.File]::WriteAllBytes("$($SourcePath)\test3.txt", $rndbytes)
+
+            $GoPath = [System.Environment]::GetEnvironmentVariable("GOPATH", "User")
+            $MHProcess = Start-Process -FilePath "$GoPath\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
+            Start-Sleep -Seconds 5
+
+            $ShmmParams = @{
+                EmailFrom = "PoshEmail@test.local"
+                EmailTo = "rcpt@test.local"
+                SmtpServer = "127.0.0.1"
+                ScriptBLock = { Get-ChildItem $SourcePath | Select-Object Length, Name }
+                JobName = "Test 1"
+                EmailUseSsl = $false
+            }
+
+            Invoke-CommandWithEmailWrapper @ShmmParams
+
+            Start-Sleep -Seconds 2
+
+            $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
+            Stop-Process -InputObject $MHProcess -Force
+
+            Remove-Item $SourcePath -Force -Recurse
+            Remove-Item $DestPath -Force -Recurse
+
+            $Source = $Response.Items[0].Content.Body
+
+            $NewSource = ""
+
+            foreach ($Line in ($Source -split $Eol)) {
+                $NewSource += $Line -replace "=$",""
+            }
+
+            $Source = $NewSource -replace "=0D=0A",$Eol
+            $Source = $Source -replace "=0A",$Eol
+            $Source = $Source -replace "=3D","="
+
+            $Source | Should -Match "104857600&ensp;test2.txt"
+
+        }
+        It 'Cmd ScriptBlock' -Skip:$IsntWindows {
+            $SourcePath = "$env:temp\icwew_source"
+            $DestPath = "$env:temp\icwew_dest"
+            New-Item -Path $SourcePath -ItemType Directory
+            New-Item -Path $DestPath -ItemType Directory
+
+            [System.Security.Cryptography.RNGCryptoServiceProvider] $Rng = New-Object System.Security.Cryptography.RNGCryptoServiceProvider
+            $RndBytes = New-Object byte[] 10MB
+            $Rng.GetBytes($rndbytes)
+            [System.IO.File]::WriteAllBytes("$($SourcePath)\test1.txt", $rndbytes)
+
+            $RndBytes = New-Object byte[] 100MB
+            $Rng.GetBytes($rndbytes)
+            [System.IO.File]::WriteAllBytes("$($SourcePath)\test2.txt", $rndbytes)
+
+            $RndBytes = New-Object byte[] 1MB
+            $Rng.GetBytes($rndbytes)
+            [System.IO.File]::WriteAllBytes("$($SourcePath)\test3.txt", $rndbytes)
+
+            $GoPath = [System.Environment]::GetEnvironmentVariable("GOPATH", "User")
+            $MHProcess = Start-Process -FilePath "$GoPath\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
+            Start-Sleep -Seconds 5
+
+            $ShmmParams = @{
+                EmailFrom = "PoshEmail@test.local"
+                EmailTo = "rcpt@test.local"
+                SmtpServer = "127.0.0.1"
+                ScriptBLock = { robocopy $SourcePath $DestPath }
+                JobName = "Test 1"
+                EmailUseSsl = $false
+            }
+
+            Invoke-CommandWithEmailWrapper @ShmmParams
+
+            Start-Sleep -Seconds 2
+
+            $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
+            Stop-Process -InputObject $MHProcess -Force
+
+            Remove-Item $SourcePath -Force -Recurse
+            Remove-Item $DestPath -Force -Recurse
+
+            $Source = $Response.Items[0].Content.Body
+
+            $NewSource = ""
+
+            foreach ($Line in ($Source -split $Eol)) {
+                $NewSource += $Line -replace "=$",""
+            }
+
+            $Source = $NewSource -replace "=0D=0A",$Eol
+            $Source = $Source -replace "=0A",$Eol
+            $Source = $Source -replace "=3D","="
+
+            $Source | Should -Match "ROBOCOPY&ensp;&ensp;&ensp;&ensp;&ensp;::&ensp;&ensp;&ensp;&ensp;&ensp;Robust&ensp;File&ensp;Copy&ensp;for&ensp;Windows"
+
+        }
+    }
 }
