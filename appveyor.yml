@@ -12,7 +12,7 @@ environment:
   AppveyorNuGetFeed: "https://ci.appveyor.com/nuget/natescherer-hvliadegj7t9/api/v2/package"
   GitName: "Nate Scherer"
   GitEmail: "376408+natescherer@users.noreply.github.com"
-  PowerShellModules: "ChangelogManagement,InvokeBuild,Pester,platyPS,MarkdownToHtml,BuildHelpers"
+  PowerShellModules: "PowerShellGet,PackageManagement,ChangelogManagement,InvokeBuild,Pester,platyPS,MarkdownToHtml,BuildHelpers"
 
 stack: go 1.11
 
