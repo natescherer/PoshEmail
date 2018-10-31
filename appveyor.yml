@@ -14,6 +14,8 @@ environment:
   GitEmail: "376408+natescherer@users.noreply.github.com"
   PowerShellModules: "ChangelogManagement,InvokeBuild,Pester,platyPS,MarkdownToHtml,BuildHelpers"
 
+stack: go 1.11
+
 image:
   - Visual Studio 2017
   - Ubuntu1804
@@ -43,6 +45,8 @@ for:
     matrix:
       only:
         - image: Visual Studio 2017
+    environment:
+      GOPATH: c:\gopath
     install:
       - ps: Write-Host "Visual Studio 2017" -ForegroundColor Yellow
       - ps: Write-Host "Installing Windows PowerShell Modules..."
@@ -97,13 +101,12 @@ for:
         - image: Ubuntu1804
     environment:
       GOPATH: /usr/go/
-    stack: go 1.11
     install:
       - pwsh: Write-Host Ubuntu -ForegroundColor Yellow
       - pwsh: Write-Host "Installing PowerShell Core Modules..."
       - pwsh: foreach ($Module in ($env:PowerShellModules -split ",")) { Install-Module -Name $Module -Force -SkipPublisherCheck  -Scope "CurrentUser" }
       - pwsh: Write-Host "Installing MailHog..."
-      - pwsh: go get github.com/mailhog/MailHog
+      - sh: go get github.com/mailhog/MailHog
     build_script:
       - pwsh: Write-Host "Starting Build..."
       - pwsh: if ($ReleaseVersion -ne "vNext") {Invoke-Build -ReleaseVersion $ReleaseVersion -BuildMode "Release" -LinkBase "https://github.com/$($env:APPVEYOR_REPO_NAME)"} else {Invoke-Build -BuildMode "Snapshot"}
