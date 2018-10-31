@@ -30,7 +30,7 @@ Enter-Build {
 }
 
 # Synopsis: Perform all build tasks.
-task . Clean, UpdateManifest, GenerateMarkdownHelp, UpdateHelpLinkInReadme, UpdateChangelog, MarkDownHelpToHtml, Zip
+task . Clean, UpdateManifest, GenerateMarkdownHelp, UpdateChangelog, MarkDownHelpToHtml, Zip
 
 # Synopsis: Removes files from build, doc, and out.
 task Clean -If {($BuildMode -eq "Snapshot") -or ($BuildMode -eq "Release")} {
@@ -69,31 +69,6 @@ task GenerateMarkdownHelp -If {($BuildMode -eq "Snapshot") -or ($BuildMode -eq "
     Import-Module -Name $ModulePath -Force -ErrorAction Stop
 
     New-MarkdownHelp -Module $ModuleName -OutputFolder docs
-}
-
-# Synopsis: Updates the help link in the readme to point to the file in the new version.
-task UpdateHelpLinkInReadme -If {$BuildMode -eq "Release"} {
-    $ReadmeData = Get-Content -Path "README.md"
-    $ReadmeOutput = @()
-    $UpdateNeeded = $true
-
-    foreach ($Line in $ReadmeData) {
-        if ($Line -match "^\[DocsDir\].*") {
-            if ($Line -match "^\[DocsDir\]: \.\./v$ReleaseVersion/docs") {
-                $UpdateNeeded = $false
-            } else {
-                $ReadmeOutput += "[DocsDir]: ../v" + $ReleaseVersion + "/docs/"
-            }
-        } else {
-            $ReadmeOutput += $Line
-        }
-    }
-
-    if ($UpdateNeeded) {
-        Set-Content -Value $ReadmeOutput -Path "README.md"
-    } else {
-        Write-Build Yellow "README.md already updated."
-    }
 }
 
 # Synopsis: Updates the CHANGELOG.md file for the new release.
