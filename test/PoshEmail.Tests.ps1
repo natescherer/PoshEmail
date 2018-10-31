@@ -9,6 +9,8 @@ InModuleScope $ModuleName {
     $ModuleName = Split-Path -Path ($PSCommandPath -replace '\.Tests\.ps1$','') -Leaf
     $ModulePath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psm1"
     $ModuleManifestPath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psd1"
+    $ProccessStartSleep = 3
+    $EmailSendSleep = 1
 
     Write-Host "`Note that all Pending tests are due to MailHog v1.0.0 lacking features needed to do the test." -ForegroundColor Yellow
 
@@ -22,7 +24,7 @@ InModuleScope $ModuleName {
     Describe 'Send-HtmlMailMessage' {
         It 'Mandatory Params' {
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
-            Start-Sleep -Seconds 5
+            Start-Sleep -Seconds $ProccessStartSleep
 
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
@@ -34,7 +36,7 @@ InModuleScope $ModuleName {
 
             Send-HtmlMailMessage @ShmmParams
 
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Stop-Process -InputObject $MHProcess -Force
@@ -189,7 +191,7 @@ InModuleScope $ModuleName {
         }
         It '-BodyAlignment' {
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
-            Start-Sleep -Seconds 5
+            Start-Sleep -Seconds $ProccessStartSleep
 
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
@@ -202,7 +204,7 @@ InModuleScope $ModuleName {
 
             Send-HtmlMailMessage @ShmmParams
 
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Stop-Process -InputObject $MHProcess -Force
@@ -223,7 +225,7 @@ InModuleScope $ModuleName {
         }    
         It '-BodyPreformatted' {
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
-            Start-Sleep -Seconds 5
+            Start-Sleep -Seconds $ProccessStartSleep
 
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
@@ -255,7 +257,7 @@ InModuleScope $ModuleName {
 
             Send-HtmlMailMessage @ShmmParams
 
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Stop-Process -InputObject $MHProcess -Force
@@ -306,7 +308,7 @@ InModuleScope $ModuleName {
         }
         It '-Attachments' {
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
-            Start-Sleep -Seconds 5
+            Start-Sleep -Seconds $ProccessStartSleep
 
             # TestDrive doesn't work here because of the module running Send-MailMessage as a Job
             $TestPath = "$env:temp\attachment.txt"
@@ -324,7 +326,7 @@ InModuleScope $ModuleName {
 
             Send-HtmlMailMessage @ShmmParams
 
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Stop-Process -InputObject $MHProcess -Force
@@ -354,7 +356,7 @@ InModuleScope $ModuleName {
             $PSCreds = New-Object System.Management.Automation.PSCredential ("user", (ConvertTo-SecureString "testpassword" -AsPlainText -Force))
             
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-auth-file", $MHCredFile -PassThru
-            Start-Sleep -Seconds 5
+            Start-Sleep -Seconds $ProccessStartSleep
 
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
@@ -367,7 +369,7 @@ InModuleScope $ModuleName {
 
             Send-HtmlMailMessage @ShmmParams
 
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds $EmailSendSleep
 
             if ($PSVersionTable.PSVersion -ge "6.0") {
                 $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages -Credential $PSCreds -AllowUnencryptedAuthentication
@@ -397,7 +399,7 @@ InModuleScope $ModuleName {
         }
         It '-Port' {
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -PassThru
-            Start-Sleep -Seconds 5
+            Start-Sleep -Seconds $ProccessStartSleep
 
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
@@ -410,7 +412,7 @@ InModuleScope $ModuleName {
 
             Send-HtmlMailMessage @ShmmParams
 
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Stop-Process -InputObject $MHProcess -Force
@@ -435,7 +437,7 @@ InModuleScope $ModuleName {
         }
         It '-Heading' {
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
-            Start-Sleep -Seconds 5
+            Start-Sleep -Seconds $ProccessStartSleep
     
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
@@ -448,7 +450,7 @@ InModuleScope $ModuleName {
     
             Send-HtmlMailMessage @ShmmParams
     
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Stop-Process -InputObject $MHProcess -Force
@@ -469,7 +471,7 @@ InModuleScope $ModuleName {
         }
         It '-HeadingAlignment' {
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
-            Start-Sleep -Seconds 5
+            Start-Sleep -Seconds $ProccessStartSleep
     
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
@@ -483,7 +485,7 @@ InModuleScope $ModuleName {
     
             Send-HtmlMailMessage @ShmmParams
     
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Stop-Process -InputObject $MHProcess -Force
@@ -504,7 +506,7 @@ InModuleScope $ModuleName {
         }
         It '-Footer' {
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
-            Start-Sleep -Seconds 5
+            Start-Sleep -Seconds $ProccessStartSleep
     
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
@@ -517,7 +519,7 @@ InModuleScope $ModuleName {
     
             Send-HtmlMailMessage @ShmmParams
     
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Stop-Process -InputObject $MHProcess -Force
@@ -540,7 +542,7 @@ InModuleScope $ModuleName {
         }
         It '-LastLine' {
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
-            Start-Sleep -Seconds 5
+            Start-Sleep -Seconds $ProccessStartSleep
     
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
@@ -553,7 +555,7 @@ InModuleScope $ModuleName {
     
             Send-HtmlMailMessage @ShmmParams
     
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Stop-Process -InputObject $MHProcess -Force
@@ -576,7 +578,7 @@ InModuleScope $ModuleName {
         }
         It '-ButtonText and -ButtonLink' {
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
-            Start-Sleep -Seconds 5
+            Start-Sleep -Seconds $ProccessStartSleep
     
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
@@ -590,7 +592,7 @@ InModuleScope $ModuleName {
     
             Send-HtmlMailMessage @ShmmParams
     
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Stop-Process -InputObject $MHProcess -Force
@@ -614,7 +616,7 @@ InModuleScope $ModuleName {
             "                                <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;`">$Eol" +
             "                                  <tbody>$Eol" +
             "                                    <tr>$Eol" +
-            "                                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #3498db; border-radius: 5px; text-align: center;`"> <a href=`"https://testbuttonlink.com`" target=`"_blank`" style=`"display: inline-block; color: #ffffff; background-color: #3498db; border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db;`">Test ButtonText</a> </td>$Eol" +
+            "                                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #3498db; border-radius: $ProccessStartSleeppx; text-align: center;`"> <a href=`"https://testbuttonlink.com`" target=`"_blank`" style=`"display: inline-block; color: #ffffff; background-color: #3498db; border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db;`">Test ButtonText</a> </td>$Eol" +
             "                                    </tr>$Eol" +
             "                                  </tbody>$Eol" +
             "                                </table>$Eol" +
@@ -625,7 +627,7 @@ InModuleScope $ModuleName {
         }
         It '-ButtonAlignment' {
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
-            Start-Sleep -Seconds 5
+            Start-Sleep -Seconds $ProccessStartSleep
     
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
@@ -640,7 +642,7 @@ InModuleScope $ModuleName {
     
             Send-HtmlMailMessage @ShmmParams
     
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Stop-Process -InputObject $MHProcess -Force
@@ -698,7 +700,7 @@ InModuleScope $ModuleName {
             [System.IO.File]::WriteAllBytes("$($SourcePath)\test3.txt", $rndbytes)
 
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
-            Start-Sleep -Seconds 5
+            Start-Sleep -Seconds $ProccessStartSleep
 
             $ShmmParams = @{
                 EmailFrom = "PoshEmail@test.local"
@@ -711,7 +713,7 @@ InModuleScope $ModuleName {
 
             Invoke-CommandWithEmailWrapper @ShmmParams
 
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Stop-Process -InputObject $MHProcess -Force
@@ -754,7 +756,7 @@ InModuleScope $ModuleName {
             [System.IO.File]::WriteAllBytes("$($SourcePath)\test3.txt", $rndbytes)
 
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
-            Start-Sleep -Seconds 5
+            Start-Sleep -Seconds $ProccessStartSleep
 
             $ShmmParams = @{
                 EmailFrom = "PoshEmail@test.local"
@@ -767,7 +769,7 @@ InModuleScope $ModuleName {
 
             Invoke-CommandWithEmailWrapper @ShmmParams
 
-            Start-Sleep -Seconds 2
+            Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Stop-Process -InputObject $MHProcess -Force
