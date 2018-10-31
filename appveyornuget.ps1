@@ -7,39 +7,39 @@ Function Register-PSRepositoryFix {
         [Parameter(Mandatory=$true)]
         [String]
         $Name,
-
+    
         [Parameter(Mandatory=$true)]
         [Uri]
         $SourceLocation,
-
+    
         [ValidateSet('Trusted', 'Untrusted')]
         $InstallationPolicy = 'Trusted'
     )
-
+    
     $ErrorActionPreference = 'Stop'
-
+    
     Try {
         Write-Host 'Trying to register via ​Register-PSRepository'
         ​Register-PSRepository -Name $Name -SourceLocation $SourceLocation -InstallationPolicy $InstallationPolicy
         Write-Host 'Registered via Register-PSRepository'
     } Catch {
         Write-Host 'Register-PSRepository failed, registering via workaround'
-
+    
         # Adding PSRepository directly to file
         Register-PSRepository -name $Name -SourceLocation $env:TEMP -InstallationPolicy $InstallationPolicy
         $PSRepositoriesXmlPath = "$env:LOCALAPPDATA\Microsoft\Windows\PowerShell\PowerShellGet\PSRepositories.xml"
         $repos = Import-Clixml -Path $PSRepositoriesXmlPath
         $repos[$Name].SourceLocation = $SourceLocation.AbsoluteUri
         $repos[$Name].PublishLocation = (New-Object -TypeName Uri -ArgumentList $SourceLocation, 'package/').AbsoluteUri
-        $repos[$Name].ScriptSourceLocation = ''
-        $repos[$Name].ScriptPublishLocation = ''
+        $repos[$Name].ScriptSourceLocation = (New-Object -TypeName Uri -ArgumentList $SourceLocation, 'items/psscript/').AbsoluteUri
+        $repos[$Name].ScriptPublishLocation = (New-Object -TypeName Uri -ArgumentList $SourceLocation, 'package/').AbsoluteUri
         $repos | Export-Clixml -Path $PSRepositoriesXmlPath
-
+    
         # Reloading PSRepository list
-        Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
+        Set-PSRepository -Name $Name -InstallationPolicy Untrusted
         Write-Host 'Registered via workaround'
     }
-}
+    }
 
 # Make sure we're using the Master branch and that it's not a pull request
 # Environmental Variables Guide: https://www.appveyor.com/docs/environment-variables/
