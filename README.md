@@ -40,7 +40,7 @@ Examples Here
 
 ### Documentation
 
-For detailed documentation, [click here on GitHub][docs], see the docs folder in a release, or run Get-Help for the individual function in PowerShell.
+For detailed documentation, [click here on GitHub](docs), see the docs folder in a release, or run Get-Help for the individual function in PowerShell.
 
 ## Questions/Comments
 
