@@ -1,6 +1,46 @@
 # Line break for readability in Appveyor console
 Write-Host -Object ''
 
+Function Register-PSRepositoryFix {
+    [CmdletBinding()]
+    Param (
+        [Parameter(Mandatory=$true)]
+        [String]
+        $Name,
+
+        [Parameter(Mandatory=$true)]
+        [Uri]
+        $SourceLocation,
+
+        [ValidateSet('Trusted', 'Untrusted')]
+        $InstallationPolicy = 'Trusted'
+    )
+
+    $ErrorActionPreference = 'Stop'
+
+    Try {
+        Write-Verbose 'Trying to register via ​Register-PSRepository'
+        ​Register-PSRepository -Name $Name -SourceLocation $SourceLocation -InstallationPolicy $InstallationPolicy
+        Write-Verbose 'Registered via Register-PSRepository'
+    } Catch {
+        Write-Verbose 'Register-PSRepository failed, registering via workaround'
+
+        # Adding PSRepository directly to file
+        Register-PSRepository -name $Name -SourceLocation $env:TEMP -InstallationPolicy $InstallationPolicy
+        $PSRepositoriesXmlPath = "$env:LOCALAPPDATA\Microsoft\Windows\PowerShell\PowerShellGet\PSRepositories.xml"
+        $repos = Import-Clixml -Path $PSRepositoriesXmlPath
+        $repos[$Name].SourceLocation = $SourceLocation.AbsoluteUri
+        $repos[$Name].PublishLocation = (New-Object -TypeName Uri -ArgumentList $SourceLocation, 'package/').AbsoluteUri
+        $repos[$Name].ScriptSourceLocation = ''
+        $repos[$Name].ScriptPublishLocation = ''
+        $repos | Export-Clixml -Path $PSRepositoriesXmlPath
+
+        # Reloading PSRepository list
+        Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
+        Write-Verbose 'Registered via workaround'
+    }
+}
+
 # Make sure we're using the Master branch and that it's not a pull request
 # Environmental Variables Guide: https://www.appveyor.com/docs/environment-variables/
 if ($env:APPVEYOR_REPO_BRANCH -ne 'master') {
@@ -25,7 +65,8 @@ if ($env:APPVEYOR_REPO_BRANCH -ne 'master') {
     Write-Warning -Message "Branch was master, but commit message did not include '!Deploy', so deploying module to Appveyor NuGet."
     # Publish to AppVeyor NuGet Only
     try {
-        Register-PSRepository -Name "AppveyorNuGetFeed" -SourceLocation $env:AppveyorNuGetFeed -PublishLocation $env:AppveyorNuGetFeed
+
+        Register-PSRepositoryFix -Name "AppveyorNuGetFeed" -SourceLocation $env:AppveyorNuGetFeed -PublishLocation $env:AppveyorNuGetFeed
         $PM = @{
             Path = "$PSScriptRoot\out\$env:APPVEYOR_PROJECT_NAME"
             Repository = "AppveyorNuGetFeed"
