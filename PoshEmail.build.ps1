@@ -92,7 +92,10 @@ task MarkdownHelpToHtml -If {($BuildMode -eq "Snapshot") -or ($BuildMode -eq "Re
 task Zip -If {($BuildMode -eq "Snapshot") -or ($BuildMode -eq "Release")} {
     Copy-Item -Path "src\*" -Destination "out\$ModuleName\"
 
-    Copy-Item -Path "out\$ModuleName\*" -Destination "out\tozip\"
+    New-Item -Path "out\tozip" -Type Directory
+    New-Item -Path "out\tozip\$ModuleName" -Type Directory
+    New-Item -Path "out\tozip\docs" -Type Directory
+    Copy-Item -Path "out\$ModuleName\*" -Destination "out\tozip\$ModuleName"
     Copy-Item -Path "out\docs\*" -Destination "out\tozip\docs\"
 
     if ($ReleaseVersion) {
