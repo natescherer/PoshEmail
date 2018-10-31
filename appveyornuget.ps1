@@ -19,11 +19,11 @@ Function Register-PSRepositoryFix {
     $ErrorActionPreference = 'Stop'
 
     Try {
-        Write-Verbose 'Trying to register via ​Register-PSRepository'
+        Write-Host 'Trying to register via ​Register-PSRepository'
         ​Register-PSRepository -Name $Name -SourceLocation $SourceLocation -InstallationPolicy $InstallationPolicy
-        Write-Verbose 'Registered via Register-PSRepository'
+        Write-Host 'Registered via Register-PSRepository'
     } Catch {
-        Write-Verbose 'Register-PSRepository failed, registering via workaround'
+        Write-Host 'Register-PSRepository failed, registering via workaround'
 
         # Adding PSRepository directly to file
         Register-PSRepository -name $Name -SourceLocation $env:TEMP -InstallationPolicy $InstallationPolicy
@@ -37,7 +37,7 @@ Function Register-PSRepositoryFix {
 
         # Reloading PSRepository list
         Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
-        Write-Verbose 'Registered via workaround'
+        Write-Host 'Registered via workaround'
     }
 }
 
