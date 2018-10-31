@@ -35,7 +35,6 @@ init:
   - ps: git config --global user.email $($env:GitEmail)
   - ps: git config --global core.autocrlf true
   - ps: $ErrorActionPreference = "Stop"
-  - ps: Register-PSRepository -Name AppveyorNuGetFeed -SourceLocation "https://ci.appveyor.com/nuget/natescherer-hvliadegj7t9" -PublishLocation "https://ci.appveyor.com/nuget/natescherer-hvliadegj7t9"
   - pwsh: $ErrorActionPreference = "Stop"
 
 for:
@@ -87,6 +86,7 @@ for:
       - ps: Write-Host "Starting Pre-Deploy Config..."
       - ps: git config --global credential.helper store
       - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GitHubKey):x-oauth-basic@github.com`n"
+      - ps: Register-PSRepository -Name AppveyorNuGetFeed -SourceLocation "https://ci.appveyor.com/nuget/natescherer-hvliadegj7t9" -PublishLocation "https://ci.appveyor.com/nuget/natescherer-hvliadegj7t9"
       - ps: Write-Host "Starting Evaluating for Deploy..."
       - ps: . .\appveyordeploy.ps1
     deploy:
