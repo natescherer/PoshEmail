@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+ - Send-HtmlMailMessage cmdlet
+ - Invoke-CommandWithEmailWrapper cmdlet
 ### Changed
 ### Deprecated
 ### Removed
