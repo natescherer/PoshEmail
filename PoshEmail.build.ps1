@@ -39,7 +39,7 @@ task Clean -If {($BuildMode -eq "Snapshot") -or ($BuildMode -eq "Release")} {
 }
 
 # Synopsis: Updates the module manifest file for the new release.
-task UpdateManifest -If {$BuildMode -eq "Release"} {
+task UpdateManifest {
     $ManifestPath = ".\src\$ModuleName.psd1"
 
     $Description = ((Get-Content -Path ".\README.md" -Raw) -split "## Getting Started")[0] -replace "#.*",""
