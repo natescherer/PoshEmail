@@ -186,7 +186,6 @@ InModuleScope $ModuleName {
                 "</html>$Eol")
         }
         It '-BodyAlignment' {
-            $env:GOPATH = $env:GOPATH
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
 
@@ -221,7 +220,6 @@ InModuleScope $ModuleName {
             $Source | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: center;`">Body Text</p>$Eol"
         }    
         It '-BodyPreformatted' {
-            $env:GOPATH = $env:GOPATH
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
 
@@ -305,7 +303,6 @@ InModuleScope $ModuleName {
                 "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: left;`">&nbsp;</p>$Eol")
         }
         It '-Attachments' {
-            $env:GOPATH = $env:GOPATH
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
 
@@ -356,7 +353,6 @@ InModuleScope $ModuleName {
             Set-Content -Value $MHCreds -Path $MHCredFile -NoNewline
             $PSCreds = New-Object System.Management.Automation.PSCredential ("user", (ConvertTo-SecureString "testpassword" -AsPlainText -Force))
             
-            $env:GOPATH = $env:GOPATH
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-auth-file", $MHCredFile -PassThru
             Start-Sleep -Seconds 5
 
@@ -373,7 +369,12 @@ InModuleScope $ModuleName {
 
             Start-Sleep -Seconds 2
 
-            $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages -Credential $PSCreds
+            if ($PSVersionTable.PSVersion -ge "6.0") {
+                $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages -Credential $PSCreds -AllowUnencryptedAuthentication
+            } else {
+                $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages -Credential $PSCreds 
+            }
+            
             Stop-Process -InputObject $MHProcess -Force
 
             $Source = $Response.Items[0].Content.Body
@@ -397,7 +398,6 @@ InModuleScope $ModuleName {
             Write-Host "`tMailHog doesn't really provide a way to test encoding." -ForegroundColor Yellow
         }
         It '-Port' {
-            $env:GOPATH = $env:GOPATH
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -PassThru
             Start-Sleep -Seconds 5
 
@@ -438,7 +438,6 @@ InModuleScope $ModuleName {
             Write-Host "`tMailHog doesn't currently support this header, so this can't be tested right now." -ForegroundColor Yellow
         }
         It '-Heading' {
-            $env:GOPATH = $env:GOPATH
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
     
@@ -473,7 +472,6 @@ InModuleScope $ModuleName {
             $Source | Should -Match "<h2 style=`"text-align: center;`">Test Heading</h2>"
         }
         It '-HeadingAlignment' {
-            $env:GOPATH = $env:GOPATH
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
     
@@ -509,7 +507,6 @@ InModuleScope $ModuleName {
             $Source | Should -Match "<h2 style=`"text-align: left;`">Test Heading</h2>"
         }
         It '-Footer' {
-            $env:GOPATH = $env:GOPATH
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
     
@@ -546,7 +543,6 @@ InModuleScope $ModuleName {
                 "                  </td>$Eol")
         }
         It '-LastLine' {
-            $env:GOPATH = $env:GOPATH
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
     
@@ -583,7 +579,6 @@ InModuleScope $ModuleName {
                 "                  </td>")
         }
         It '-ButtonText and -ButtonLink' {
-            $env:GOPATH = $env:GOPATH
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
     
@@ -633,7 +628,6 @@ InModuleScope $ModuleName {
             "                        </table>")
         }
         It '-ButtonAlignment' {
-            $env:GOPATH = $env:GOPATH
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
     
@@ -707,7 +701,6 @@ InModuleScope $ModuleName {
             $Rng.GetBytes($rndbytes)
             [System.IO.File]::WriteAllBytes("$($SourcePath)\test3.txt", $rndbytes)
 
-            $env:GOPATH = $env:GOPATH
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
 
@@ -764,7 +757,6 @@ InModuleScope $ModuleName {
             $Rng.GetBytes($rndbytes)
             [System.IO.File]::WriteAllBytes("$($SourcePath)\test3.txt", $rndbytes)
 
-            $env:GOPATH = $env:GOPATH
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
 
