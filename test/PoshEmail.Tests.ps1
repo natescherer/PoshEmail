@@ -20,6 +20,8 @@ InModuleScope $ModuleName {
     Describe 'Send-HtmlMailMessage' {
         It 'Mandatory Params' {
             $GoPath = [System.Environment]::GetEnvironmentVariable("GOPATH", "User")
+            Write-Host $GoPath
+            Write-Host $(Test-Path $GoPath)
             $MHProcess = Start-Process -FilePath "$GoPath\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
 
