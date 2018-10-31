@@ -64,7 +64,10 @@ task UpdateManifest -If {$BuildMode -eq "Release"} {
 
 # Synopsis: Generates Markdown help file from comment-based help in script.
 task GenerateMarkdownHelp -If {($BuildMode -eq "Snapshot") -or ($BuildMode -eq "Release")} {
-    Import-Module -Name "src\$ModuleName.psm1" -Force
+    $ModulePath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psm1"
+    Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
+    Import-Module -Name $ModulePath -Force -ErrorAction Stop
+    
     New-MarkdownHelp -Module $ModuleName -OutputFolder docs
 }
 
