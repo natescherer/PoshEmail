@@ -51,9 +51,9 @@ for:
       - ps: Write-Host "Visual Studio 2017" -ForegroundColor Yellow
       - ps: Write-Host "Installing Windows PowerShell Modules..."
       - ps: Install-PackageProvider -Name NuGet -Force | Out-Null
-      - ps: foreach ($Module in ($env:PowerShellModules -split ",")) { Install-Module -Name $Module -Force -SkipPublisherCheck }
+      - ps: foreach ($Module in ($env:PowerShellModules -split ",")) { Install-Module -Name $Module -Force -SkipPublisherCheck -AllowClobber }
       - pwsh: Write-Host "Installing PowerShell Core Modules..."
-      - pwsh: foreach ($Module in ($env:PowerShellModules -split ",")) { Install-Module -Name $Module -Force -SkipPublisherCheck }
+      - pwsh: foreach ($Module in ($env:PowerShellModules -split ",")) { Install-Module -Name $Module -Force -SkipPublisherCheck -AllowClobber }
       - ps: Write-Host "Installing MailHog..."
       - ps: go get github.com/mailhog/MailHog
     build_script:
@@ -111,7 +111,7 @@ for:
     install:
       - pwsh: Write-Host Ubuntu -ForegroundColor Yellow
       - pwsh: Write-Host "Installing PowerShell Core Modules..."
-      - pwsh: foreach ($Module in ($env:PowerShellModules -split ",")) { Install-Module -Name $Module -Force -SkipPublisherCheck  -Scope "CurrentUser" }
+      - pwsh: foreach ($Module in ($env:PowerShellModules -split ",")) { Install-Module -Name $Module -Force -SkipPublisherCheck -AllowClobber -Scope "CurrentUser" }
       - pwsh: Write-Host "Installing MailHog..."
       - sh: go get github.com/mailhog/MailHog
     build_script:
