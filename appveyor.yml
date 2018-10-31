@@ -7,6 +7,9 @@ environment:
     secure: pzzBHe3dds15o5jYQLKlsuxO3JbV9rkccb1PwKigFP2vfp9vC579E8KSGhR1GQAA
   GitHubKey:
     secure: mhTvr/vsjuMnWB6+KlvCZ7fDxj7riYN6PdXZFGlogv9OL0G2M3K/7OjxiggarWvi
+  AppveyorNuGetApiKey:
+    secure: 5LnSnOCfovk/pF6NpAjXmmwBcnQqrAShdFC9hmgLpdQ=
+  AppveyorNuGetFeed: "https://ci.appveyor.com/nuget/natescherer-hvliadegj7t9"
   GitName: "Nate Scherer"
   GitEmail: "376408+natescherer@users.noreply.github.com"
 
@@ -32,6 +35,7 @@ init:
   - ps: git config --global user.email $($env:GitEmail)
   - ps: git config --global core.autocrlf true
   - ps: $ErrorActionPreference = "Stop"
+  - ps: Register-PSRepository -Name AppveyorNuGetFeed -SourceLocation "https://ci.appveyor.com/nuget/natescherer-hvliadegj7t9" -PublishLocation "https://ci.appveyor.com/nuget/natescherer-hvliadegj7t9"
   - pwsh: $ErrorActionPreference = "Stop"
 
 for:
@@ -48,12 +52,14 @@ for:
       - ps: Install-Module -Name Pester -Force -SkipPublisherCheck
       - ps: Install-Module -Name platyPS -Force
       - ps: Install-Module -Name MarkdownToHtml -Force
+      - ps: Install-Module -Name BuildHelpers -Force
       - pwsh: Write-Host "Installing PowerShell Core Modules..."
       - pwsh: Install-Module -Name ChangelogManagement -Force
       - pwsh: Install-Module -Name InvokeBuild -Force
       - pwsh: Install-Module -Name Pester -Force -SkipPublisherCheck
       - pwsh: Install-Module -Name platyPS -Force
       - pwsh: Install-Module -Name MarkdownToHtml -Force
+      - pwsh: Install-Module -Name BuildHelpers -Force
       - ps: Write-Host "Installing MailHog..."
       - ps: go get github.com/mailhog/MailHog
     build_script:
@@ -106,6 +112,7 @@ for:
       - pwsh: Install-Module -Name Pester -Force -SkipPublisherCheck -Scope  "CurrentUser"
       - pwsh: Install-Module -Name platyPS -Force -Scope "CurrentUser"
       - pwsh: Install-Module -Name MarkdownToHtml -Force -Scope "CurrentUser"
+      - pwsh: Install-Module -Name BuildHelpers -Force
       - pwsh: Write-Host "Installing MailHog..."
       - pwsh: go get github.com/mailhog/MailHog
     build_script:

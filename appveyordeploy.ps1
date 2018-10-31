@@ -7,17 +7,15 @@ if (($env:APPVEYOR_REPO_BRANCH -eq "master") -and ($env:DeployMode -eq "true")) 
     Write-Host "Starting Deploy..."
     # Publish the new version to the PowerShell Gallery
     try {
-        # Build a splat containing the required details and make sure to Stop for errors which will trigger the catch
         $PM = @{
-            Path        = "$PSScriptRoot\out\$env:APPVEYOR_PROJECT_NAME"
+            Path = "$PSScriptRoot\out\$env:APPVEYOR_PROJECT_NAME"
             NuGetApiKey = $env:NuGetApiKey
             ErrorAction = "Stop"
         }
-        #Publish-Module @PM
+        Publish-Module @PM
         Write-Host "$($env:APPVEYOR_PROJECT_NAME) PowerShell Module version $ReleaseVersion published to the PowerShell Gallery." -ForegroundColor Cyan
     }
     Catch {
-        # Sad panda; it broke
         Write-Warning "Publishing update $ReleaseVersion to the PowerShell Gallery failed."
         throw $_
     }
@@ -41,8 +39,17 @@ if (($env:APPVEYOR_REPO_BRANCH -eq "master") -and ($env:DeployMode -eq "true")) 
     }
 } else {
     if ($env:APPVEYOR_REPO_BRANCH -ne 'master') {
-        Write-Warning -Message "Branch wasn't master, skipping deploy."
+        Write-Warning -Message "Branch wasn't master, skipping module publish."
     } elseif ($env:APPVEYOR_REPO_COMMIT_MESSAGE -notlike "*!Deploy*") {
-        Write-Warning -Message "Branch was master, but commit message did not include '!Deploy', skipping deploy."
+        Write-Warning -Message "Branch was master, but commit message did not include '!Deploy', so deploying module to Appveyor NuGet."
+        # Publish to AppVeyor NuGet Only
+        $PM = @{
+            Path = "$PSScriptRoot\out\$env:APPVEYOR_PROJECT_NAME"
+            Repository = "AppveyorNuGetFeed"
+            NuGetApiKey = $env:AppveyorNuGetApiKey
+            ErrorAction = "Stop"
+        }
+        Publish-Module @PM
+        Write-Host "$($env:APPVEYOR_PROJECT_NAME) PowerShell Module version $ReleaseVersion published to the Appveyor NuGet Feed." -ForegroundColor Cyan
     }
 }
