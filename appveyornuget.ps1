@@ -66,7 +66,7 @@ if ($env:APPVEYOR_REPO_BRANCH -ne 'master') {
     # Publish to AppVeyor NuGet Only
     try {
 
-        Register-PSRepositoryFix -Name "AppveyorNuGetFeed" -SourceLocation $env:AppveyorNuGetFeed -PublishLocation $env:AppveyorNuGetFeed
+        Register-PSRepositoryFix -Name "AppveyorNuGetFeed" -SourceLocation $env:AppveyorNuGetFeed
         $PM = @{
             Path = "$PSScriptRoot\out\$env:APPVEYOR_PROJECT_NAME"
             Repository = "AppveyorNuGetFeed"
