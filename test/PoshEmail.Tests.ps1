@@ -19,10 +19,7 @@ InModuleScope $ModuleName {
 
     Describe 'Send-HtmlMailMessage' {
         It 'Mandatory Params' {
-            $GoPath = [System.Environment]::GetEnvironmentVariable("GOPATH", "User")
-            Write-Host $GoPath
-            Write-Host $(Test-Path $GoPath)
-            $MHProcess = Start-Process -FilePath "$GoPath\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
+            $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
 
             $ShmmParams = @{
@@ -189,8 +186,8 @@ InModuleScope $ModuleName {
                 "</html>$Eol")
         }
         It '-BodyAlignment' {
-            $GoPath = [System.Environment]::GetEnvironmentVariable("GOPATH", "User")
-            $MHProcess = Start-Process -FilePath "$GoPath\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
+            $env:GOPATH = $env:GOPATH
+            $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
 
             $ShmmParams = @{
@@ -224,8 +221,8 @@ InModuleScope $ModuleName {
             $Source | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: center;`">Body Text</p>$Eol"
         }    
         It '-BodyPreformatted' {
-            $GoPath = [System.Environment]::GetEnvironmentVariable("GOPATH", "User")
-            $MHProcess = Start-Process -FilePath "$GoPath\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
+            $env:GOPATH = $env:GOPATH
+            $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
 
             $ShmmParams = @{
@@ -308,8 +305,8 @@ InModuleScope $ModuleName {
                 "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: left;`">&nbsp;</p>$Eol")
         }
         It '-Attachments' {
-            $GoPath = [System.Environment]::GetEnvironmentVariable("GOPATH", "User")
-            $MHProcess = Start-Process -FilePath "$GoPath\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
+            $env:GOPATH = $env:GOPATH
+            $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
 
             # TestDrive doesn't work here because of the module running Send-MailMessage as a Job
@@ -359,8 +356,8 @@ InModuleScope $ModuleName {
             Set-Content -Value $MHCreds -Path $MHCredFile -NoNewline
             $PSCreds = New-Object System.Management.Automation.PSCredential ("user", (ConvertTo-SecureString "testpassword" -AsPlainText -Force))
             
-            $GoPath = [System.Environment]::GetEnvironmentVariable("GOPATH", "User")
-            $MHProcess = Start-Process -FilePath "$GoPath\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-auth-file", $MHCredFile -PassThru
+            $env:GOPATH = $env:GOPATH
+            $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-auth-file", $MHCredFile -PassThru
             Start-Sleep -Seconds 5
 
             $ShmmParams = @{
@@ -400,8 +397,8 @@ InModuleScope $ModuleName {
             Write-Host "`tMailHog doesn't really provide a way to test encoding." -ForegroundColor Yellow
         }
         It '-Port' {
-            $GoPath = [System.Environment]::GetEnvironmentVariable("GOPATH", "User")
-            $MHProcess = Start-Process -FilePath "$GoPath\bin\mailhog.exe" -PassThru
+            $env:GOPATH = $env:GOPATH
+            $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -PassThru
             Start-Sleep -Seconds 5
 
             $ShmmParams = @{
@@ -441,8 +438,8 @@ InModuleScope $ModuleName {
             Write-Host "`tMailHog doesn't currently support this header, so this can't be tested right now." -ForegroundColor Yellow
         }
         It '-Heading' {
-            $GoPath = [System.Environment]::GetEnvironmentVariable("GOPATH", "User")
-            $MHProcess = Start-Process -FilePath "$GoPath\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
+            $env:GOPATH = $env:GOPATH
+            $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
     
             $ShmmParams = @{
@@ -476,8 +473,8 @@ InModuleScope $ModuleName {
             $Source | Should -Match "<h2 style=`"text-align: center;`">Test Heading</h2>"
         }
         It '-HeadingAlignment' {
-            $GoPath = [System.Environment]::GetEnvironmentVariable("GOPATH", "User")
-            $MHProcess = Start-Process -FilePath "$GoPath\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
+            $env:GOPATH = $env:GOPATH
+            $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
     
             $ShmmParams = @{
@@ -512,8 +509,8 @@ InModuleScope $ModuleName {
             $Source | Should -Match "<h2 style=`"text-align: left;`">Test Heading</h2>"
         }
         It '-Footer' {
-            $GoPath = [System.Environment]::GetEnvironmentVariable("GOPATH", "User")
-            $MHProcess = Start-Process -FilePath "$GoPath\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
+            $env:GOPATH = $env:GOPATH
+            $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
     
             $ShmmParams = @{
@@ -549,8 +546,8 @@ InModuleScope $ModuleName {
                 "                  </td>$Eol")
         }
         It '-LastLine' {
-            $GoPath = [System.Environment]::GetEnvironmentVariable("GOPATH", "User")
-            $MHProcess = Start-Process -FilePath "$GoPath\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
+            $env:GOPATH = $env:GOPATH
+            $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
     
             $ShmmParams = @{
@@ -586,8 +583,8 @@ InModuleScope $ModuleName {
                 "                  </td>")
         }
         It '-ButtonText and -ButtonLink' {
-            $GoPath = [System.Environment]::GetEnvironmentVariable("GOPATH", "User")
-            $MHProcess = Start-Process -FilePath "$GoPath\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
+            $env:GOPATH = $env:GOPATH
+            $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
     
             $ShmmParams = @{
@@ -636,8 +633,8 @@ InModuleScope $ModuleName {
             "                        </table>")
         }
         It '-ButtonAlignment' {
-            $GoPath = [System.Environment]::GetEnvironmentVariable("GOPATH", "User")
-            $MHProcess = Start-Process -FilePath "$GoPath\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
+            $env:GOPATH = $env:GOPATH
+            $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
     
             $ShmmParams = @{
@@ -710,8 +707,8 @@ InModuleScope $ModuleName {
             $Rng.GetBytes($rndbytes)
             [System.IO.File]::WriteAllBytes("$($SourcePath)\test3.txt", $rndbytes)
 
-            $GoPath = [System.Environment]::GetEnvironmentVariable("GOPATH", "User")
-            $MHProcess = Start-Process -FilePath "$GoPath\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
+            $env:GOPATH = $env:GOPATH
+            $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
 
             $ShmmParams = @{
@@ -767,8 +764,8 @@ InModuleScope $ModuleName {
             $Rng.GetBytes($rndbytes)
             [System.IO.File]::WriteAllBytes("$($SourcePath)\test3.txt", $rndbytes)
 
-            $GoPath = [System.Environment]::GetEnvironmentVariable("GOPATH", "User")
-            $MHProcess = Start-Process -FilePath "$GoPath\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
+            $env:GOPATH = $env:GOPATH
+            $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
             Start-Sleep -Seconds 5
 
             $ShmmParams = @{
