@@ -12,6 +12,7 @@ environment:
   AppveyorNuGetFeed: "https://ci.appveyor.com/nuget/natescherer-hvliadegj7t9"
   GitName: "Nate Scherer"
   GitEmail: "376408+natescherer@users.noreply.github.com"
+  PowerShellModules: "ChangelogManagement,InvokeBuild,Pester,platyPS,MarkdownToHtml,BuildHelpers"
 
 image:
   - Visual Studio 2017
@@ -46,19 +47,9 @@ for:
       - ps: Write-Host "Visual Studio 2017" -ForegroundColor Yellow
       - ps: Write-Host "Installing Windows PowerShell Modules..."
       - ps: Install-PackageProvider -Name NuGet -Force | Out-Null
-      - ps: Install-Module -Name ChangelogManagement -Force
-      - ps: Install-Module -Name InvokeBuild -Force
-      - ps: Install-Module -Name Pester -Force -SkipPublisherCheck
-      - ps: Install-Module -Name platyPS -Force
-      - ps: Install-Module -Name MarkdownToHtml -Force
-      - ps: Install-Module -Name BuildHelpers -Force
+      - ps: foreach ($Module in ($env:PowerShellModules -split ",")) { Install-Module -Name $_ -Force -SkipPublisherCheck }
       - pwsh: Write-Host "Installing PowerShell Core Modules..."
-      - pwsh: Install-Module -Name ChangelogManagement -Force
-      - pwsh: Install-Module -Name InvokeBuild -Force
-      - pwsh: Install-Module -Name Pester -Force -SkipPublisherCheck
-      - pwsh: Install-Module -Name platyPS -Force
-      - pwsh: Install-Module -Name MarkdownToHtml -Force
-      - pwsh: Install-Module -Name BuildHelpers -Force
+      - pwsh: foreach ($Module in ($env:PowerShellModules -split ",")) { Install-Module -Name $_ -Force -SkipPublisherCheck }
       - ps: Write-Host "Installing MailHog..."
       - ps: go get github.com/mailhog/MailHog
     build_script:
@@ -107,12 +98,7 @@ for:
     install:
       - pwsh: Write-Host Ubuntu -ForegroundColor Yellow
       - pwsh: Write-Host "Installing PowerShell Core Modules..."
-      - pwsh: Install-Module -Name ChangelogManagement -Force -Scope "CurrentUser"  
-      - pwsh: Install-Module -Name InvokeBuild -Force -Scope "CurrentUser"
-      - pwsh: Install-Module -Name Pester -Force -SkipPublisherCheck -Scope  "CurrentUser"
-      - pwsh: Install-Module -Name platyPS -Force -Scope "CurrentUser"
-      - pwsh: Install-Module -Name MarkdownToHtml -Force -Scope "CurrentUser"
-      - pwsh: Install-Module -Name BuildHelpers -Force -Scope "CurrentUser"
+      - pwsh: foreach ($Module in ($env:PowerShellModules -split ",")) { Install-Module -Name $_ -Force -SkipPublisherCheck  -Scope "CurrentUser" }
       - pwsh: Write-Host "Installing MailHog..."
       - pwsh: go get github.com/mailhog/MailHog
     build_script:
