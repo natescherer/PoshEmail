@@ -68,7 +68,7 @@ task GenerateMarkdownHelp -If {($BuildMode -eq "Snapshot") -or ($BuildMode -eq "
     Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
     Import-Module -Name $ModulePath -Force -ErrorAction Stop
 
-    New-MarkdownHelp -Module $ModuleName -OutputFolder docs
+    New-MarkdownHelp -Module $ModuleName -OutputFolder docs | Out-Null
 }
 
 # Synopsis: Updates the CHANGELOG.md file for the new release.
@@ -92,9 +92,9 @@ task MarkdownHelpToHtml -If {($BuildMode -eq "Snapshot") -or ($BuildMode -eq "Re
 task Zip -If {($BuildMode -eq "Snapshot") -or ($BuildMode -eq "Release")} {
     Copy-Item -Path "src\*" -Destination "out\$ModuleName\"
 
-    New-Item -Path "out\tozip" -Type Directory
-    New-Item -Path "out\tozip\$ModuleName" -Type Directory
-    New-Item -Path "out\tozip\docs" -Type Directory
+    New-Item -Path "out\tozip" -Type Directory | Out-Null
+    New-Item -Path "out\tozip\$ModuleName" -Type Directory | Out-Null
+    New-Item -Path "out\tozip\docs" -Type Directory | Out-Null
     Copy-Item -Path "out\$ModuleName\*" -Destination "out\tozip\$ModuleName"
     Copy-Item -Path "out\docs\*" -Destination "out\tozip\docs\"
 
