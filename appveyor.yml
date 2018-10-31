@@ -112,7 +112,7 @@ for:
       - pwsh: Install-Module -Name Pester -Force -SkipPublisherCheck -Scope  "CurrentUser"
       - pwsh: Install-Module -Name platyPS -Force -Scope "CurrentUser"
       - pwsh: Install-Module -Name MarkdownToHtml -Force -Scope "CurrentUser"
-      - pwsh: Install-Module -Name BuildHelpers -Force
+      - pwsh: Install-Module -Name BuildHelpers -Force -Scope "CurrentUser"
       - pwsh: Write-Host "Installing MailHog..."
       - pwsh: go get github.com/mailhog/MailHog
     build_script:
