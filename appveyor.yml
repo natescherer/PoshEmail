@@ -62,9 +62,7 @@ for:
     after_build:
       - ps: $env:ChangelogData = ((((Get-ChangelogData).Released[0].RawData -replace "## \[.*","") -replace "###","").Trim()) -replace [System.Environment]::NewLine,"\n"
       - ps: Write-Host "ChangelogData is '$env:ChangelogData'"
-      - ps: Push-AppveyorArtifact -Path "out\*.zip" -DeploymentName ReleasePackage
       - ps: Compress-Archive -Path * -DestinationPath state.zip
-      - ps: Push-AppveyorArtifact -Path "out\*.zip" -DeploymentName BuildState
     test_script:
       - ps: Write-Host "Starting Tests on Windows Powershell..."
       - ps: $res = Invoke-Pester -Path ".\test" -OutputFormat NUnitXml -OutputFile TestsResults.xml -PassThru
@@ -74,8 +72,11 @@ for:
       - pwsh: $res = Invoke-Pester -Path ".\test" -OutputFormat NUnitXml -OutputFile TestsResults.xml -PassThru
       - pwsh: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestsResults.xml))
       - pwsh: if ($res.FailedCount -gt 0) { throw "$($res.FailedCount) tests failed."}
-    after_test:
-      - ps: . .\appveyornuget.ps1
+    artifacts:
+      - path: out\*.zip
+        name: ReleasePackage
+      - path: state.zip
+        name: BuildState
     before_deploy:
       - ps: Write-Host "Starting Pre-Deploy Config..."
       - ps: git config --global credential.helper store
@@ -102,6 +103,9 @@ for:
       on:
         branch: master
         DeployMode: true
+    on_success:
+      - ps: . .\appveyornuget.ps1
+
   -
     matrix:
       only:
@@ -118,11 +122,14 @@ for:
       - pwsh: Write-Host "Starting Build..."
       - pwsh: if ($ReleaseVersion -ne "vNext") {Invoke-Build -ReleaseVersion $ReleaseVersion -BuildMode "Release" -LinkBase "https://github.com/$($env:APPVEYOR_REPO_NAME)"} else {Invoke-Build -BuildMode "Snapshot"}
     after_build:
-      - ps: Push-AppveyorArtifact -Path "out\*.zip" -DeploymentName ReleasePackage
       - ps: Compress-Archive -Path * -DestinationPath state.zip
-      - ps: Push-AppveyorArtifact -Path "out\*.zip" -DeploymentName BuildState
     test_script:
       - pwsh: Write-Host "Starting Tests on Powershell Core..."
       - pwsh: $res = Invoke-Pester -Path ".\test" -OutputFormat NUnitXml -OutputFile TestsResults.xml -PassThru
       - pwsh: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestsResults.xml))
       - pwsh: if ($res.FailedCount -gt 0) { throw "$($res.FailedCount) tests failed."}
+    artifacts:
+      - path: out\*.zip
+        name: ReleasePackage
+      - path: state.zip
+        name: BuildState
