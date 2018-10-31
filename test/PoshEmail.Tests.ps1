@@ -10,6 +10,8 @@ InModuleScope $ModuleName {
     $ModulePath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psm1"
     $ModuleManifestPath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psd1"
 
+    Write-Host "`Note that all Pending tests are due to MailHog v1.0.0 lacking features needed to do the test." -ForegroundColor Yellow
+
     Describe 'Module Manifest Tests' {
         It 'Passes Test-ModuleManifest' {
             Test-ModuleManifest -Path $ModuleManifestPath | Should Not BeNullOrEmpty
@@ -341,11 +343,9 @@ InModuleScope $ModuleName {
 
             $Source | Should -Match "TGluZTENCkxpbmUy"
         }
-        It '-Bcc' {
-            Write-Host "`tMailHog doesn't currently support this header, so this can't be tested right now." -ForegroundColor Yellow
+        It '-Bcc' -Pending {
         }
-        It '-Cc' {
-            Write-Host "`tMailHog doesn't currently support this header, so this can't be tested right now." -ForegroundColor Yellow
+        It '-Cc' -Pending {
         }
         It '-Credential' {
             $MHCreds = "user:`$2a`$04`$DDYXcbOLmLtq5OJ7Ue.gDe45X1T2cfGtuiwrt4LaxLgUK8zKrCoSq"
@@ -391,11 +391,9 @@ InModuleScope $ModuleName {
 
             $Source | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: left;`">Body Text</p>"
         }
-        It '-DeliveryNotificationOption' {
-            Write-Host "`tMailHog doesn't currently support this header, so this can't be tested right now." -ForegroundColor Yellow
+        It '-DeliveryNotificationOption' -Pending {
         }
-        It '-Encoding' {
-            Write-Host "`tMailHog doesn't really provide a way to test encoding." -ForegroundColor Yellow
+        It '-Encoding' -Pending {
         }
         It '-Port' {
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -PassThru
@@ -431,11 +429,9 @@ InModuleScope $ModuleName {
 
             $Source | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: left;`">Body Text</p>"
         }
-        It '-UseSsl' {
-            Write-Host "`tMailHog doesn't support SSL, so can't test." -ForegroundColor Yellow
+        It '-UseSsl' -Pending {
         }
-        It '-Priority' {
-            Write-Host "`tMailHog doesn't currently support this header, so this can't be tested right now." -ForegroundColor Yellow
+        It '-Priority' -Pending {
         }
         It '-Heading' {
             $MHProcess = Start-Process -FilePath "$env:GOPATH\bin\mailhog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25" -PassThru
