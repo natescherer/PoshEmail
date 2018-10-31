@@ -95,6 +95,9 @@ for:
     matrix:
       only:
         - image: Ubuntu1804
+    environment:
+      GOPATH: /usr/go/
+    stack: go 1.11
     install:
       - pwsh: Write-Host Ubuntu -ForegroundColor Yellow
       - pwsh: Write-Host "Installing PowerShell Core Modules..."
