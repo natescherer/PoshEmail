@@ -30,9 +30,9 @@ Function Register-PSRepositoryFix {
         $PSRepositoriesXmlPath = "$env:LOCALAPPDATA\Microsoft\Windows\PowerShell\PowerShellGet\PSRepositories.xml"
         $repos = Import-Clixml -Path $PSRepositoriesXmlPath
         $repos[$Name].SourceLocation = $SourceLocation
-        $repos[$Name].PublishLocation = $SourceLocation + "package/"
-        $repos[$Name].ScriptSourceLocation = $SourceLocation + "items/psscript/"
-        $repos[$Name].ScriptPublishLocation = $SourceLocation + "package/"
+        $repos[$Name].PublishLocation = $SourceLocation + "api/v2/package/"
+        $repos[$Name].ScriptSourceLocation = $SourceLocation + "api/v2/items/psscript/"
+        $repos[$Name].ScriptPublishLocation = $SourceLocation + "api/v2/package/"
         $repos | Export-Clixml -Path $PSRepositoriesXmlPath
     
         # Reloading PSRepository list
@@ -74,10 +74,12 @@ if ($env:APPVEYOR_REPO_BRANCH -ne 'master') {
             Repository = "AppveyorNuGetFeed"
             NuGetApiKey = $env:AppveyorNuGetApiKey
             ErrorAction = "Stop"
-            Verbose = $true
         }
         Publish-Module @PM
         Write-Host "$($env:APPVEYOR_PROJECT_NAME) PowerShell Module version $ReleaseVersion published to the Appveyor NuGet Feed." -ForegroundColor Cyan
+
+        $FMCreds = New-Object System.Management.Automation.PSCredential ($env:AppveyorNuGetUser, (ConvertTo-SecureString $env:AppveyorNuGetPassword -AsPlainText -Force))
+        Find-Module -Repository "AppveyorNuGetFeed" -Name $ModuleName -Credential $FMCreds
     }
     catch {
         Write-Warning "Publishing update $ReleaseVersion to the Appveyor NuGet feed failed."
