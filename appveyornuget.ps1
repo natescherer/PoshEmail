@@ -74,6 +74,7 @@ if ($env:APPVEYOR_REPO_BRANCH -ne 'master') {
             Repository = "AppveyorNuGetFeed"
             NuGetApiKey = $env:AppveyorNuGetApiKey
             ErrorAction = "Stop"
+            Verbose = $true
         }
         Publish-Module @PM
         Write-Host "$($env:APPVEYOR_PROJECT_NAME) PowerShell Module version $ReleaseVersion published to the Appveyor NuGet Feed." -ForegroundColor Cyan
