@@ -30,9 +30,9 @@ Function Register-PSRepositoryFix {
         $PSRepositoriesXmlPath = "$env:LOCALAPPDATA\Microsoft\Windows\PowerShell\PowerShellGet\PSRepositories.xml"
         $repos = Import-Clixml -Path $PSRepositoriesXmlPath
         $repos[$Name].SourceLocation = $SourceLocation
-        $repos[$Name].PublishLocation = $SourceLocation + 'package/'
-        $repos[$Name].ScriptSourceLocation = $SourceLocation + 'items/psscript/'
-        $repos[$Name].ScriptPublishLocation = ($SourceLocation + 'package/'
+        $repos[$Name].PublishLocation = $SourceLocation + "package/"
+        $repos[$Name].ScriptSourceLocation = $SourceLocation + "items/psscript/"
+        $repos[$Name].ScriptPublishLocation = $SourceLocation + "package/"
         $repos | Export-Clixml -Path $PSRepositoriesXmlPath
     
         # Reloading PSRepository list
