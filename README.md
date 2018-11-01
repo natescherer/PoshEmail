@@ -17,7 +17,8 @@ No prerequisites are required beyond having PowerShell installed.
 
 ### Installing
 
-PoshEmail is listed in the PowerShell Gallery [here](https://www.powershellgallery.com/packages/PoshEmail), which means you can install on any internet-connected computer running PowerShell 5+ by running this command:
+Coming soon.
+<!--PoshEmail is listed in the PowerShell Gallery [here](https://www.powershellgallery.com/packages/PoshEmail), which means you can install on any internet-connected computer running PowerShell 5+ by running this command:
 
 ```PowerShell
 Install-Module -Name PoshEmail
@@ -30,13 +31,29 @@ If you'd prefer to install manually, follow these instructions:
 
     ```PowerShell
     Install-Module -Path EXTRACTION-PATH-HERE\PoshEmail
-    ```
+    ```-->
 
 ## Usage
 
 ### Examples
 
-Examples Here
+#### Invoke-CommandWithEmailWrapper
+
+```PowerShell
+Invoke-CommandWithEmailWrapper -ScriptBlock { robocopy c:\source d:\dest } -JobName "RoboCopy" -SmtpServer "smtp01" -EmailTo "admin@contoso.com"
+```
+
+Executes the robocopy command in the ScriptBlock on the local computer, then sends an email with the command's
+output once it completes.
+    
+```PowerShell
+Invoke-CommandWithEmailWrapper -Script "c:\scripts\script1.ps1" -JobName "Script1" -SmtpServer "smtp01" -EmailTo "admin@contoso.com" -ComputerName "serv01" -EmailMode "BeforeAndAfter"
+```
+
+Executes the the script c:\scripts\script1.ps1 (on the local computer) on the remote computer "serv01", sending
+emails when the script begins and finishes running.
+
+#### Send-HtmlMailMessage
 
 ### Documentation
 
