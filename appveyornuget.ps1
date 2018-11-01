@@ -1,19 +1,19 @@
 # Line break for readability in Appveyor console
 Write-Host -Object ''
 
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 Function Register-PSRepositoryFix {
     [CmdletBinding()]
     Param (
         [Parameter(Mandatory=$true)]
-        [String]
-        $Name,
+        [string]$Name,
     
         [Parameter(Mandatory=$true)]
-        [Uri]
-        $SourceLocation,
+        [string]$SourceLocation,
     
         [ValidateSet('Trusted', 'Untrusted')]
-        $InstallationPolicy = 'Trusted'
+        [string]$InstallationPolicy = 'Trusted'
     )
     
     $ErrorActionPreference = 'Stop'
@@ -29,17 +29,19 @@ Function Register-PSRepositoryFix {
         Register-PSRepository -name $Name -SourceLocation $env:TEMP -InstallationPolicy $InstallationPolicy
         $PSRepositoriesXmlPath = "$env:LOCALAPPDATA\Microsoft\Windows\PowerShell\PowerShellGet\PSRepositories.xml"
         $repos = Import-Clixml -Path $PSRepositoriesXmlPath
-        $repos[$Name].SourceLocation = $SourceLocation.AbsoluteUri
-        $repos[$Name].PublishLocation = (New-Object -TypeName Uri -ArgumentList $SourceLocation, 'package/').AbsoluteUri
-        $repos[$Name].ScriptSourceLocation = (New-Object -TypeName Uri -ArgumentList $SourceLocation, 'items/psscript/').AbsoluteUri
-        $repos[$Name].ScriptPublishLocation = (New-Object -TypeName Uri -ArgumentList $SourceLocation, 'package/').AbsoluteUri
+        $repos[$Name].SourceLocation = $SourceLocation
+        $repos[$Name].PublishLocation = $SourceLocation + 'package/'
+        $repos[$Name].ScriptSourceLocation = $SourceLocation + 'items/psscript/'
+        $repos[$Name].ScriptPublishLocation = ($SourceLocation + 'package/'
         $repos | Export-Clixml -Path $PSRepositoriesXmlPath
     
         # Reloading PSRepository list
         Set-PSRepository -Name $Name -InstallationPolicy Untrusted
         Write-Host 'Registered via workaround'
     }
-    }
+
+    Get-PSRepository | fl
+}
 
 # Make sure we're using the Master branch and that it's not a pull request
 # Environmental Variables Guide: https://www.appveyor.com/docs/environment-variables/
