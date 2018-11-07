@@ -17,6 +17,7 @@ environment:
   GitName: "Nate Scherer"
   GitEmail: "376408+natescherer@users.noreply.github.com"
   PowerShellModules: "PowerShellGet,PackageManagement,ChangelogManagement,InvokeBuild,Pester,platyPS,MarkdownToHtml,BuildHelpers"
+  GOPATH: c:\gopath
 
 stack: go 1.11
 
@@ -42,8 +43,6 @@ init:
   - ps: $ErrorActionPreference = "Stop"
   - pwsh: $ErrorActionPreference = "Stop"
 
-environment:
-  GOPATH: c:\gopath
 install:
   - ps: Write-Host "Visual Studio 2017" -ForegroundColor Yellow
   - ps: Write-Host "Installing Windows PowerShell Modules..."
