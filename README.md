@@ -9,7 +9,8 @@ PoshEmail is a PowerShell module designed to provide useful email tasks, includi
 
 ## Getting Started
 
-PoshEmail is designed to be cross-platform and fully compatible with Windows PowerShell 5.0+ and PowerShell Core 6.0+.
+<!-- PoshEmail is designed to be cross-platform and fully compatible with Windows PowerShell 5.0+ and PowerShell Core 6.0+. -->
+PoshEmail is compatible with Windows PowerShell 5.0+ and PowerShell Core 6.0+ on Windows. Linux/macOS support will come in a future version.
 
 ### Prerequisites
 
@@ -17,8 +18,7 @@ No prerequisites are required beyond having PowerShell installed.
 
 ### Installing
 
-Coming soon.
-<!--PoshEmail is listed in the PowerShell Gallery [here](https://www.powershellgallery.com/packages/PoshEmail), which means you can install on any internet-connected computer running PowerShell 5+ by running this command:
+PoshEmail is listed in the PowerShell Gallery [here](https://www.powershellgallery.com/packages/PoshEmail), which means you can install on any internet-connected computer running PowerShell 5+ by running this command:
 
 ```PowerShell
 Install-Module -Name PoshEmail
@@ -31,7 +31,7 @@ If you'd prefer to install manually, follow these instructions:
 
     ```PowerShell
     Install-Module -Path EXTRACTION-PATH-HERE\PoshEmail
-    ```-->
+    ```
 
 ## Usage
 
@@ -45,7 +45,7 @@ Invoke-CommandWithEmailWrapper -ScriptBlock { robocopy c:\source d:\dest } -JobN
 
 Executes the robocopy command in the ScriptBlock on the local computer, then sends an email with the command's
 output once it completes.
-    
+
 ```PowerShell
 Invoke-CommandWithEmailWrapper -Script "c:\scripts\script1.ps1" -JobName "Script1" -SmtpServer "smtp01" -EmailTo "admin@contoso.com" -ComputerName "serv01" -EmailMode "BeforeAndAfter"
 ```
