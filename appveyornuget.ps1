@@ -39,8 +39,6 @@ Function Register-PSRepositoryFix {
         Set-PSRepository -Name $Name -InstallationPolicy Untrusted
         Write-Host 'Registered via workaround'
     }
-
-    Get-PSRepository | fl
 }
 
 # Make sure we're using the Master branch and that it's not a pull request
@@ -64,22 +62,22 @@ if ($env:APPVEYOR_REPO_BRANCH -ne 'master') {
         throw $_
     }
 } else {
-    Write-Warning -Message "Branch was master, but commit message did not include '!Deploy', so deploying module to Appveyor NuGet."
-    # Publish to AppVeyor NuGet Only
     try {
+        Write-Warning -Message "Appveyor NuGet publishing currently disabled"
+    #     Write-Warning -Message "Branch was master, but commit message did not include '!Deploy', so deploying module to Appveyor NuGet."
+    #     # Publish to AppVeyor NuGet Only
+    #     Register-PSRepositoryFix -Name "AppveyorNuGetFeed" -SourceLocation $env:AppveyorNuGetFeed
+    #     $PM = @{
+    #         Path = "$PSScriptRoot\out\$env:APPVEYOR_PROJECT_NAME"
+    #         Repository = "AppveyorNuGetFeed"
+    #         NuGetApiKey = $env:AppveyorNuGetApiKey
+    #         ErrorAction = "Stop"
+    #     }
+    #     Publish-Module @PM
+    #     Write-Host "$($env:APPVEYOR_PROJECT_NAME) PowerShell Module version $ReleaseVersion published to the Appveyor NuGet Feed." -ForegroundColor Cyan
 
-        Register-PSRepositoryFix -Name "AppveyorNuGetFeed" -SourceLocation $env:AppveyorNuGetFeed
-        $PM = @{
-            Path = "$PSScriptRoot\out\$env:APPVEYOR_PROJECT_NAME"
-            Repository = "AppveyorNuGetFeed"
-            NuGetApiKey = $env:AppveyorNuGetApiKey
-            ErrorAction = "Stop"
-        }
-        Publish-Module @PM
-        Write-Host "$($env:APPVEYOR_PROJECT_NAME) PowerShell Module version $ReleaseVersion published to the Appveyor NuGet Feed." -ForegroundColor Cyan
-
-        $FMCreds = New-Object System.Management.Automation.PSCredential ($env:AppveyorNuGetUser, (ConvertTo-SecureString $env:AppveyorNuGetPassword -AsPlainText -Force))
-        Find-Module -Repository "AppveyorNuGetFeed" -Name $ModuleName -Credential $FMCreds
+    #     $FMCreds = New-Object System.Management.Automation.PSCredential ($env:AppveyorNuGetUser, (ConvertTo-SecureString $env:AppveyorNuGetPassword -AsPlainText -Force))
+    #     Find-Module -Repository "AppveyorNuGetFeed" -Name $ModuleName -Credential $FMCreds
     }
     catch {
         Write-Warning "Publishing update $ReleaseVersion to the Appveyor NuGet feed failed."
