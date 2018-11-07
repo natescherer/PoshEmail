@@ -20,9 +20,7 @@ environment:
 
 stack: go 1.11
 
-image:
-  - Visual Studio 2017
-  - Ubuntu1804
+image: Visual Studio 2017
 
 build: off
 
@@ -44,96 +42,63 @@ init:
   - ps: $ErrorActionPreference = "Stop"
   - pwsh: $ErrorActionPreference = "Stop"
 
-for:
-  -
-    matrix:
-      only:
-        - image: Visual Studio 2017
-    environment:
-      GOPATH: c:\gopath
-    install:
-      - ps: Write-Host "Visual Studio 2017" -ForegroundColor Yellow
-      - ps: Write-Host "Installing Windows PowerShell Modules..."
-      - ps: Install-PackageProvider -Name NuGet -Force | Out-Null
-      - ps: foreach ($Module in ($env:PowerShellModules -split ",")) { Install-Module -Name $Module -Force -SkipPublisherCheck -AllowClobber }
-      - pwsh: Write-Host "Installing PowerShell Core Modules..."
-      - pwsh: foreach ($Module in ($env:PowerShellModules -split ",")) { Install-Module -Name $Module -Force -SkipPublisherCheck -AllowClobber }
-      - ps: Write-Host "Installing MailHog..."
-      - ps: go get github.com/mailhog/MailHog
-    build_script:
-      - ps: Write-Host "Starting Build..."
-      - ps: if ($ReleaseVersion -ne "vNext") {Invoke-Build -ReleaseVersion $ReleaseVersion -BuildMode "Release" -LinkBase "https://github.com/$($env:APPVEYOR_REPO_NAME)"} else {Invoke-Build -BuildMode "Snapshot"}
-    after_build:
-      - ps: $env:ChangelogData = ((((Get-ChangelogData).Released[0].RawData -replace "## \[.*","") -replace "###","").Trim()) -replace [System.Environment]::NewLine,"\n"
-      - ps: Write-Host "ChangelogData is '$env:ChangelogData'"
-      - ps: Compress-Archive -Path * -DestinationPath state.zip
-    test_script:
-      - ps: Write-Host "Starting Tests on Windows Powershell..."
-      - ps: $res = Invoke-Pester -Path ".\test" -OutputFormat NUnitXml -OutputFile TestsResults.xml -PassThru
-      - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestsResults.xml))
-      - ps: if ($res.FailedCount -gt 0) { throw "$($res.FailedCount) tests failed."}
-      - ps: Write-Host "Starting Tests on PowerShell Core..."
-      - pwsh: $res = Invoke-Pester -Path ".\test" -OutputFormat NUnitXml -OutputFile TestsResults.xml -PassThru
-      - pwsh: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestsResults.xml))
-      - pwsh: if ($res.FailedCount -gt 0) { throw "$($res.FailedCount) tests failed."}
-    artifacts:
-      - path: out\*.zip
-        name: ReleasePackage
-      - path: state.zip
-        name: BuildState
-    before_deploy:
-      - ps: Write-Host "Starting Pre-Deploy Config..."
-      - ps: git config --global credential.helper store
-      - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GitHubKey):x-oauth-basic@github.com`n"
-      - ps: Write-Host "Starting code push back to GitHub..."
-      - ps: Remove-Item .\state.zip
-      - ps: Remove-Item .\TestsResults.xml
-      - ps: $env:Path += ";$env:ProgramFiles\Git\cmd"
-      - ps: git checkout master --quiet
-      - ps: git add --all
-      - ps: git status
-      - ps: git commit -s -m "Release via Appveyor - $ReleaseVersion"
-      - ps: git tag -a v$($ReleaseVersion) -m v$($ReleaseVersion)
-      - ps: git push origin master --porcelain
-      - ps: Write-Host "$($env:APPVEYOR_PROJECT_NAME) PowerShell Module version $ReleaseVersion code pushed back to GitHub." -ForegroundColor Cyan
-    deploy:
-      tag: $(GitHubTag)
-      description: $(ChangelogData)
-      provider: GitHub
-      auth_token: $(GitHubKey)
-      artifact: ReleasePackage
-      draft: false
-      prerelease: false
-      on:
-        branch: master
-        DeployMode: true
-    on_success:
-      - ps: . .\appveyornuget.ps1
-
-  -
-    matrix:
-      only:
-        - image: Ubuntu1804
-    environment:
-      GOPATH: /usr/go/
-    install:
-      - pwsh: Write-Host Ubuntu -ForegroundColor Yellow
-      - pwsh: Write-Host "Installing PowerShell Core Modules..."
-      - pwsh: foreach ($Module in ($env:PowerShellModules -split ",")) { Install-Module -Name $Module -Force -SkipPublisherCheck -AllowClobber -Scope "CurrentUser" }
-      - pwsh: Write-Host "Installing MailHog..."
-      - sh: go get github.com/mailhog/MailHog
-    build_script:
-      - pwsh: Write-Host "Starting Build..."
-      - pwsh: if ($ReleaseVersion -ne "vNext") {Invoke-Build -ReleaseVersion $ReleaseVersion -BuildMode "Release" -LinkBase "https://github.com/$($env:APPVEYOR_REPO_NAME)"} else {Invoke-Build -BuildMode "Snapshot"}
-    after_build:
-      - ps: Compress-Archive -Path * -DestinationPath state.zip
-    test_script:
-      - pwsh: Write-Host "Starting Tests on Powershell Core..."
-      - pwsh: $res = Invoke-Pester -Path ".\test" -OutputFormat NUnitXml -OutputFile TestsResults.xml -PassThru
-      - pwsh: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestsResults.xml))
-      - pwsh: if ($res.FailedCount -gt 0) { throw "$($res.FailedCount) tests failed."}
-    artifacts:
-      - path: out\*.zip
-        name: ReleasePackage
-      - path: state.zip
-        name: BuildState
+environment:
+  GOPATH: c:\gopath
+install:
+  - ps: Write-Host "Visual Studio 2017" -ForegroundColor Yellow
+  - ps: Write-Host "Installing Windows PowerShell Modules..."
+  - ps: Install-PackageProvider -Name NuGet -Force | Out-Null
+  - ps: foreach ($Module in ($env:PowerShellModules -split ",")) { Install-Module -Name $Module -Force -SkipPublisherCheck -AllowClobber }
+  - pwsh: Write-Host "Installing PowerShell Core Modules..."
+  - pwsh: foreach ($Module in ($env:PowerShellModules -split ",")) { Install-Module -Name $Module -Force -SkipPublisherCheck -AllowClobber }
+  - ps: Write-Host "Installing MailHog..."
+  - ps: go get github.com/mailhog/MailHog
+build_script:
+  - ps: Write-Host "Starting Build..."
+  - ps: if ($ReleaseVersion -ne "vNext") {Invoke-Build -ReleaseVersion $ReleaseVersion -BuildMode "Release" -LinkBase "https://github.com/$($env:APPVEYOR_REPO_NAME)"} else {Invoke-Build -BuildMode "Snapshot"}
+after_build:
+  - ps: $env:ChangelogData = ((((Get-ChangelogData).Released[0].RawData -replace "## \[.*","") -replace "###","").Trim()) -replace [System.Environment]::NewLine,"\n"
+  - ps: Write-Host "ChangelogData is '$env:ChangelogData'"
+  - ps: Compress-Archive -Path * -DestinationPath state.zip
+test_script:
+  - ps: Write-Host "Starting Tests on Windows Powershell..."
+  - ps: $res = Invoke-Pester -Path ".\test" -OutputFormat NUnitXml -OutputFile TestsResults.xml -PassThru
+  - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestsResults.xml))
+  - ps: if ($res.FailedCount -gt 0) { throw "$($res.FailedCount) tests failed."}
+  - ps: Write-Host "Starting Tests on PowerShell Core..."
+  - pwsh: $res = Invoke-Pester -Path ".\test" -OutputFormat NUnitXml -OutputFile TestsResults.xml -PassThru
+  - pwsh: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestsResults.xml))
+  - pwsh: if ($res.FailedCount -gt 0) { throw "$($res.FailedCount) tests failed."}
+artifacts:
+  - path: out\*.zip
+    name: ReleasePackage
+  - path: state.zip
+    name: BuildState
+before_deploy:
+  - ps: Write-Host "Starting Pre-Deploy Config..."
+  - ps: git config --global credential.helper store
+  - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:GitHubKey):x-oauth-basic@github.com`n"
+  - ps: Write-Host "Starting code push back to GitHub..."
+  - ps: Remove-Item .\state.zip
+  - ps: Remove-Item .\TestsResults.xml
+  - ps: $env:Path += ";$env:ProgramFiles\Git\cmd"
+  - ps: git checkout master --quiet
+  - ps: git add --all
+  - ps: git status
+  - ps: git commit -s -m "Release via Appveyor - $ReleaseVersion"
+  - ps: git tag -a v$($ReleaseVersion) -m v$($ReleaseVersion)
+  - ps: git push origin master --porcelain
+  - ps: Write-Host "$($env:APPVEYOR_PROJECT_NAME) PowerShell Module version $ReleaseVersion code pushed back to GitHub." -ForegroundColor Cyan
+deploy:
+  tag: $(GitHubTag)
+  description: $(ChangelogData)
+  provider: GitHub
+  auth_token: $(GitHubKey)
+  artifact: ReleasePackage
+  draft: false
+  prerelease: false
+  on:
+    branch: master
+    DeployMode: true
+on_success:
+  - ps: . .\appveyornuget.ps1
