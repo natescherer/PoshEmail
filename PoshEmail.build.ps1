@@ -1,4 +1,4 @@
-# Requires -Modules InvokeBuild, platyPs, MarkdownToHtml, BuildHelpers
+#Requires -Modules InvokeBuild, platyPs, MarkdownToHtml, ChangelogManagement, BuildHelpers
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingCmdletAliases", "", Justification="This erroneously triggers on Invoke-Build scripts.")]
 [CmdletBinding(DefaultParameterSetName="Snapshot")]
@@ -34,8 +34,8 @@ task . Clean, UpdateManifest, GenerateMarkdownHelp, UpdateChangelog, MarkDownHel
 
 # Synopsis: Removes files from build, doc, and out.
 task Clean -If {($BuildMode -eq "Snapshot") -or ($BuildMode -eq "Release")} {
-    Remove-Item -Path "docs/*" -Recurse -ErrorAction SilentlyContinue
-    Remove-Item -Path "out/*" -Recurse -ErrorAction SilentlyContinue
+    Remove-Item -Path "docs\*" -Recurse -ErrorAction SilentlyContinue
+    Remove-Item -Path "out\*" -Recurse -ErrorAction SilentlyContinue
 }
 
 # Synopsis: Updates the module manifest file for the new release.
