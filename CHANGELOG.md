@@ -21,9 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
  - Send-HtmlMailMessage cmdlet
  - Invoke-CommandWithEmailWrapper cmdlet
-### Changed
-### Deprecated
-### Removed
-### Fixed
-### Security[Unreleased]: https://github.com/natescherer/PoshEmail/compare/v1.0.0..HEAD
+
+[Unreleased]: https://github.com/natescherer/PoshEmail/compare/v1.0.0..HEAD
 [1.0.0]: https://github.com/natescherer/PoshEmail/tree/v1.0.0
