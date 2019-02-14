@@ -27,9 +27,9 @@ InModuleScope $ModuleName {
     Describe 'Send-HtmlMailMessage' {
         It 'Mandatory Params' {
             if ($IsWindows) {
-                Start-Process -FilePath "$env:GOROOT\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
+                Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
             } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOROOT/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
+                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
             }
             Start-Sleep -Seconds $ProccessStartSleep
 
@@ -203,9 +203,9 @@ InModuleScope $ModuleName {
         }
         It '-BodyAlignment' {
             if ($IsWindows) {
-                Start-Process -FilePath "$env:GOROOT\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
+                Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
             } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOROOT/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
+                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
             }
 
             Start-Sleep -Seconds $ProccessStartSleep
@@ -247,9 +247,9 @@ InModuleScope $ModuleName {
         }    
         It '-BodyPreformatted' {
             if ($IsWindows) {
-                Start-Process -FilePath "$env:GOROOT\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
+                Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
             } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOROOT/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
+                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
             }
             Start-Sleep -Seconds $ProccessStartSleep
 
@@ -339,9 +339,9 @@ InModuleScope $ModuleName {
         }
         It '-Attachments' {
             if ($IsWindows) {
-                Start-Process -FilePath "$env:GOROOT\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
+                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
             } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOROOT/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
+                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
             }
             Start-Sleep -Seconds $ProccessStartSleep
 
@@ -396,9 +396,9 @@ InModuleScope $ModuleName {
             $PSCreds = New-Object System.Management.Automation.PSCredential ("user", (ConvertTo-SecureString "testpassword" -AsPlainText -Force))
             
             if ($IsWindows) {
-                Start-Process -FilePath "$env:GOROOT\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-auth-file", $MHCredFile
+                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-auth-file", $MHCredFile
             } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOROOT/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25", "-auth-file", $MHCredFile -RedirectStandardOutput "~/output.txt"
+                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25", "-auth-file", $MHCredFile -RedirectStandardOutput "~/output.txt"
             }
             
             Start-Sleep -Seconds $ProccessStartSleep
@@ -448,9 +448,9 @@ InModuleScope $ModuleName {
         }
         It '-Port' {
             if ($IsWindows) {
-                Start-Process -FilePath "$env:GOROOT\bin\MailHog.exe"
+                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe"
             } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOROOT/bin/MailHog" -RedirectStandardOutput "~/output.txt"
+                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog" -RedirectStandardOutput "~/output.txt"
             }
 
             Start-Sleep -Seconds $ProccessStartSleep
@@ -496,9 +496,9 @@ InModuleScope $ModuleName {
         }
         It '-Heading' {
             if ($IsWindows) {
-                Start-Process -FilePath "$env:GOROOT\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
+                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
             } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOROOT/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
+                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
             }
 
             Start-Sleep -Seconds $ProccessStartSleep
@@ -540,9 +540,9 @@ InModuleScope $ModuleName {
         }
         It '-HeadingAlignment' {
             if ($IsWindows) {
-                Start-Process -FilePath "$env:GOROOT\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
+                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
             } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOROOT/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
+                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
             }
 
             Start-Sleep -Seconds $ProccessStartSleep
@@ -585,9 +585,9 @@ InModuleScope $ModuleName {
         }
         It '-Footer' {
             if ($IsWindows) {
-                Start-Process -FilePath "$env:GOROOT\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
+                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
             } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOROOT/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
+                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
             }
 
             Start-Sleep -Seconds $ProccessStartSleep
@@ -631,9 +631,9 @@ InModuleScope $ModuleName {
         }
         It '-LastLine' {
             if ($IsWindows) {
-                Start-Process -FilePath "$env:GOROOT\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
+                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
             } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOROOT/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
+                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
             }
 
             Start-Sleep -Seconds $ProccessStartSleep
@@ -677,9 +677,9 @@ InModuleScope $ModuleName {
         }
         It '-ButtonText and -ButtonLink' {
             if ($IsWindows) {
-                Start-Process -FilePath "$env:GOROOT\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
+                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
             } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOROOT/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
+                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
             }
 
             Start-Sleep -Seconds $ProccessStartSleep
@@ -736,9 +736,9 @@ InModuleScope $ModuleName {
         }
         It '-ButtonAlignment' {
             if ($IsWindows) {
-                Start-Process -FilePath "$env:GOROOT\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
+                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
             } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOROOT/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
+                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
             }
             Start-Sleep -Seconds $ProccessStartSleep
     
@@ -815,9 +815,9 @@ InModuleScope $ModuleName {
             [System.IO.File]::WriteAllBytes("$($SourcePath)\test3.txt", $rndbytes)
 
             if ($IsWindows) {
-                Start-Process -FilePath "$env:GOROOT\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
+                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
             } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOROOT/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
+                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
             }
 
             Start-Sleep -Seconds $ProccessStartSleep
@@ -881,9 +881,9 @@ InModuleScope $ModuleName {
             [System.IO.File]::WriteAllBytes("$($SourcePath)\test3.txt", $rndbytes)
 
             if ($IsWindows) {
-                Start-Process -FilePath "$env:GOROOT\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
+                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
             } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOROOT/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
+                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
             }
 
             Start-Sleep -Seconds $ProccessStartSleep
