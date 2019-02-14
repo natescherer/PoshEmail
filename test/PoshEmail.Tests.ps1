@@ -15,7 +15,6 @@ InModuleScope $ModuleName {
     $EmailSendSleep = 1
 
     Write-Host "`Note that all Pending tests are due to MailHog v1.0.0 lacking features needed to do the test." -ForegroundColor Yellow
-    go get github.com/mailhog/MailHog
 
     Describe 'Module Manifest Tests' {
         It 'Passes Test-ModuleManifest' {

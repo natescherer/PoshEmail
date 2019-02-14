@@ -11,6 +11,15 @@ jobs:
     vmImage: ${{ parameters.vmImage }}
   steps:
 
+  - task: GoTool@0
+    inputs:
+      version: '1.10'
+
+  - task: Go@0
+    inputs:
+      command: 'get'
+      arguments: 'github.com/mailhog/MailHog'
+
   - task: PowerShell@2
     displayName: Environment Details
     inputs:
