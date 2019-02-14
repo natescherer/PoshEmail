@@ -16,6 +16,21 @@ InModuleScope $ModuleName {
 
     Write-Host "`Note that all Pending tests are due to MailHog v1.0.0 lacking features needed to do the test." -ForegroundColor Yellow
 
+    $MHCreds = "user:`$2a`$04`$DDYXcbOLmLtq5OJ7Ue.gDe45X1T2cfGtuiwrt4LaxLgUK8zKrCoSq"
+    $MHCredFile = "$env:temp\mhcreds.txt"
+    Set-Content -Value $MHCreds -Path $MHCredFile -NoNewline
+    if ($IsWindows) {
+        Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-api-bind-addr", "0.0.0.0:8025" "-ui-bind-addr", "0.0.0.0:8025"
+        Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:1025", "-api-bind-addr", "0.0.0.0:9025" "-ui-bind-addr", "0.0.0.0:9025"
+        Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:10025" "-ui-bind-addr", "0.0.0.0:10025","-auth-file", $MHCredFile
+    } else {
+        Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog", "-smtp-bind-addr", "0.0.0.0:25", "-api-bind-addr", "0.0.0.0:8025" "-ui-bind-addr", "0.0.0.0:8025" -RedirectStandardOutput "~/output.txt"
+        Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog", "-smtp-bind-addr", "0.0.0.0:1025", "-api-bind-addr", "0.0.0.0:9025" "-ui-bind-addr", "0.0.0.0:9025" -RedirectStandardOutput "~/output.txt"
+        Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog", "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:10025" "-ui-bind-addr", "0.0.0.0:10025", "-auth-file", $MHCredFile -RedirectStandardOutput "~/output.txt"
+
+    }
+    Start-Sleep -Seconds $ProccessStartSleep
+
     Describe 'Module Manifest Tests' {
         It 'Passes Test-ModuleManifest' {
             Test-ModuleManifest -Path $ModuleManifestPath | Should Not BeNullOrEmpty
@@ -25,12 +40,6 @@ InModuleScope $ModuleName {
 
     Describe 'Send-HtmlMailMessage' {
         It 'Mandatory Params' {
-            if ($IsWindows) {
-                Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
-            } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
-            }
-            Start-Sleep -Seconds $ProccessStartSleep
 
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
@@ -45,12 +54,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-
-            if ($IsWindows) {
-                Stop-Process -Name "MailHog"
-            } else {
-                sudo pwsh -c Stop-Process -Name MailHog
-            }
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
 
             $Source = $Response.Items[0].Content.Body
 
@@ -201,14 +205,6 @@ InModuleScope $ModuleName {
                 "</html>$Eol")
         }
         It '-BodyAlignment' {
-            if ($IsWindows) {
-                Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
-            } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
-            }
-
-            Start-Sleep -Seconds $ProccessStartSleep
-
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
                 To = "rcpt@test.local"
@@ -223,12 +219,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            
-            if ($IsWindows) {
-                Stop-Process -Name "MailHog"
-            } else {
-                sudo pwsh -c Stop-Process -Name MailHog
-            }
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
 
             $Source = $Response.Items[0].Content.Body
 
@@ -245,13 +236,6 @@ InModuleScope $ModuleName {
             $Source | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: center;`">Body Text</p>$Eol"
         }    
         It '-BodyPreformatted' {
-            if ($IsWindows) {
-                Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
-            } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
-            }
-            Start-Sleep -Seconds $ProccessStartSleep
-
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
                 To = "rcpt@test.local"
@@ -285,12 +269,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            
-            if ($IsWindows) {
-                Stop-Process -Name "MailHog"
-            } else {
-                sudo pwsh -c Stop-Process -Name MailHog
-            }
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
 
             $Source = $Response.Items[0].Content.Body
 
@@ -337,13 +316,6 @@ InModuleScope $ModuleName {
                 "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: left;`">&nbsp;</p>$Eol")
         }
         It '-Attachments' {
-            if ($IsWindows) {
-                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
-            } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
-            }
-            Start-Sleep -Seconds $ProccessStartSleep
-
             # TestDrive doesn't work here because of the module running Send-MailMessage as a Job
             $TestPath = "$env:temp\attachment.txt"
             $FileContents = "Line1$($Eol)Line2"
@@ -363,12 +335,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            
-            if ($IsWindows) {
-                Stop-Process -Name "MailHog"
-            } else {
-                sudo pwsh -c Stop-Process -Name MailHog
-            }
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
 
             $Source = $Response.Items[0].Content.Body
 
@@ -389,18 +356,7 @@ InModuleScope $ModuleName {
         It '-Cc' -Pending {
         }
         It '-Credential' {
-            $MHCreds = "user:`$2a`$04`$DDYXcbOLmLtq5OJ7Ue.gDe45X1T2cfGtuiwrt4LaxLgUK8zKrCoSq"
-            $MHCredFile = "$env:temp\mhcreds.txt"
-            Set-Content -Value $MHCreds -Path $MHCredFile -NoNewline
             $PSCreds = New-Object System.Management.Automation.PSCredential ("user", (ConvertTo-SecureString "testpassword" -AsPlainText -Force))
-            
-            if ($IsWindows) {
-                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-auth-file", $MHCredFile
-            } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25", "-auth-file", $MHCredFile -RedirectStandardOutput "~/output.txt"
-            }
-            
-            Start-Sleep -Seconds $ProccessStartSleep
 
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
@@ -408,6 +364,7 @@ InModuleScope $ModuleName {
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
                 Body = "Body Text"
+                Port = 2025
                 Credential = $PSCreds
             }
 
@@ -416,16 +373,11 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
 
             if ($PSVersionTable.PSVersion -ge "6.0") {
-                $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages -Credential $PSCreds -AllowUnencryptedAuthentication
+                $Response = Invoke-RestMethod -Uri http://localhost:10025/api/v2/messages -Credential $PSCreds -AllowUnencryptedAuthentication
             } else {
-                $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages -Credential $PSCreds 
+                $Response = Invoke-RestMethod -Uri http://localhost:10025/api/v2/messages -Credential $PSCreds 
             }
-            
-            if ($IsWindows) {
-                Stop-Process -Name "MailHog"
-            } else {
-                sudo pwsh -c Stop-Process -Name MailHog
-            }
+            Invoke-RestMethod -Uri http://localhost:10025/api/v1/messages -Method "DELETE"
 
             $Source = $Response.Items[0].Content.Body
 
@@ -446,12 +398,6 @@ InModuleScope $ModuleName {
         It '-Encoding' -Pending {
         }
         It '-Port' {
-            if ($IsWindows) {
-                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe"
-            } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog" -RedirectStandardOutput "~/output.txt"
-            }
-
             Start-Sleep -Seconds $ProccessStartSleep
 
             $ShmmParams = @{
@@ -467,13 +413,8 @@ InModuleScope $ModuleName {
 
             Start-Sleep -Seconds $EmailSendSleep
 
-            $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            
-            if ($IsWindows) {
-                Stop-Process -Name "MailHog"
-            } else {
-                sudo pwsh -c Stop-Process -Name MailHog
-            }
+            $Response = Invoke-RestMethod -Uri http://localhost:9025/api/v2/messages
+            Invoke-RestMethod -Uri http://localhost:9025/api/v1/messages -Method "DELETE"
 
             $Source = $Response.Items[0].Content.Body
 
@@ -494,14 +435,6 @@ InModuleScope $ModuleName {
         It '-Priority' -Pending {
         }
         It '-Heading' {
-            if ($IsWindows) {
-                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
-            } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
-            }
-
-            Start-Sleep -Seconds $ProccessStartSleep
-    
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
                 To = "rcpt@test.local"
@@ -516,12 +449,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            
-            if ($IsWindows) {
-                Stop-Process -Name "MailHog"
-            } else {
-                sudo pwsh -c Stop-Process -Name MailHog
-            }
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
     
             $Source = $Response.Items[0].Content.Body
     
@@ -538,14 +466,6 @@ InModuleScope $ModuleName {
             $Source | Should -Match "<h2 style=`"text-align: center;`">Test Heading</h2>"
         }
         It '-HeadingAlignment' {
-            if ($IsWindows) {
-                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
-            } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
-            }
-
-            Start-Sleep -Seconds $ProccessStartSleep
-    
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
                 To = "rcpt@test.local"
@@ -561,12 +481,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            
-            if ($IsWindows) {
-                Stop-Process -Name "MailHog"
-            } else {
-                sudo pwsh -c Stop-Process -Name MailHog
-            }
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
     
             $Source = $Response.Items[0].Content.Body
     
@@ -583,14 +498,6 @@ InModuleScope $ModuleName {
             $Source | Should -Match "<h2 style=`"text-align: left;`">Test Heading</h2>"
         }
         It '-Footer' {
-            if ($IsWindows) {
-                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
-            } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
-            }
-
-            Start-Sleep -Seconds $ProccessStartSleep
-    
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
                 To = "rcpt@test.local"
@@ -605,12 +512,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            
-            if ($IsWindows) {
-                Stop-Process -Name "MailHog"
-            } else {
-                sudo pwsh -c Stop-Process -Name MailHog
-            }
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
     
             $Source = $Response.Items[0].Content.Body
     
@@ -629,14 +531,6 @@ InModuleScope $ModuleName {
                 "                  </td>$Eol")
         }
         It '-LastLine' {
-            if ($IsWindows) {
-                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
-            } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
-            }
-
-            Start-Sleep -Seconds $ProccessStartSleep
-    
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
                 To = "rcpt@test.local"
@@ -651,12 +545,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            
-            if ($IsWindows) {
-                Stop-Process -Name "MailHog"
-            } else {
-                sudo pwsh -c Stop-Process -Name MailHog
-            }
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
     
             $Source = $Response.Items[0].Content.Body
     
@@ -675,14 +564,6 @@ InModuleScope $ModuleName {
                 "                  </td>")
         }
         It '-ButtonText and -ButtonLink' {
-            if ($IsWindows) {
-                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
-            } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
-            }
-
-            Start-Sleep -Seconds $ProccessStartSleep
-    
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
                 To = "rcpt@test.local"
@@ -698,12 +579,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            
-            if ($IsWindows) {
-                Stop-Process -Name "MailHog"
-            } else {
-                sudo pwsh -c Stop-Process -Name MailHog
-            }
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
     
             $Source = $Response.Items[0].Content.Body
     
@@ -734,13 +610,6 @@ InModuleScope $ModuleName {
             "                        </table>")
         }
         It '-ButtonAlignment' {
-            if ($IsWindows) {
-                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
-            } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
-            }
-            Start-Sleep -Seconds $ProccessStartSleep
-    
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
                 To = "rcpt@test.local"
@@ -757,12 +626,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            
-            if ($IsWindows) {
-                Stop-Process -Name "MailHog"
-            } else {
-                Start-Process -FilePath "sudo" -ArgumentList "pwsh","-c", "Stop-Process", "-Name", "MailHog" -RedirectStandardOutput "~/output.txt"
-            }
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
     
             $Source = $Response.Items[0].Content.Body
     
@@ -813,14 +677,6 @@ InModuleScope $ModuleName {
             $Rng.GetBytes($rndbytes)
             [System.IO.File]::WriteAllBytes("$($SourcePath)\test3.txt", $rndbytes)
 
-            if ($IsWindows) {
-                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
-            } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
-            }
-
-            Start-Sleep -Seconds $ProccessStartSleep
-
             $ShmmParams = @{
                 EmailFrom = "PoshEmail@test.local"
                 EmailTo = "rcpt@test.local"
@@ -835,12 +691,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-
-            if ($IsWindows) {
-                Stop-Process -Name "MailHog"
-            } else {
-                Start-Process -FilePath "sudo" -ArgumentList "pwsh","-c", "Stop-Process", "-Name", "MailHog" -RedirectStandardOutput "~/output.txt"
-            }
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
 
             Remove-Item $SourcePath -Force -Recurse
             Remove-Item $DestPath -Force -Recurse
@@ -879,14 +730,6 @@ InModuleScope $ModuleName {
             $Rng.GetBytes($rndbytes)
             [System.IO.File]::WriteAllBytes("$($SourcePath)\test3.txt", $rndbytes)
 
-            if ($IsWindows) {
-                Start-Process -FilePath "$env:GOPATH\bin\MailHog.exe" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25"
-            } else {
-                Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog","-smtp-bind-addr", "0.0.0.0:25" -RedirectStandardOutput "~/output.txt"
-            }
-
-            Start-Sleep -Seconds $ProccessStartSleep
-
             $ShmmParams = @{
                 EmailFrom = "PoshEmail@test.local"
                 EmailTo = "rcpt@test.local"
@@ -902,12 +745,6 @@ InModuleScope $ModuleName {
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             
-            if ($IsWindows) {
-                Stop-Process -Name "MailHog"
-            } else {
-                Start-Process -FilePath "sudo" -ArgumentList "pwsh","-c", "Stop-Process", "-Name", "MailHog" -RedirectStandardOutput "~/output.txt"
-            }
-
             Remove-Item $SourcePath -Force -Recurse
             Remove-Item $DestPath -Force -Recurse
 
