@@ -1,0 +1,109 @@
+parameters:
+  name: ''
+  vmImage: ''
+  moduleInstallOptions: ''
+  pwsh: true
+  tempDir: ''
+
+jobs:
+- job: ${{ parameters.name }}
+  pool: 
+    vmImage: ${{ parameters.vmImage }}
+  steps:
+
+  - task: PowerShell@2
+    displayName: Environment Details
+    inputs:
+      pwsh: ${{ parameters.pwsh }}
+      targetType: inline
+      script: |
+        $PSVersionTable
+        Write-Host "tempDir = ${{ parameters.tempDir }}"
+        Write-Host "Build.Repository.Uri = $env:BUILD_REPOSITORY_URI"
+        Write-Host "Build.QueuedBy = $env:BUILD_QUEUEDBY"
+        Write-Host "Build.SourceVersionMessage = $env:BUILD_SOURCEVERSIONMESSAGE"
+        Write-Host "Build.Repository.Name = $env:BUILD_REPOSITORY_NAME"
+        Write-Host "Build.BuildNumber = $env:BUILD_BUILDNUMBER"
+        Write-Host "Current Location = $(Get-Location)"
+
+  - task: PowerShell@2
+    displayName: Install-Module
+    inputs:
+      pwsh: ${{ parameters.pwsh }}
+      targetType: inline
+      script: Install-Module -Name $env:POWERSHELLMODULES.split(",") -Force -SkipPublisherCheck -AllowClobber ${{ parameters.moduleInstallOptions }}
+
+  - task: PowerShell@2
+    displayName: Set Variables
+    inputs:
+      pwsh: ${{ parameters.pwsh }}
+      targetType: inline
+      script: |
+        $ProjectName = Get-ProjectName
+        Write-Host "##vso[task.setvariable variable=projectName]$ProjectName"
+        Write-Host "##vso[task.setvariable variable=psEdition]$PSEdition"
+
+  - task: PowerShell@2
+    displayName: Invoke-Build
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+    inputs:
+      pwsh: ${{ parameters.pwsh }}
+      targetType: inline
+      script: |
+        $Uri = "$($env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI)$env:SYSTEM_TEAMPROJECT/_apis/build/builds/$env:BUILD_BUILDID/tags/ReleaseToProd?api-version=5.0"
+        Write-Host $Uri
+        if ($env:BUILD_SOURCEVERSIONMESSAGE -like "!ReleaseToProd*") {
+          $ReleaseVersion = $env:BUILD_SOURCEVERSIONMESSAGE.split(" ")[1]
+          $TagSplat = @{
+            Uri = $Uri
+            Headers = @{
+              Authorization = "Bearer $env:SYSTEM_ACCESSTOKEN"
+            }
+            Method = "Put"
+          }
+          Invoke-RestMethod @TagSplat
+        }
+        if ($env:BUILD_SOURCEVERSIONMESSAGE -notlike "!ReleaseToProd*") {
+          $ManifestVersion = (Import-PowerShellDataFile .\src\*.psd1).ModuleVersion
+          if ((Get-ChangelogData).Released -ne $null) { $AlphaVersionBase = Step-Version $ManifestVersion }
+          if ((Get-ChangelogData).Released -eq $null) { $AlphaVersionBase = $ManifestVersion }
+          $ReleaseVersion = $AlphaVersionBase + "-alpha" + ([int]$env:BUILD_BUILDNUMBER).ToString("0000")
+          Write-Host "`$ReleaseVersion is $ReleaseVersion"
+          Write-Host "##vso[task.setvariable variable=releaseVersion]$ReleaseVersion"
+        }
+        $BuildSplat = @{
+          Version = $ReleaseVersion
+          LinkPattern = Invoke-Expression $env:LINKPATTERN
+          LicenseUri = "https://github.com/$env:BUILD_REPOSITORY_NAME/blob/master/LICENSE"
+          ProjectUri = "https://github.com/$env:BUILD_REPOSITORY_NAME"
+          HelpInfoUri = "https://github.com/$env:BUILD_REPOSITORY_NAME"
+        }
+        Invoke-Build @BuildSplat
+
+  - task: PublishBuildArtifacts@1
+    displayName: Publish Artifacts
+    inputs:
+      artifactName: 'Build-$(Agent.OS)_$(psEdition)'
+      pathToPublish: '$(Build.Repository.LocalPath)'
+
+  - task: PowerShell@2
+    displayName: Invoke-Pester
+    inputs:
+      pwsh: ${{ parameters.pwsh }}
+      targetType: inline
+      script: Invoke-Pester -Path ".\test" -OutputFormat NUnitXml -OutputFile "out\TestResults.xml" -CodeCoverage "src\$env:PROJECTNAME.psm1" -CodeCoverageOutputFile "out\CoverageResults.xml"
+
+  - task: PublishTestResults@2
+    displayName: Publish Test Results
+    inputs:
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '**/TestResults.xml'
+      failTaskOnFailedTests: true
+      testRunTitle: 'TestResults-$(Agent.OS)_$(psEdition)'
+
+  - task: PublishCodeCoverageResults@1
+    inputs:
+      codeCoverageTool: 'JaCoCo'
+      summaryFileLocation: '**/CoverageResults.xml'
+      failIfCoverageEmpty: true
