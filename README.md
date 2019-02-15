@@ -4,13 +4,12 @@
 
 PoshEmail is a PowerShell module designed to provide useful email tasks, including the following:
 
-- Wrapping of commands and scripts to provide email alerts when they start/finish, via Invoke-CommandWithEmailWrapper
 - Easy sending of responsive HTML emails via Send-HtmlMailMessage
+- Wrapping of commands and scripts to provide email alerts when they start/finish, via Invoke-CommandWithEmailWrapper
 
 ## Getting Started
 
-<!-- PoshEmail is designed to be cross-platform and fully compatible with Windows PowerShell 5.0+ and PowerShell Core 6.0+. -->
-PoshEmail is compatible with Windows PowerShell 5.0+ and PowerShell Core 6.0+ on Windows. Linux/macOS support will come in a future version.
+PoshEmail is compatible with Windows PowerShell 5.1+ and PowerShell Core 6.0+ on Windows. Linux/macOS support will come in a future version.
 
 ### Prerequisites
 
@@ -37,6 +36,8 @@ If you'd prefer to install manually, follow these instructions:
 
 ### Examples
 
+#### Send-HtmlMailMessage
+
 #### Invoke-CommandWithEmailWrapper
 
 ```PowerShell
@@ -52,8 +53,6 @@ Invoke-CommandWithEmailWrapper -Script "c:\scripts\script1.ps1" -JobName "Script
 
 Executes the the script c:\scripts\script1.ps1 (on the local computer) on the remote computer "serv01", sending
 emails when the script begins and finishes running.
-
-#### Send-HtmlMailMessage
 
 ### Documentation
 
