@@ -17,7 +17,7 @@ InModuleScope $ModuleName {
     $EmailSendSleep = 1
 
     function ConvertTo-NormalBody {
-        params (
+        param (
             [string]$InputObject
         )
 
