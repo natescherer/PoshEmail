@@ -310,9 +310,7 @@ InModuleScope $ModuleName {
         It '-Cc' -Pending {
         }
         It '-Credential' {
-            Write-Host 1
             $PSCreds = New-Object System.Management.Automation.PSCredential("test", (ConvertTo-SecureString "test" -AsPlainText -Force))
-            Write-Host 2
 
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
@@ -323,27 +321,20 @@ InModuleScope $ModuleName {
                 Port = 2025
                 Credential = $PSCreds
             }
-            Write-Host 3
 
-            Send-MailMessage @ShmmParams
-            Write-Host 4
+            Send-HtmlMailMessage @ShmmParams
 
             Start-Sleep -Seconds $EmailSendSleep
-            Write-Host 5
 
             if ($PSVersionTable.PSVersion -ge "6.0") {
-                Write-Host 6
                 $Response = Invoke-RestMethod -Uri http://localhost:10025/api/v2/messages -Credential $PSCreds -AllowUnencryptedAuthentication
-                Write-Host 7
                 Invoke-RestMethod -Uri http://localhost:10025/api/v1/messages -Method "DELETE" -Credential $PSCreds -AllowUnencryptedAuthentication | Out-Null
             } else {
                 $Response = Invoke-RestMethod -Uri http://localhost:10025/api/v2/messages -Credential $PSCreds
                 Invoke-RestMethod -Uri http://localhost:10025/api/v1/messages -Method "DELETE" -Credential $PSCreds | Out-Null
             }
-            Write-Host 8
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
-            Write-Host 9
             $Source | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: left;`">Body Text</p>"
         }
         It '-DeliveryNotificationOption' -Pending {
