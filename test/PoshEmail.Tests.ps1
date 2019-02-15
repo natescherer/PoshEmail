@@ -531,7 +531,7 @@ InModuleScope $ModuleName {
     }
     Describe 'Invoke-CommandWithEmailWrapper' {
         $SourcePath = "$PSScriptRoot\icwew_source"
-        $DestPath = "$PSScriptRoot\test\icwew_dest"
+        $DestPath = "$PSScriptRoot\icwew_dest"
         New-Item -Path $SourcePath -ItemType Directory | Out-Null
         New-Item -Path $DestPath -ItemType Directory | Out-Null
 
