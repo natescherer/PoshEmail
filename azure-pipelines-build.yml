@@ -100,7 +100,7 @@ jobs:
   - powershell: |
       Start-Process -FilePath "$env:GOPATH\bin\MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-api-bind-addr", "0.0.0.0:8025", "-ui-bind-addr", "0.0.0.0:8025"
       Start-Process -FilePath "$env:GOPATH\bin\MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:1025", "-api-bind-addr", "0.0.0.0:9025", "-ui-bind-addr", "0.0.0.0:9025"
-      Start-Process -FilePath "$env:GOPATH\bin\MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:10025", "-ui-bind-addr", "0.0.0.0:10025","-auth-file", "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\test\mhcreds.txt"
+      Start-Process -FilePath "$env:GOPATH\bin\MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:10025", "-ui-bind-addr", "0.0.0.0:10025", "-auth-file", "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\test\mhcreds.txt"
     displayName: Start MailHog (Windows)
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
 

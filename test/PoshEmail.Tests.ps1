@@ -42,7 +42,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
             $Source = $Response.Items[0].Content.Body
 
@@ -207,7 +207,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
             $Source = $Response.Items[0].Content.Body
 
@@ -257,7 +257,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
             $Source = $Response.Items[0].Content.Body
 
@@ -323,7 +323,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
             $Source = $Response.Items[0].Content.Body
 
@@ -365,7 +365,7 @@ InModuleScope $ModuleName {
             } else {
                 $Response = Invoke-RestMethod -Uri http://localhost:10025/api/v2/messages -Credential $PSCreds 
             }
-            Invoke-RestMethod -Uri http://localhost:10025/api/v1/messages -Method "DELETE"
+            Invoke-RestMethod -Uri http://localhost:10025/api/v1/messages -Method "DELETE" | Out-Null
 
             $Source = $Response.Items[0].Content.Body
 
@@ -402,7 +402,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:9025/api/v2/messages
-            Invoke-RestMethod -Uri http://localhost:9025/api/v1/messages -Method "DELETE"
+            Invoke-RestMethod -Uri http://localhost:9025/api/v1/messages -Method "DELETE" | Out-Null
 
             $Source = $Response.Items[0].Content.Body
 
@@ -437,7 +437,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
     
             $Source = $Response.Items[0].Content.Body
     
@@ -469,7 +469,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
     
             $Source = $Response.Items[0].Content.Body
     
@@ -500,7 +500,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
     
             $Source = $Response.Items[0].Content.Body
     
@@ -533,7 +533,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
     
             $Source = $Response.Items[0].Content.Body
     
@@ -567,7 +567,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
     
             $Source = $Response.Items[0].Content.Body
     
@@ -614,7 +614,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
     
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
     
             $Source = $Response.Items[0].Content.Body
     
@@ -679,7 +679,7 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE"
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
             Remove-Item $SourcePath -Force -Recurse
             Remove-Item $DestPath -Force -Recurse
