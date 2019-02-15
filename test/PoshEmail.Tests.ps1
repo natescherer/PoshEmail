@@ -542,29 +542,28 @@ InModuleScope $ModuleName {
     }
     Describe 'Invoke-CommandWithEmailWrapper' {
         It 'PowerShell ScriptBlock' {
-            $SourcePath = "$TempDir\icwew_source"
-            $DestPath = "$TempDir\icwew_dest"
+            $SourcePath = "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\test\icwew_source"
+            $DestPath = "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\test\icwew_dest"
             New-Item -Path $SourcePath -ItemType Directory
             New-Item -Path $DestPath -ItemType Directory
 
-            [System.Security.Cryptography.RNGCryptoServiceProvider] $Rng = New-Object System.Security.Cryptography.RNGCryptoServiceProvider
-            $RndBytes = New-Object byte[] 10MB
-            $Rng.GetBytes($rndbytes)
-            [System.IO.File]::WriteAllBytes("$($SourcePath)\test1.txt", $rndbytes)
+            $File1 = New-Object System.IO.FileStream "$SourcePath\test1.txt", Create, ReadWrite
+            $File1.SetLength(10MB)
+            $File1.Close()
 
-            $RndBytes = New-Object byte[] 100MB
-            $Rng.GetBytes($rndbytes)
-            [System.IO.File]::WriteAllBytes("$($SourcePath)\test2.txt", $rndbytes)
+            $File2 = New-Object System.IO.FileStream "$SourcePath\test2.txt", Create, ReadWrite
+            $File2.SetLength(100MB)
+            $File2.Close()
 
-            $RndBytes = New-Object byte[] 1MB
-            $Rng.GetBytes($rndbytes)
-            [System.IO.File]::WriteAllBytes("$($SourcePath)\test3.txt", $rndbytes)
+            $File3 = New-Object System.IO.FileStream "$SourcePath\test3.txt", Create, ReadWrite
+            $File3.SetLength(1MB)
+            $File3.Close()
 
             $ShmmParams = @{
                 EmailFrom = "PoshEmail@test.local"
                 EmailTo = "rcpt@test.local"
                 SmtpServer = "127.0.0.1"
-                ScriptBLock = { Get-ChildItem $SourcePath | Select-Object Length, Name }
+                ScriptBLock = { Get-ChildItem $SourcePath | Select-Object Length, Name;  }
                 JobName = "Test 1"
                 EmailUseSsl = $false
             }
