@@ -60,7 +60,7 @@ InModuleScope $ModuleName {
 
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
-            $Source | Should -Be ("<!doctype html>$NL" +
+            $Source | Should -Match ("<!doctype html>$NL" +
                 "<html>$NL" +
                 "  <head>$NL" +
                 "    <meta name=`"viewport`" content=`"width=device-width`">$NL" +
@@ -194,8 +194,7 @@ InModuleScope $ModuleName {
                 "      </tr>$NL" +
                 "    </table>$NL" +
                 "  </body>$NL" +
-                "</html>$NL" +
-                "$NL")
+                "</html>$NL")
         }
         It '-BodyAlignment' {
             $ShmmParams = @{
