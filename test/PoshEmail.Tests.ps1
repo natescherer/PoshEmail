@@ -46,6 +46,8 @@ InModuleScope $ModuleName {
 
             $Source = $Response.Items[0].Content.Body
 
+            Write-Host $Source
+
             $NewSource = ""
 
             foreach ($Line in ($Source -split $Eol)) {
