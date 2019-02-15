@@ -345,7 +345,7 @@ InModuleScope $ModuleName {
         }
         It '-Cc' -Pending {
         }
-        It '-Credential' {
+        It '-Credential' -Skip {
             $PSCreds = New-Object System.Management.Automation.PSCredential ("user", (ConvertTo-SecureString "testpassword" -AsPlainText -Force))
 
             $ShmmParams = @{
