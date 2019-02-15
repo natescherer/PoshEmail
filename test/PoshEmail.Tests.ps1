@@ -19,21 +19,6 @@ InModuleScope $ModuleName {
 
     Write-Host "`Note that all Pending tests are due to MailHog v1.0.0 lacking features needed to do the test." -ForegroundColor Yellow
 
-    $MHCreds = "user:`$2a`$04`$DDYXcbOLmLtq5OJ7Ue.gDe45X1T2cfGtuiwrt4LaxLgUK8zKrCoSq"
-    $MHCredFile = "$TempDir\mhcreds.txt"
-    Set-Content -Value $MHCreds -Path $MHCredFile -NoNewline
-    if ($IsWindows) {
-        Start-Job -ScriptBlock {Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-api-bind-addr", "0.0.0.0:8025", "-ui-bind-addr", "0.0.0.0:8025"}
-        Start-Job -ScriptBlock {Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:1025", "-api-bind-addr", "0.0.0.0:9025", "-ui-bind-addr", "0.0.0.0:9025"}
-        Start-Job -ScriptBlock {Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:10025", "-ui-bind-addr", "0.0.0.0:10025","-auth-file", $MHCredFile}
-    } else {
-        Start-Job -ScriptBlock {Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog", "-smtp-bind-addr", "0.0.0.0:25", "-api-bind-addr", "0.0.0.0:8025", "-ui-bind-addr", "0.0.0.0:8025"}
-        Start-Job -ScriptBlock {Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog", "-smtp-bind-addr", "0.0.0.0:1025", "-api-bind-addr", "0.0.0.0:9025", "-ui-bind-addr", "0.0.0.0:9025"}
-        Start-Job -ScriptBlock {Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog", "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:10025", "-ui-bind-addr", "0.0.0.0:10025", "-auth-file", $MHCredFile}
-
-    }
-    Start-Sleep -Seconds $ProccessStartSleep
-
     Describe 'Module Manifest Tests' {
         It 'Passes Test-ModuleManifest' {
             Test-ModuleManifest -Path $ModuleManifestPath | Should Not BeNullOrEmpty
