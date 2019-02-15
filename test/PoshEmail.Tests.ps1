@@ -16,6 +16,21 @@ InModuleScope $ModuleName {
     $ProccessStartSleep = 3
     $EmailSendSleep = 1
 
+    function ConvertTo-NormalBody {
+        params (
+            [string]$InputObject
+        )
+
+        $Output = ""
+        $Output = $InputObject -replace "=$NL",""
+
+        $Output = $Output -replace "=0D=0A",$NL
+        $Output = $Output -replace "=0A",$NL
+        $Output = $Output -replace "=3D","="
+
+        $Output
+    }
+
     Write-Host "`Note that all Pending tests are due to MailHog v1.0.0 lacking features needed to do the test." -ForegroundColor Yellow
 
     Describe 'Module Manifest Tests' {
@@ -43,19 +58,9 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Source = $Response.Items[0].Content.Body
+            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
-            Write-Host $Source
-
-            $NewSource = ""
-
-            foreach ($Line in ($Source -split $NL)) {
-                $NewSource += $Line -replace "=$",""
-            }
-
-            $Source = $NewSource -replace "=0D=0A",$NL
-            $Source = $Source -replace "=0A",$NL
-            $Source = $Source -replace "=3D","="
+            Write-Host $Response.Items[0].Content.Body
 
             $Source | Should -Be ("<!doctype html>$NL" +
                 "<html>$NL" +
@@ -210,17 +215,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Source = $Response.Items[0].Content.Body
-
-            $NewSource = ""
-
-            foreach ($Line in ($Source -split $NL)) {
-                $NewSource += $Line -replace "=$",""
-            }
-
-            $Source = $NewSource -replace "=0D=0A",$NL
-            $Source = $Source -replace "=0A",$NL
-            $Source = $Source -replace "=3D","="
+            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
             $Source | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: center;`">Body Text</p>$NL"
         }    
@@ -260,17 +255,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Source = $Response.Items[0].Content.Body
-
-            $NewSource = ""
-
-            foreach ($Line in ($Source -split $NL)) {
-                $NewSource += $Line -replace "=$",""
-            }
-
-            $Source = $NewSource -replace "=0D=0A",$NL
-            $Source = $Source -replace "=0A",$NL
-            $Source = $Source -replace "=3D","="
+            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
             $Source | Should -Match ("                      </td>$NL" +
                 "                    </tr>$NL" +
@@ -326,17 +311,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Source = $Response.Items[0].Content.Body
-
-            $NewSource = ""
-
-            foreach ($Line in ($Source -split $NL)) {
-                $NewSource += $Line -replace "=$",""
-            }
-
-            $Source = $NewSource -replace "=0D=0A",$NL
-            $Source = $Source -replace "=0A",$NL
-            $Source = $Source -replace "=3D","="
+            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
             $Source | Should -Match "VGhpcyBpcyBhIGxpbmUgb2YgdGV4dCB3aXRoIG5vIGxpbmUgYnJlYWtzIHNvIHRoZSBiYXNlNjQgaXMgdGhlIHNhbWUgb24gYWxsIHBsYXRmb3Jtcw="
         }
@@ -368,17 +343,7 @@ InModuleScope $ModuleName {
             }
             Invoke-RestMethod -Uri http://localhost:10025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Source = $Response.Items[0].Content.Body
-
-            $NewSource = ""
-
-            foreach ($Line in ($Source -split $NL)) {
-                $NewSource += $Line -replace "=$",""
-            }
-
-            $Source = $NewSource -replace "=0D=0A",$NL
-            $Source = $Source -replace "=0A",$NL
-            $Source = $Source -replace "=3D","="
+            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
             $Source | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: left;`">Body Text</p>"
         }
@@ -405,17 +370,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:9025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:9025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Source = $Response.Items[0].Content.Body
-
-            $NewSource = ""
-
-            foreach ($Line in ($Source -split $NL)) {
-                $NewSource += $Line -replace "=$",""
-            }
-
-            $Source = $NewSource -replace "=0D=0A",$NL
-            $Source = $Source -replace "=0A",$NL
-            $Source = $Source -replace "=3D","="
+            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
             $Source | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: left;`">Body Text</p>"
         }
@@ -440,17 +395,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
     
-            $Source = $Response.Items[0].Content.Body
-    
-            $NewSource = ""
-    
-            foreach ($Line in ($Source -split $NL)) {
-                $NewSource += $Line -replace "=$",""
-            }
-    
-            $Source = $NewSource -replace "=0D=0A",$NL
-            $Source = $Source -replace "=0A",$NL
-            $Source = $Source -replace "=3D","="
+            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
     
             $Source | Should -Match "<h2 style=`"text-align: center;`">Test Heading</h2>"
         }
@@ -472,17 +417,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
     
-            $Source = $Response.Items[0].Content.Body
-    
-            $NewSource = ""
-    
-            foreach ($Line in ($Source -split $NL)) {
-                $NewSource += $Line -replace "=$",""
-            }
-    
-            $Source = $NewSource -replace "=0D=0A",$NL
-            $Source = $Source -replace "=0A",$NL
-            $Source = $Source -replace "=3D","="
+            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
     
             $Source | Should -Match "<h2 style=`"text-align: left;`">Test Heading</h2>"
         }
@@ -503,17 +438,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
     
-            $Source = $Response.Items[0].Content.Body
-    
-            $NewSource = ""
-    
-            foreach ($Line in ($Source -split $NL)) {
-                $NewSource += $Line -replace "=$",""
-            }
-    
-            $Source = $NewSource -replace "=0D=0A",$NL
-            $Source = $Source -replace "=0A",$NL
-            $Source = $Source -replace "=3D","="
+            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
     
             $Source | Should -Match ("<td class=`"content-block`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL" +
                 "                    Test Footer$NL" +
@@ -536,17 +461,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
     
-            $Source = $Response.Items[0].Content.Body
-    
-            $NewSource = ""
-    
-            foreach ($Line in ($Source -split $NL)) {
-                $NewSource += $Line -replace "=$",""
-            }
-    
-            $Source = $NewSource -replace "=0D=0A",$NL
-            $Source = $Source -replace "=0A",$NL
-            $Source = $Source -replace "=3D","="
+            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
     
             $Source | Should -Match ("<td class=`"content-block powered-by`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL" +
                 "                    Test LastLine$NL" +
@@ -570,17 +485,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
     
-            $Source = $Response.Items[0].Content.Body
-    
-            $NewSource = ""
-    
-            foreach ($Line in ($Source -split $NL)) {
-                $NewSource += $Line -replace "=$",""
-            }
-    
-            $Source = $NewSource -replace "=0D=0A",$NL
-            $Source = $Source -replace "=0A",$NL
-            $Source = $Source -replace "=3D","="
+            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
     
             $Source | Should -Match ("<table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"btn btn-primary`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;`">$NL" +
             "                          <tbody>$NL" +
@@ -617,17 +522,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
     
-            $Source = $Response.Items[0].Content.Body
-    
-            $NewSource = ""
-    
-            foreach ($Line in ($Source -split $NL)) {
-                $NewSource += $Line -replace "=$",""
-            }
-    
-            $Source = $NewSource -replace "=0D=0A",$NL
-            $Source = $Source -replace "=0A",$NL
-            $Source = $Source -replace "=3D","="
+            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
     
             $Source | Should -Match ("<table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"btn btn-primary`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;`">$NL" +
             "                          <tbody>$NL" +
@@ -685,17 +580,7 @@ InModuleScope $ModuleName {
             Remove-Item $SourcePath -Force -Recurse
             Remove-Item $DestPath -Force -Recurse
 
-            $Source = $Response.Items[0].Content.Body
-
-            $NewSource = ""
-
-            foreach ($Line in ($Source -split $NL)) {
-                $NewSource += $Line -replace "=$",""
-            }
-
-            $Source = $NewSource -replace "=0D=0A",$NL
-            $Source = $Source -replace "=0A",$NL
-            $Source = $Source -replace "=3D","="
+            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
             $Source | Should -Match "104857600&ensp;test2.txt"
 
@@ -737,17 +622,7 @@ InModuleScope $ModuleName {
             Remove-Item $SourcePath -Force -Recurse
             Remove-Item $DestPath -Force -Recurse
 
-            $Source = $Response.Items[0].Content.Body
-
-            $NewSource = ""
-
-            foreach ($Line in ($Source -split $NL)) {
-                $NewSource += $Line -replace "=$",""
-            }
-
-            $Source = $NewSource -replace "=0D=0A",$NL
-            $Source = $Source -replace "=0A",$NL
-            $Source = $Source -replace "=3D","="
+            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
             $Source | Should -Match "ROBOCOPY&ensp;&ensp;&ensp;&ensp;&ensp;::&ensp;&ensp;&ensp;&ensp;&ensp;Robust&ensp;File&ensp;Copy&ensp;for&ensp;Windows"
 
