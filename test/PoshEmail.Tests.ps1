@@ -21,6 +21,7 @@ InModuleScope $ModuleName {
             [string]$InputObject
         )
 
+        $NL = [System.Environment]::NewLine
         $Output = ""
         $Output = $InputObject -replace "=$NL",""
 
