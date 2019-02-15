@@ -541,29 +541,29 @@ InModuleScope $ModuleName {
         }
     }
     Describe 'Invoke-CommandWithEmailWrapper' {
+        $SourcePath = "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\test\icwew_source"
+        $DestPath = "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\test\icwew_dest"
+        New-Item -Path $SourcePath -ItemType Directory
+        New-Item -Path $DestPath -ItemType Directory
+
+        $File1 = New-Object System.IO.FileStream "$SourcePath\test1.txt", Create, ReadWrite
+        $File1.SetLength(10MB)
+        $File1.Close()
+
+        $File2 = New-Object System.IO.FileStream "$SourcePath\test2.txt", Create, ReadWrite
+        $File2.SetLength(100MB)
+        $File2.Close()
+
+        $File3 = New-Object System.IO.FileStream "$SourcePath\test3.txt", Create, ReadWrite
+        $File3.SetLength(1MB)
+        $File3.Close()
+
         It 'PowerShell ScriptBlock' {
-            $SourcePath = "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\test\icwew_source"
-            $DestPath = "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\test\icwew_dest"
-            New-Item -Path $SourcePath -ItemType Directory
-            New-Item -Path $DestPath -ItemType Directory
-
-            $File1 = New-Object System.IO.FileStream "$SourcePath\test1.txt", Create, ReadWrite
-            $File1.SetLength(10MB)
-            $File1.Close()
-
-            $File2 = New-Object System.IO.FileStream "$SourcePath\test2.txt", Create, ReadWrite
-            $File2.SetLength(100MB)
-            $File2.Close()
-
-            $File3 = New-Object System.IO.FileStream "$SourcePath\test3.txt", Create, ReadWrite
-            $File3.SetLength(1MB)
-            $File3.Close()
-
             $ShmmParams = @{
                 EmailFrom = "PoshEmail@test.local"
                 EmailTo = "rcpt@test.local"
                 SmtpServer = "127.0.0.1"
-                ScriptBLock = { Get-ChildItem $SourcePath | Select-Object Length, Name;  }
+                ScriptBLock = { Get-ChildItem $SourcePath | Select-Object Length, Name; Start-Sleep -Seconds 5  }
                 JobName = "Test 1"
                 EmailUseSsl = $false
             }
@@ -575,33 +575,12 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
-            Remove-Item $SourcePath -Force -Recurse
-            Remove-Item $DestPath -Force -Recurse
-
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
             $Source | Should -Match "104857600&ensp;test2.txt"
 
         }
         It 'Cmd ScriptBlock' -Skip:$IsntWindows {
-            $SourcePath = "$TempDir\icwew_source"
-            $DestPath = "$TempDir\icwew_dest"
-            New-Item -Path $SourcePath -ItemType Directory
-            New-Item -Path $DestPath -ItemType Directory
-
-            [System.Security.Cryptography.RNGCryptoServiceProvider] $Rng = New-Object System.Security.Cryptography.RNGCryptoServiceProvider
-            $RndBytes = New-Object byte[] 10MB
-            $Rng.GetBytes($rndbytes)
-            [System.IO.File]::WriteAllBytes("$($SourcePath)\test1.txt", $rndbytes)
-
-            $RndBytes = New-Object byte[] 100MB
-            $Rng.GetBytes($rndbytes)
-            [System.IO.File]::WriteAllBytes("$($SourcePath)\test2.txt", $rndbytes)
-
-            $RndBytes = New-Object byte[] 1MB
-            $Rng.GetBytes($rndbytes)
-            [System.IO.File]::WriteAllBytes("$($SourcePath)\test3.txt", $rndbytes)
-
             $ShmmParams = @{
                 EmailFrom = "PoshEmail@test.local"
                 EmailTo = "rcpt@test.local"
@@ -616,9 +595,6 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
 
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            
-            Remove-Item $SourcePath -Force -Recurse
-            Remove-Item $DestPath -Force -Recurse
 
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
