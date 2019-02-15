@@ -309,7 +309,7 @@ InModuleScope $ModuleName {
         }
         It '-Cc' -Pending {
         }
-        It '-Credential' -Skip {
+        It '-Credential' {
             $PSCreds = New-Object System.Management.Automation.PSCredential ("user", (ConvertTo-SecureString "testpassword" -AsPlainText -Force))
 
             $ShmmParams = @{
@@ -590,5 +590,8 @@ InModuleScope $ModuleName {
             $Source | Should -Match "ROBOCOPY&ensp;&ensp;&ensp;&ensp;&ensp;::&ensp;&ensp;&ensp;&ensp;&ensp;Robust&ensp;File&ensp;Copy&ensp;for&ensp;Windows"
 
         }
+
+        Remove-Item $SourcePath -Force -Recurse
+        Remove-Item $DestPath -Force -Recurse
     }
 }
