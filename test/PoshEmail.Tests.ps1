@@ -10,6 +10,9 @@ InModuleScope $ModuleName {
     $ModulePath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psm1"
     $ModuleManifestPath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psd1"
     if ($IsWindows -eq $null) {$IsWindows = $true}
+    if ($IsWindows) {$TempDir = $env:TEMP}
+    if ($IsLinux) {$TempDir = "/tmp"}
+    if ($IsMacOS) {$TempDir = $env:TMPDIR}
     $IsntWindows = !$IsWindows
     $ProccessStartSleep = 3
     $EmailSendSleep = 1
@@ -17,7 +20,7 @@ InModuleScope $ModuleName {
     Write-Host "`Note that all Pending tests are due to MailHog v1.0.0 lacking features needed to do the test." -ForegroundColor Yellow
 
     $MHCreds = "user:`$2a`$04`$DDYXcbOLmLtq5OJ7Ue.gDe45X1T2cfGtuiwrt4LaxLgUK8zKrCoSq"
-    $MHCredFile = "$env:temp\mhcreds.txt"
+    $MHCredFile = "$TempDir\mhcreds.txt"
     Set-Content -Value $MHCreds -Path $MHCredFile -NoNewline
     if ($IsWindows) {
         Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-api-bind-addr", "0.0.0.0:8025" "-ui-bind-addr", "0.0.0.0:8025"
@@ -317,7 +320,7 @@ InModuleScope $ModuleName {
         }
         It '-Attachments' {
             # TestDrive doesn't work here because of the module running Send-MailMessage as a Job
-            $TestPath = "$env:temp\attachment.txt"
+            $TestPath = "$TempDir\attachment.txt"
             $FileContents = "Line1$($Eol)Line2"
             Set-Content -Value $FileContents -Path $TestPath -NoNewline
 
@@ -659,8 +662,8 @@ InModuleScope $ModuleName {
     }
     Describe 'Invoke-CommandWithEmailWrapper' {
         It 'PowerShell ScriptBlock' {
-            $SourcePath = "$env:temp\icwew_source"
-            $DestPath = "$env:temp\icwew_dest"
+            $SourcePath = "$TempDir\icwew_source"
+            $DestPath = "$TempDir\icwew_dest"
             New-Item -Path $SourcePath -ItemType Directory
             New-Item -Path $DestPath -ItemType Directory
 
@@ -712,8 +715,8 @@ InModuleScope $ModuleName {
 
         }
         It 'Cmd ScriptBlock' -Skip:$IsntWindows {
-            $SourcePath = "$env:temp\icwew_source"
-            $DestPath = "$env:temp\icwew_dest"
+            $SourcePath = "$TempDir\icwew_source"
+            $DestPath = "$TempDir\icwew_dest"
             New-Item -Path $SourcePath -ItemType Directory
             New-Item -Path $DestPath -ItemType Directory
 
