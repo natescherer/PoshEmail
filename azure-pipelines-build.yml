@@ -106,7 +106,6 @@ jobs:
         $MHCreds = "user:`$2a`$04`$DDYXcbOLmLtq5OJ7Ue.gDe45X1T2cfGtuiwrt4LaxLgUK8zKrCoSq"
         $MHCredFile = ".\mhcreds.txt"
         Set-Content -Value $MHCreds -Path $MHCredFile -NoNewline
-        Start-Sleep -Seconds $ProccessStartSleep
         if (($IsWindows) -or ($PSVersionTable.PSVersion.Major -le 5)) {
             Start-Process -FilePath "$env:GOPATH\bin\MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-api-bind-addr", "0.0.0.0:8025", "-ui-bind-addr", "0.0.0.0:8025"
             Start-Process -FilePath "$env:GOPATH\bin\MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:1025", "-api-bind-addr", "0.0.0.0:9025", "-ui-bind-addr", "0.0.0.0:9025"
@@ -116,6 +115,7 @@ jobs:
             Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog", "-smtp-bind-addr", "0.0.0.0:1025", "-api-bind-addr", "0.0.0.0:9025", "-ui-bind-addr", "0.0.0.0:9025"
             Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog", "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:10025", "-ui-bind-addr", "0.0.0.0:10025", "-auth-file", $MHCredFile
         }
+        Start-Sleep -Seconds 5
 
   - task: PowerShell@2
     displayName: Invoke-Pester
