@@ -60,7 +60,7 @@ InModuleScope $ModuleName {
 
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
-            $Source | Should -Match ("<!doctype html>$NL" +
+            $Source | Should -Be ("<!doctype html>$NL" +
                 "<html>$NL" +
                 "  <head>$NL" +
                 "    <meta name=`"viewport`" content=`"width=device-width`">$NL" +
@@ -311,7 +311,7 @@ InModuleScope $ModuleName {
 
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
-            $Source | Should -Match "VGhpcyBpcyBhIGxpbmUgb2YgdGV4dCB3aXRoIG5vIGxpbmUgYnJlYWtzIHNvIHRoZSBi$($NL)YXNlNjQgaXMgdGhlIHNhbWUgb24gYWxsIHBsYXRmb3Jtcw="
+            $Source | Should -Match "VGhpcyBpcyBhIGxpbmUgb2YgdGV4dCB3aXRoIG5vIGxpbmUgYnJlYWtzIHNvIHRoZSBi`r`nYXNlNjQgaXMgdGhlIHNhbWUgb24gYWxsIHBsYXRmb3Jtcw="
         }
         It '-Bcc' -Pending {
         }
