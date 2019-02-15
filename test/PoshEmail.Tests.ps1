@@ -11,11 +11,7 @@ InModuleScope $ModuleName {
     $ModulePath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psm1"
     $ModuleManifestPath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psd1"
     if ($IsWindows -eq $null) {$IsWindows = $true}
-    if ($IsWindows) {$TempDir = $env:TEMP}
-    if ($IsLinux) {$TempDir = "/tmp"}
-    if ($IsMacOS) {$TempDir = $env:TMPDIR}
     $IsntWindows = !$IsWindows
-    $ProccessStartSleep = 3
     $EmailSendSleep = 1
 
     function ConvertTo-NormalBody {
@@ -289,18 +285,13 @@ InModuleScope $ModuleName {
                 "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: left;`">&nbsp;</p>$NL")
         }
         It '-Attachments' {
-            # TestDrive doesn't work here because of the module running Send-MailMessage as a Job
-            $TestPath = "$TempDir\attachment.txt"
-            $FileContents = "This is a line of text with no line breaks so the base64 is the same on all platforms"
-            Set-Content -Value $FileContents -Path $TestPath -NoNewline
-
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
                 Body = "Body Text"
-                Attachments = $TestPath
+                Attachments = "$PSScriptRoot\attachment.txt"
             }
 
             Send-HtmlMailMessage @ShmmParams
@@ -351,8 +342,6 @@ InModuleScope $ModuleName {
         It '-Encoding' -Pending {
         }
         It '-Port' {
-            Start-Sleep -Seconds $ProccessStartSleep
-
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
                 To = "rcpt@test.local"
@@ -541,8 +530,8 @@ InModuleScope $ModuleName {
         }
     }
     Describe 'Invoke-CommandWithEmailWrapper' {
-        $SourcePath = "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\test\icwew_source"
-        $DestPath = "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\test\icwew_dest"
+        $SourcePath = "$PSScriptRoot\icwew_source"
+        $DestPath = "$PSScriptRoot\test\icwew_dest"
         New-Item -Path $SourcePath -ItemType Directory | Out-Null
         New-Item -Path $DestPath -ItemType Directory | Out-Null
 
