@@ -21,6 +21,20 @@ jobs:
       command: 'get'
       arguments: 'github.com/mailhog/MailHog'
 
+  - powershell: |
+      Start-Process -FilePath "$env:GOPATH\bin\MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-api-bind-addr", "0.0.0.0:8025", "-ui-bind-addr", "0.0.0.0:8025"
+      Start-Process -FilePath "$env:GOPATH\bin\MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:1025", "-api-bind-addr", "0.0.0.0:9025", "-ui-bind-addr", "0.0.0.0:9025"
+      Start-Process -FilePath "$env:GOPATH\bin\MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:10025", "-ui-bind-addr", "0.0.0.0:10025", "-auth-file", "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\test\mhcreds.txt"
+    displayName: Start MailHog (Windows)
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+
+  - bash: |
+      sudo nohup $GOPATH/bin/MailHog -smtp-bind-addr 0.0.0.0:25 -api-bind-addr 0.0.0.0:8025 -ui-bind-addr 0.0.0.0:8025 &>/dev/null &
+      sudo nohup $GOPATH/bin/MailHog -smtp-bind-addr 0.0.0.0:1025 -api-bind-addr 0.0.0.0:9025 -ui-bind-addr 0.0.0.0:9025 &>/dev/null &
+      sudo nohup $GOPATH/bin/MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:10025 -ui-bind-addr 0.0.0.0:10025 -auth-file $SYSTEM_DEFAULTWORKINGDIRECTORY/test/mhcreds.txt &>/dev/null &
+    condition: or(eq( variables['Agent.OS'], 'Darwin' ), eq( variables['Agent.OS'], 'Linux' ))
+    displayName: Start MailHog (macOS/Linux)
+
   - task: PowerShell@2
     displayName: Environment Details
     inputs:
@@ -96,27 +110,6 @@ jobs:
     inputs:
       artifactName: 'Build-$(Agent.OS)_$(psEdition)'
       pathToPublish: '$(Build.Repository.LocalPath)'
-
-  - powershell: |
-      Start-Process -FilePath "$env:GOPATH\bin\MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-api-bind-addr", "0.0.0.0:8025", "-ui-bind-addr", "0.0.0.0:8025"
-      Start-Process -FilePath "$env:GOPATH\bin\MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:1025", "-api-bind-addr", "0.0.0.0:9025", "-ui-bind-addr", "0.0.0.0:9025"
-      Start-Process -FilePath "$env:GOPATH\bin\MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:10025", "-ui-bind-addr", "0.0.0.0:10025", "-auth-file", "$env:SYSTEM_DEFAULTWORKINGDIRECTORY\test\mhcreds.txt"
-    displayName: Start MailHog (Windows)
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-
-  - bash: |
-      sudo nohup $GOPATH/bin/MailHog -smtp-bind-addr 0.0.0.0:25 -api-bind-addr 0.0.0.0:8025 -ui-bind-addr 0.0.0.0:8025 &>/dev/null &
-      sudo nohup $GOPATH/bin/MailHog -smtp-bind-addr 0.0.0.0:1025 -api-bind-addr 0.0.0.0:9025 -ui-bind-addr 0.0.0.0:9025 &>/dev/null &
-      sudo nohup $GOPATH/bin/MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:10025 -ui-bind-addr 0.0.0.0:10025 -auth-file $SYSTEM_DEFAULTWORKINGDIRECTORY/test/mhcreds.txt &>/dev/null &
-    condition: eq( variables['Agent.OS'], 'Darwin' )
-    displayName: Start MailHog (macOS)
-
-  - bash: |
-      sudo nohup $GOPATH/bin/MailHog -smtp-bind-addr 0.0.0.0:25 -api-bind-addr 0.0.0.0:8025 -ui-bind-addr 0.0.0.0:8025 &>/dev/null &
-      sudo nohup $GOPATH/bin/MailHog -smtp-bind-addr 0.0.0.0:1025 -api-bind-addr 0.0.0.0:9025 -ui-bind-addr 0.0.0.0:9025 &>/dev/null &
-      sudo nohup $GOPATH/bin/MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:10025 -ui-bind-addr 0.0.0.0:10025 -auth-file $SYSTEM_DEFAULTWORKINGDIRECTORY/test/mhcreds.txt &>/dev/null &
-    condition: eq( variables['Agent.OS'], 'Linux' )
-    displayName: Start MailHog (Linux)
 
   - task: PowerShell@2
     displayName: Invoke-Pester
