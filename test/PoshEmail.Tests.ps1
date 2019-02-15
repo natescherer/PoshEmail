@@ -23,7 +23,7 @@ InModuleScope $ModuleName {
 
         $NL = [System.Environment]::NewLine
         $Output = ""
-        $Output = $InputObject -replace "=$NL",""
+        $Output = $InputObject -replace "=`r`n",""
 
         $Output = $Output -replace "=0D=0A",$NL
         $Output = $Output -replace "=0A",$NL
