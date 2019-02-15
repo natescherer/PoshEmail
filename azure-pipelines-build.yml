@@ -124,11 +124,11 @@ jobs:
     inputs:
       testResultsFormat: 'NUnit'
       testResultsFiles: '**/TestResults.xml'
-      failTaskOnFailedTests: true
       testRunTitle: 'TestResults-$(Agent.OS)_$(psEdition)'
 
   - task: PublishCodeCoverageResults@1
     displayName: Publish Code Coverage Results
+    condition: always()
     inputs:
       codeCoverageTool: 'JaCoCo'
       summaryFileLocation: '**/CoverageResults.xml'
