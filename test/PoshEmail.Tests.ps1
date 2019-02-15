@@ -43,7 +43,6 @@ InModuleScope $ModuleName {
 
     Describe 'Send-HtmlMailMessage' {
         It 'Mandatory Params' {
-
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
                 To = "rcpt@test.local"
@@ -195,7 +194,8 @@ InModuleScope $ModuleName {
                 "      </tr>$NL" +
                 "    </table>$NL" +
                 "  </body>$NL" +
-                "</html>$NL")
+                "</html>$NL" +
+                "$NL")
         }
         It '-BodyAlignment' {
             $ShmmParams = @{
