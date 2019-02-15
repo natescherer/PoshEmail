@@ -325,7 +325,7 @@ InModuleScope $ModuleName {
             }
             Write-Host 3
 
-            Send-HtmlMailMessage @ShmmParams
+            Send-MailMessage @ShmmParams
             Write-Host 4
 
             Start-Sleep -Seconds $EmailSendSleep
