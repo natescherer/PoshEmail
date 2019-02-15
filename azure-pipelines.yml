@@ -14,18 +14,18 @@ variables:
   LinkPattern: '@{FirstRelease="$env:BUILD_REPOSITORY_URI/tree/v{CUR}";NormalRelease="$env:BUILD_REPOSITORY_URI/compare/v{PREV}..v{CUR}";Unreleased="$env:BUILD_REPOSITORY_URI/compare/v{CUR}..HEAD"}'
 
 jobs:
-- template: azure-pipelines-build.yml
-  parameters:
-    name: linux
-    vmImage: 'ubuntu-16.04'
-    tempDir: /tmp
-    moduleInstallOptions: -Scope CurrentUser
+#- template: azure-pipelines-build.yml
+#  parameters:
+#    name: linux
+#    vmImage: 'ubuntu-16.04'
+#    tempDir: /tmp
+#    moduleInstallOptions: -Scope CurrentUser
 
-- template: azure-pipelines-build.yml
-  parameters:
-    name: macos
-    vmImage: 'macOS-10.13'
-    tempDir: $env:TMPDIR
+#- template: azure-pipelines-build.yml
+#  parameters:
+#    name: macos
+#    vmImage: 'macOS-10.13'
+#    tempDir: $env:TMPDIR
 
 - template: azure-pipelines-build.yml
   parameters:
