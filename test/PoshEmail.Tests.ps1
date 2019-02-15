@@ -310,7 +310,7 @@ InModuleScope $ModuleName {
         It '-Cc' -Pending {
         }
         It '-Credential' {
-            $PSCreds = New-Object System.Management.Automation.PSCredential ("user", (ConvertTo-SecureString "testpassword" -AsPlainText -Force))
+            $PSCreds = New-Object System.Management.Automation.PSCredential("test", (ConvertTo-SecureString "test" -AsPlainText -Force))
 
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
@@ -331,7 +331,7 @@ InModuleScope $ModuleName {
             } else {
                 $Response = Invoke-RestMethod -Uri http://localhost:10025/api/v2/messages -Credential $PSCreds 
             }
-            Invoke-RestMethod -Uri http://localhost:10025/api/v1/messages -Method "DELETE" | Out-Null
+            Invoke-RestMethod -Uri http://localhost:10025/api/v1/messages -Method "DELETE" -Credential $PSCreds | Out-Null
 
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
