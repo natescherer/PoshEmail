@@ -328,10 +328,12 @@ InModuleScope $ModuleName {
 
             if ($PSVersionTable.PSVersion -ge "6.0") {
                 $Response = Invoke-RestMethod -Uri http://localhost:10025/api/v2/messages -Credential $PSCreds -AllowUnencryptedAuthentication
+                Invoke-RestMethod -Uri http://localhost:10025/api/v1/messages -Method "DELETE" -Credential $PSCreds -AllowUnencryptedAuthentication | Out-Null
             } else {
-                $Response = Invoke-RestMethod -Uri http://localhost:10025/api/v2/messages -Credential $PSCreds 
+                $Response = Invoke-RestMethod -Uri http://localhost:10025/api/v2/messages -Credential $PSCreds
+                Invoke-RestMethod -Uri http://localhost:10025/api/v1/messages -Method "DELETE" -Credential $PSCreds | Out-Null
             }
-            Invoke-RestMethod -Uri http://localhost:10025/api/v1/messages -Method "DELETE" -Credential $PSCreds | Out-Null
+            
 
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
