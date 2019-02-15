@@ -321,7 +321,7 @@ InModuleScope $ModuleName {
         It '-Attachments' {
             # TestDrive doesn't work here because of the module running Send-MailMessage as a Job
             $TestPath = "$TempDir\attachment.txt"
-            $FileContents = "Line1$($Eol)Line2"
+            $FileContents = "This is a line of text with no line breaks so the base64 is the same on all platforms"
             Set-Content -Value $FileContents -Path $TestPath -NoNewline
 
             $ShmmParams = @{
@@ -352,13 +352,13 @@ InModuleScope $ModuleName {
             $Source = $Source -replace "=0A",$Eol
             $Source = $Source -replace "=3D","="
 
-            $Source | Should -Match "TGluZTENCkxpbmUy"
+            $Source | Should -Match "VGhpcyBpcyBhIGxpbmUgb2YgdGV4dCB3aXRoIG5vIGxpbmUgYnJlYWtzIHNvIHRoZSBiYXNlNjQgaXMgdGhlIHNhbWUgb24gYWxsIHBsYXRmb3Jtcw=="
         }
         It '-Bcc' -Pending {
         }
         It '-Cc' -Pending {
         }
-        It '-Credential' {
+        It '-Credential' -Skip {
             $PSCreds = New-Object System.Management.Automation.PSCredential ("user", (ConvertTo-SecureString "testpassword" -AsPlainText -Force))
 
             $ShmmParams = @{
