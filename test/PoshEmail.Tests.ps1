@@ -563,7 +563,7 @@ InModuleScope $ModuleName {
                 EmailFrom = "PoshEmail@test.local"
                 EmailTo = "rcpt@test.local"
                 SmtpServer = "127.0.0.1"
-                ScriptBLock = { Get-ChildItem $SourcePath | Select-Object Length, Name; Start-Sleep -Seconds 5  }
+                ScriptBLock = { Get-ChildItem $SourcePath | Select-Object Length, Name  }
                 JobName = "Test 1"
                 EmailUseSsl = $false
             }
