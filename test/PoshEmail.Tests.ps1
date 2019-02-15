@@ -23,13 +23,13 @@ InModuleScope $ModuleName {
     $MHCredFile = "$TempDir\mhcreds.txt"
     Set-Content -Value $MHCreds -Path $MHCredFile -NoNewline
     if ($IsWindows) {
-        Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-api-bind-addr", "0.0.0.0:8025" "-ui-bind-addr", "0.0.0.0:8025"
-        Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:1025", "-api-bind-addr", "0.0.0.0:9025" "-ui-bind-addr", "0.0.0.0:9025"
-        Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:10025" "-ui-bind-addr", "0.0.0.0:10025","-auth-file", $MHCredFile
+        Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-api-bind-addr", "0.0.0.0:8025", "-ui-bind-addr", "0.0.0.0:8025"
+        Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:1025", "-api-bind-addr", "0.0.0.0:9025", "-ui-bind-addr", "0.0.0.0:9025"
+        Start-Process -FilePath "$env:GOPATH\bin\MailHog$ExeSuffix" -ArgumentList "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:10025", "-ui-bind-addr", "0.0.0.0:10025","-auth-file", $MHCredFile
     } else {
-        Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog", "-smtp-bind-addr", "0.0.0.0:25", "-api-bind-addr", "0.0.0.0:8025" "-ui-bind-addr", "0.0.0.0:8025" -RedirectStandardOutput "~/output.txt"
-        Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog", "-smtp-bind-addr", "0.0.0.0:1025", "-api-bind-addr", "0.0.0.0:9025" "-ui-bind-addr", "0.0.0.0:9025" -RedirectStandardOutput "~/output.txt"
-        Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog", "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:10025" "-ui-bind-addr", "0.0.0.0:10025", "-auth-file", $MHCredFile -RedirectStandardOutput "~/output.txt"
+        Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog", "-smtp-bind-addr", "0.0.0.0:25", "-api-bind-addr", "0.0.0.0:8025", "-ui-bind-addr", "0.0.0.0:8025" -RedirectStandardOutput "~/output.txt"
+        Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog", "-smtp-bind-addr", "0.0.0.0:1025", "-api-bind-addr", "0.0.0.0:9025", "-ui-bind-addr", "0.0.0.0:9025" -RedirectStandardOutput "~/output.txt"
+        Start-Process -FilePath "sudo" -ArgumentList "$env:GOPATH/bin/MailHog", "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:10025", "-ui-bind-addr", "0.0.0.0:10025", "-auth-file", $MHCredFile -RedirectStandardOutput "~/output.txt"
 
     }
     Start-Sleep -Seconds $ProccessStartSleep
