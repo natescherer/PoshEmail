@@ -1,3 +1,5 @@
+# NOTE: All pending tests are due to lack of support in MailHog for that specific feature.
+
 $ModuleName = Split-Path -Path ($PSCommandPath -replace '\.Tests\.ps1$','') -Leaf
 $ModulePath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psm1"
 Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
@@ -32,8 +34,6 @@ InModuleScope $ModuleName {
         $Output
     }
 
-    Write-Host "`Note that all Pending tests are due to MailHog v1.0.0 lacking features needed to do the test." -ForegroundColor Yellow
-
     Describe 'Module Manifest Tests' {
         It 'Passes Test-ModuleManifest' {
             Test-ModuleManifest -Path $ModuleManifestPath | Should Not BeNullOrEmpty
@@ -60,8 +60,6 @@ InModuleScope $ModuleName {
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-
-            Write-Host $Response.Items[0].Content.Body
 
             $Source | Should -Be ("<!doctype html>$NL" +
                 "<html>$NL" +
