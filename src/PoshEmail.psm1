@@ -20,9 +20,6 @@ function Send-HtmlMailMessage {
 
     .LINK
         https://github.com/natescherer/PoshEmail
-
-    .NOTES
-        Detail on what the function does, if this is needed
     #>
     [CmdletBinding(DefaultParameterSetName="Default")]
     param (
@@ -173,7 +170,7 @@ function Send-HtmlMailMessage {
         [parameter(ParameterSetName="Button",Mandatory=$false)]
         [ValidateNotNull()]
         # Specifies a string (with optional HTML formatting) to include in the last line of the message.
-        [string]$LastLine = "Powered by <a href=`"https://github.com/natescherer/PoshEmail`">PoshEmail</a>.",
+        [string]$LastLine = "",
 
         [parameter(ParameterSetName="Button",Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
