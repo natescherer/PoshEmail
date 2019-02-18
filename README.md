@@ -9,7 +9,7 @@ PoshEmail is a PowerShell module designed to provide useful email tasks, includi
 
 ## Getting Started
 
-PoshEmail is compatible with Windows PowerShell 5.1+ and PowerShell Core 6.0+ on Windows. Linux/macOS support will come in a future version.
+PoshEmail is compatible with Windows PowerShell 5.1+ and PowerShell Core 6.0+ on Windows. Linux/macOS support is currently under development.
 
 ### Prerequisites
 
@@ -37,6 +37,26 @@ If you'd prefer to install manually, follow these instructions:
 ### Examples
 
 #### Send-HtmlMailMessage
+
+```PowerShell
+$EmailSplat = @{
+    To = "admin@contoso.com"
+    Cc = "admin2@contoso.com"
+    From = "poshemail@contoso.com"
+    Subject = "Alert"
+    Heading = "Alert"
+    Footer = "Sent at $((Get-Date).ToUniversalTime() | Get-Date -format s) UTC"
+    LastLine = ""
+    Body = "This is an alert message."
+    SmtpServer = "smtp.office365.com" 
+    UseSsl = $true
+    Port = 587
+    Credential = $CredentialObject
+}
+Send-HtmlMailMessage @EmailSplat
+```
+
+Sends a message.
 
 #### Invoke-CommandWithEmailWrapper
 
