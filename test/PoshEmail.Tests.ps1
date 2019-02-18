@@ -177,7 +177,7 @@ InModuleScope $ModuleName {
                 "                </tr>$NL" +
                 "                <tr>$NL" +
                 "                  <td class=`"content-block powered-by`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL" +
-                "                    Powered by <a style=`"text-decoration: underline; color: #999999; font-size: 12px; text-align: center;`" href=`"https://github.com/natescherer/PoshEmail`">PoshEmail</a>.$NL" +
+                "                    $NL" +
                 "                  </td>$NL" +
                 "                </tr>$NL" +
                 "              </table>$NL" +
