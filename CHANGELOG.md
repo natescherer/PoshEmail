@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - LastLine property on Send-HtmlMailMessage no longer set by default
 
+### Fixed
+- Version numbers now match between GitHub and PowerShell Gallery releases
+
 ## [1.0.0] - 2018-11-07
 ### Added
  - Send-HtmlMailMessage cmdlet
