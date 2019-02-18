@@ -360,6 +360,12 @@ function Send-HtmlMailMessage {
             $Body = "<p>$Body</p>"
         }
 
+        if ($Body -like "*<table>*") {
+            $Body = $Body -replace '<table>', '<table cellpadding="5" style="border-collapse: collapse; border: 1px solid black;">'
+            $Body = $Body -replace '<th>', '<th style="background-color: gray; border: 1px solid black;">'
+            $Body = $Body -replace '<td>', '<td style="border: 1px solid black;">'
+        }
+
         if ($Footer) {
             $Footer = "                    $Footer$Eol"
         }
