@@ -1,4 +1,4 @@
-$Eol = [System.Environment]::NewLine
+$NL = [System.Environment]::NewLine
 
 function Send-HtmlMailMessage {
     <#
@@ -198,163 +198,163 @@ function Send-HtmlMailMessage {
             $BodyWidth = "580"
         }
 
-        $HtmlTop = ("<!doctype html>$Eol" +
-            "<html>$Eol" +
-            "  <head>$Eol" +
-            "    <meta name=`"viewport`" content=`"width=device-width`">$Eol" +
-            "    <meta http-equiv=`"Content-Type`" content=`"text/html; charset=UTF-8`">$Eol" +
-            "    <title></title>$Eol" +
-            "    <style>$Eol" +
-            "    /* -------------------------------------$Eol" +
-            "        INLINED WITH htmlemail.io/inline$Eol" +
-            "    ------------------------------------- */$Eol" +
-            "    /* -------------------------------------$Eol" +
-            "        RESPONSIVE AND MOBILE FRIENDLY STYLES$Eol" +
-            "    ------------------------------------- */$Eol" +
-            "    @media only screen and (max-width: 620px) {$Eol" +
-            "      table[class=body] h1 {$Eol" +
-            "        font-size: 28px !important;$Eol" +
-            "        margin-bottom: 10px !important;$Eol" +
-            "      }$Eol" +
-            "      table[class=body] p,$Eol" +
-            "      table[class=body] ul,$Eol" +
-            "      table[class=body] ol,$Eol" +
-            "      table[class=body] td,$Eol" +
-            "      table[class=body] span,$Eol" +
-            "      table[class=body] a {$Eol" +
-            "        font-size: 16px !important;$Eol" +
-            "      }$Eol" +
-            "      table[class=body] .preformatted {$Eol" +
-            "        font-size: 11px !important;$Eol" +
-            "      }$Eol" +
-            "      table[class=body] .wrapper,$Eol" +
-            "            table[class=body] .article {$Eol" +
-            "        padding: 10px !important;$Eol" +
-            "      }$Eol" +
-            "      table[class=body] .content {$Eol" +
-            "        padding: 0 !important;$Eol" +
-            "      }$Eol" +
-            "      table[class=body] .container {$Eol" +
-            "        padding: 0 !important;$Eol" +
-            "        width: 100% !important;$Eol" +
-            "      }$Eol" +
-            "      table[class=body] .main {$Eol" +
-            "        border-left-width: 0 !important;$Eol" +
-            "        border-radius: 0 !important;$Eol" +
-            "        border-right-width: 0 !important;$Eol" +
-            "      }$Eol" +
-            "      table[class=body] .btn table {$Eol" +
-            "        width: 100% !important;$Eol" +
-            "      }$Eol" +
-            "      table[class=body] .btn a {$Eol" +
-            "        width: 100% !important;$Eol" +
-            "      }$Eol" +
-            "      table[class=body] .img-responsive {$Eol" +
-            "        height: auto !important;$Eol" +
-            "        max-width: 100% !important;$Eol" +
-            "        width: auto !important;$Eol" +
-            "      }$Eol" +
-            "    }$Eol" +
-            "$Eol" +
-            "    /* -------------------------------------$Eol" +
-            "        PRESERVE THESE STYLES IN THE HEAD$Eol" +
-            "    ------------------------------------- */$Eol" +
-            "    @media all {$Eol" +
-            "      .ExternalClass {$Eol" +
-            "        width: 100%;$Eol" +
-            "      }$Eol" +
-            "      .ExternalClass,$Eol" +
-            "      .ExternalClass p,$Eol" +
-            "      .ExternalClass span,$Eol" +
-            "      .ExternalClass font,$Eol" +
-            "      .ExternalClass td,$Eol" +
-            "      .ExternalClass div {$Eol" +
-            "        line-height: 100%;$Eol" +
-            "      }$Eol" +
-            "      .btn-primary table td:hover {$Eol" +
-            "        background-color: #34495e !important;$Eol" +
-            "      }$Eol" +
-            "      .btn-primary a:hover {$Eol" +
-            "        background-color: #34495e !important;$Eol" +
-            "        border-color: #34495e !important;$Eol" +
-            "      }$Eol" +
-            "    }$Eol" +
-            "   </style>$Eol" +
-            "  </head>$Eol" +
-            "  <body class=`"`" style=`"background-color: #f6f6f6; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;`">$Eol" +
-            "    <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"body`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background-color: #f6f6f6;`">$Eol" +
-            "      <tr>$Eol" +
-            "        <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">&nbsp;</td>$Eol" +
-            "        <td class=`"container`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; display: block; margin: 0 auto; max-width: $($BodyWidth)px; padding: 10px;`">$Eol" +
-            "          <div class=`"content`" style=`"box-sizing: border-box; display: block; margin: 0 auto; max-width: 100%; padding: 10px;`">$Eol" +
-            "$Eol" +
-            "            <!-- START CENTERED WHITE CONTAINER -->$Eol" +
-            "            <span class=`"preheader`" style=`"color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;`"></span>$Eol" +
-            "            <table class=`"main`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background: #ffffff; border-radius: 3px;`">$Eol" +
-            "$Eol" +
-            "              <!-- START MAIN CONTENT AREA -->$Eol" +
-            "              <tr>$Eol" +
-            "                <td class=`"wrapper`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; box-sizing: border-box; padding: 20px;`">$Eol" +
-            "                  <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;`">$Eol" +
-            "                    <tr>$Eol" +
-            "                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">$Eol")
+        $HtmlTop = ("<!doctype html>$NL" +
+            "<html>$NL" +
+            "  <head>$NL" +
+            "    <meta name=`"viewport`" content=`"width=device-width`">$NL" +
+            "    <meta http-equiv=`"Content-Type`" content=`"text/html; charset=UTF-8`">$NL" +
+            "    <title></title>$NL" +
+            "    <style>$NL" +
+            "    /* -------------------------------------$NL" +
+            "        INLINED WITH htmlemail.io/inline$NL" +
+            "    ------------------------------------- */$NL" +
+            "    /* -------------------------------------$NL" +
+            "        RESPONSIVE AND MOBILE FRIENDLY STYLES$NL" +
+            "    ------------------------------------- */$NL" +
+            "    @media only screen and (max-width: 620px) {$NL" +
+            "      table[class=body] h1 {$NL" +
+            "        font-size: 28px !important;$NL" +
+            "        margin-bottom: 10px !important;$NL" +
+            "      }$NL" +
+            "      table[class=body] p,$NL" +
+            "      table[class=body] ul,$NL" +
+            "      table[class=body] ol,$NL" +
+            "      table[class=body] td,$NL" +
+            "      table[class=body] span,$NL" +
+            "      table[class=body] a {$NL" +
+            "        font-size: 16px !important;$NL" +
+            "      }$NL" +
+            "      table[class=body] .preformatted {$NL" +
+            "        font-size: 11px !important;$NL" +
+            "      }$NL" +
+            "      table[class=body] .wrapper,$NL" +
+            "            table[class=body] .article {$NL" +
+            "        padding: 10px !important;$NL" +
+            "      }$NL" +
+            "      table[class=body] .content {$NL" +
+            "        padding: 0 !important;$NL" +
+            "      }$NL" +
+            "      table[class=body] .container {$NL" +
+            "        padding: 0 !important;$NL" +
+            "        width: 100% !important;$NL" +
+            "      }$NL" +
+            "      table[class=body] .main {$NL" +
+            "        border-left-width: 0 !important;$NL" +
+            "        border-radius: 0 !important;$NL" +
+            "        border-right-width: 0 !important;$NL" +
+            "      }$NL" +
+            "      table[class=body] .btn table {$NL" +
+            "        width: 100% !important;$NL" +
+            "      }$NL" +
+            "      table[class=body] .btn a {$NL" +
+            "        width: 100% !important;$NL" +
+            "      }$NL" +
+            "      table[class=body] .img-responsive {$NL" +
+            "        height: auto !important;$NL" +
+            "        max-width: 100% !important;$NL" +
+            "        width: auto !important;$NL" +
+            "      }$NL" +
+            "    }$NL" +
+            "$NL" +
+            "    /* -------------------------------------$NL" +
+            "        PRESERVE THESE STYLES IN THE HEAD$NL" +
+            "    ------------------------------------- */$NL" +
+            "    @media all {$NL" +
+            "      .ExternalClass {$NL" +
+            "        width: 100%;$NL" +
+            "      }$NL" +
+            "      .ExternalClass,$NL" +
+            "      .ExternalClass p,$NL" +
+            "      .ExternalClass span,$NL" +
+            "      .ExternalClass font,$NL" +
+            "      .ExternalClass td,$NL" +
+            "      .ExternalClass div {$NL" +
+            "        line-height: 100%;$NL" +
+            "      }$NL" +
+            "      .btn-primary table td:hover {$NL" +
+            "        background-color: #34495e !important;$NL" +
+            "      }$NL" +
+            "      .btn-primary a:hover {$NL" +
+            "        background-color: #34495e !important;$NL" +
+            "        border-color: #34495e !important;$NL" +
+            "      }$NL" +
+            "    }$NL" +
+            "   </style>$NL" +
+            "  </head>$NL" +
+            "  <body class=`"`" style=`"background-color: #f6f6f6; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;`">$NL" +
+            "    <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"body`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background-color: #f6f6f6;`">$NL" +
+            "      <tr>$NL" +
+            "        <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">&nbsp;</td>$NL" +
+            "        <td class=`"container`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; display: block; margin: 0 auto; max-width: $($BodyWidth)px; padding: 10px;`">$NL" +
+            "          <div class=`"content`" style=`"box-sizing: border-box; display: block; margin: 0 auto; max-width: 100%; padding: 10px;`">$NL" +
+            "$NL" +
+            "            <!-- START CENTERED WHITE CONTAINER -->$NL" +
+            "            <span class=`"preheader`" style=`"color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;`"></span>$NL" +
+            "            <table class=`"main`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background: #ffffff; border-radius: 3px;`">$NL" +
+            "$NL" +
+            "              <!-- START MAIN CONTENT AREA -->$NL" +
+            "              <tr>$NL" +
+            "                <td class=`"wrapper`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; box-sizing: border-box; padding: 20px;`">$NL" +
+            "                  <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;`">$NL" +
+            "                    <tr>$NL" +
+            "                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">$NL")
 
-        $HtmlButton = ("                        <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"btn btn-primary`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;`">$Eol" +
-            "                          <tbody>$Eol" +
-            "                            <tr>$Eol" +
-            "                              <td align=`"$($ButtonAlignment.ToLower())`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;`">$Eol" +
-            "                                <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;`">$Eol" +
-            "                                  <tbody>$Eol" +
-            "                                    <tr>$Eol" +
-            "                                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #3498db; border-radius: 5px; text-align: center;`"> <a href=`"$ButtonLink`" target=`"_blank`" style=`"display: inline-block; color: #ffffff; background-color: #3498db; border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db;`">$ButtonText</a> </td>$Eol" +
-            "                                    </tr>$Eol" +
-            "                                  </tbody>$Eol" +
-            "                                </table>$Eol" +
-            "                              </td>$Eol" +
-            "                            </tr>$Eol" +
-            "                          </tbody>$Eol" +
-            "                        </table>$Eol")
+        $HtmlButton = ("                        <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"btn btn-primary`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;`">$NL" +
+            "                          <tbody>$NL" +
+            "                            <tr>$NL" +
+            "                              <td align=`"$($ButtonAlignment.ToLower())`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;`">$NL" +
+            "                                <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;`">$NL" +
+            "                                  <tbody>$NL" +
+            "                                    <tr>$NL" +
+            "                                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #3498db; border-radius: 5px; text-align: center;`"> <a href=`"$ButtonLink`" target=`"_blank`" style=`"display: inline-block; color: #ffffff; background-color: #3498db; border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db;`">$ButtonText</a> </td>$NL" +
+            "                                    </tr>$NL" +
+            "                                  </tbody>$NL" +
+            "                                </table>$NL" +
+            "                              </td>$NL" +
+            "                            </tr>$NL" +
+            "                          </tbody>$NL" +
+            "                        </table>$NL")
 
-        $HtmlDataToFooter = ("                      </td>$Eol" +
-            "                    </tr>$Eol" +
-            "                  </table>$Eol" +
-            "                </td>$Eol" +
-            "              </tr>$Eol" +
-            "$Eol" +
-            "            <!-- END MAIN CONTENT AREA -->$Eol" +
-            "            </table>$Eol" +
-            "$Eol" +
-            "            <!-- START FOOTER -->$Eol" +
-            "            <div class=`"footer`" style=`"clear: both; margin-top: 10px; text-align: center; width: 100%;`">$Eol" +
-            "              <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;`">$Eol" +
-            "                <tr>$Eol" +
-            "                  <td class=`"content-block`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$Eol")
+        $HtmlDataToFooter = ("                      </td>$NL" +
+            "                    </tr>$NL" +
+            "                  </table>$NL" +
+            "                </td>$NL" +
+            "              </tr>$NL" +
+            "$NL" +
+            "            <!-- END MAIN CONTENT AREA -->$NL" +
+            "            </table>$NL" +
+            "$NL" +
+            "            <!-- START FOOTER -->$NL" +
+            "            <div class=`"footer`" style=`"clear: both; margin-top: 10px; text-align: center; width: 100%;`">$NL" +
+            "              <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;`">$NL" +
+            "                <tr>$NL" +
+            "                  <td class=`"content-block`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL")
 
-        $HtmlFooterToLastLine = ("                  </td>$Eol" +
-            "                </tr>$Eol" +
-            "                <tr>$Eol" +
-            "                  <td class=`"content-block powered-by`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$Eol")
+        $HtmlFooterToLastLine = ("                  </td>$NL" +
+            "                </tr>$NL" +
+            "                <tr>$NL" +
+            "                  <td class=`"content-block powered-by`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL")
 
-        $HtmlBottom = ("                  </td>$Eol" +
-            "                </tr>$Eol" +
-            "              </table>$Eol" +
-            "            </div>$Eol" +
-            "            <!-- END FOOTER -->$Eol" +
-            "$Eol" +
-            "          <!-- END CENTERED WHITE CONTAINER -->$Eol" +
-            "          </div>$Eol" +
-            "        </td>$Eol" +
-            "        <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">&nbsp;</td>$Eol" +
-            "      </tr>$Eol" +
-            "    </table>$Eol" +
-            "  </body>$Eol" +
-            "</html>$Eol")
+        $HtmlBottom = ("                  </td>$NL" +
+            "                </tr>$NL" +
+            "              </table>$NL" +
+            "            </div>$NL" +
+            "            <!-- END FOOTER -->$NL" +
+            "$NL" +
+            "          <!-- END CENTERED WHITE CONTAINER -->$NL" +
+            "          </div>$NL" +
+            "        </td>$NL" +
+            "        <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">&nbsp;</td>$NL" +
+            "      </tr>$NL" +
+            "    </table>$NL" +
+            "  </body>$NL" +
+            "</html>$NL")
 
         if (!$ButtonText) {
             $HtmlButton = ""
         }
 
-        $Heading = "                        <h2 style=`"text-align: $($HeadingAlignment.ToLower());`">$Heading</h2>$Eol"
+        $Heading = "                        <h2 style=`"text-align: $($HeadingAlignment.ToLower());`">$Heading</h2>$NL"
 
         if ($Body -notlike "*<p>*") {
             $Body = "<p>$Body</p>"
@@ -367,32 +367,32 @@ function Send-HtmlMailMessage {
         }
 
         if ($Footer) {
-            $Footer = "                    $Footer$Eol"
+            $Footer = "                    $Footer$NL"
         }
 
-        $LastLine = "                    $LastLine$Eol"
+        $LastLine = "                    $LastLine$NL"
 
         $Body = $Body -replace "<p>","                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: $($BodyAlignment.ToLower());`">"
-        $Body = $Body -replace "</p>","</p>$Eol"
+        $Body = $Body -replace "</p>","</p>$NL"
         if ($BodyPreformatted -ne "") {
             $BodyReformatted = ""
-            foreach ($Line in $BodyPreformatted -split $Eol) {
+            foreach ($Line in $BodyPreformatted -split $NL) {
                 $Line = $Line -replace " ","&ensp;"
-                $BodyReformatted += "                          <li style=`"color: #4169E1; font-family: monospace; font-size: 11px;`"><span class=`"preformatted`" style=`"color: black; font-family: monospace; font-size: 11px; white-space: pre-wrap;`">$Line</span></li>$Eol"
+                $BodyReformatted += "                          <li style=`"color: #4169E1; font-family: monospace; font-size: 11px;`"><span class=`"preformatted`" style=`"color: black; font-family: monospace; font-size: 11px; white-space: pre-wrap;`">$Line</span></li>$NL"
             }
 
-            $BodyPreformatted = ("                      </td>$Eol" +
-                "                    </tr>$Eol" +
-                "                    <tr>$Eol" +
-                "                      <td class=`"preformatted`" width=`"100%`" style=`"font-size: 14px; vertical-align: top; max-width: 100%; overflow: auto; padding-top: 15px; padding-right: 15px;background-color: #F5F5F5; border: 1px solid black;`">$Eol" + 
-                "                        <ol class=`"preformatted`">$Eol" +
+            $BodyPreformatted = ("                      </td>$NL" +
+                "                    </tr>$NL" +
+                "                    <tr>$NL" +
+                "                      <td class=`"preformatted`" width=`"100%`" style=`"font-size: 14px; vertical-align: top; max-width: 100%; overflow: auto; padding-top: 15px; padding-right: 15px;background-color: #F5F5F5; border: 1px solid black;`">$NL" + 
+                "                        <ol class=`"preformatted`">$NL" +
                 "$BodyReformatted" +
-                "                        </ol>$Eol")
-            $BodyPreformatted = $BodyPreformatted + ("                      </td>$Eol" +
-                "                    </tr>$Eol" +
-                "                    <tr>$Eol" +
-                "                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">$Eol" +
-                "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: $($BodyAlignment.ToLower());`">&nbsp;</p>$Eol")
+                "                        </ol>$NL")
+            $BodyPreformatted = $BodyPreformatted + ("                      </td>$NL" +
+                "                    </tr>$NL" +
+                "                    <tr>$NL" +
+                "                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">$NL" +
+                "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: $($BodyAlignment.ToLower());`">&nbsp;</p>$NL")
         }
         $Footer = $Footer -replace "<a ","<a style=`"text-decoration: underline; color: #999999; font-size: 12px; text-align: center;`" "
         $LastLine = $LastLine -replace "<a ","<a style=`"text-decoration: underline; color: #999999; font-size: 12px; text-align: center;`" "
