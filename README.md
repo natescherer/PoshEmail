@@ -1,6 +1,6 @@
 # PoshEmail
 
-![Appveyor Build Status](https://ci.appveyor.com/api/projects/status/github/natescherer/PoshEmail?svg=true&branch=master)
+[![Build Status](https://img.shields.io/azure-devops/build/natescherer/poshemail/3.svg?logo=azuredevops)](https://dev.azure.com/natescherer/poshemail/_build/latest?definitionId=3&branchName=master) ![Tests](https://img.shields.io/azure-devops/tests/natescherer/poshemail/3.svg?logo=azuredevops) ![Code Coverage](https://img.shields.io/azure-devops/coverage/natescherer/poshemail/3.svg?logo=azuredevops) ![Open Issues](https://img.shields.io/github/issues-raw/natescherer/poshemail.svg?logo=github)
 
 PoshEmail is a PowerShell module designed to provide useful email tasks, including the following:
 
