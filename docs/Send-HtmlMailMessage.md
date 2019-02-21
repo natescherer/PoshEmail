@@ -400,7 +400,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: Powered by <a href="https://github.com/natescherer/PoshEmail">PoshEmail</a>.
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -466,7 +466,6 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ### No outputs
 ## NOTES
-Detail on what the function does, if this is needed
 
 ## RELATED LINKS
 
