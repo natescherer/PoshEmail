@@ -15,14 +15,14 @@ variables:
 
 jobs:
 - template: azure-pipelines-build.yml
- parameters:
+  parameters:
    name: linux
    vmImage: 'ubuntu-16.04'
    tempDir: /tmp
    moduleInstallOptions: -Scope CurrentUser
 
 - template: azure-pipelines-build.yml
- parameters:
+  parameters:
    name: macos
    vmImage: 'macOS-10.13'
    tempDir: $env:TMPDIR
