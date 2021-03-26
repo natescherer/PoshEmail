@@ -1,18 +1,10 @@
 # NOTE: All pending tests are due to lack of support in MailHog for that specific feature.
 
-$ModuleName = Split-Path -Path ($PSCommandPath -replace '\.Tests\.ps1$','') -Leaf
-$ModulePath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psm1"
-Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
-Import-Module -Name $ModulePath -Force -ErrorAction Stop
-
-InModuleScope $ModuleName {
-    $global:NL = [System.Environment]::NewLine
+BeforeAll {
     $ModuleName = Split-Path -Path ($PSCommandPath -replace '\.Tests\.ps1$','') -Leaf
     $ModulePath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psm1"
-    $ModuleManifestPath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psd1"
-    if ($IsWindows -eq $null) {$IsWindows = $true}
-    $global:IsntWindows = !$IsWindows
-    $global:EmailSendSleep = 1
+    Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
+    Import-Module -Name $ModulePath -Force -ErrorAction Stop
 
     function ConvertTo-NormalBody {
         param (
@@ -21,15 +13,25 @@ InModuleScope $ModuleName {
 
         $NL = [System.Environment]::NewLine
         $Output = ""
-        $Output = $InputObject -replace "=`r`n",""
-        $Output = $Output -replace "`r`n",""
+        $Output = $InputObject -replace "=`r`n", ""
+        $Output = $Output -replace "`r`n", ""
 
-        $Output = $Output -replace "=0D=0A",$NL
-        $Output = $Output -replace "=0A",$NL
-        $Output = $Output -replace "=3D","="
+        $Output = $Output -replace "=0D=0A", $NL
+        $Output = $Output -replace "=0A", $NL
+        $Output = $Output -replace "=3D", "="
 
         $Output
     }
+}
+
+InModuleScope $ModuleName {
+    $global:NL = [System.Environment]::NewLine
+    $ModuleName = Split-Path -Path ($PSCommandPath -replace '\.Tests\.ps1$','') -Leaf
+    $ModulePath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psm1"
+    $global:ModuleManifestPath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psd1"
+    if ($IsWindows -eq $null) {$IsWindows = $true}
+    $global:IsntWindows = !$IsWindows
+    $global:EmailSendSleep = 1
 
     Describe 'Module Manifest Tests' {
         It 'Passes Test-ModuleManifest' {
