@@ -122,7 +122,7 @@ jobs:
         $Configuration.Run.Path = ".\test"
         $Configuration.Run.Exit = $true
         $Configuration.CodeCoverage.Enabled = $true
-        $Configuration.CodeCoverage.Path = $env:MODULENAME
+        $Configuration.CodeCoverage.Path = "src\$env:PROJECTNAME.psm1"
         $Configuration.TestResult.Enabled = $true
 
         Invoke-Pester -Configuration $Configuration
