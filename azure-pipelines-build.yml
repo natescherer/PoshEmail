@@ -124,9 +124,7 @@ jobs:
         $Configuration.CodeCoverage.Enabled = $true
         $Configuration.CodeCoverage.Path = "src\$env:PROJECTNAME.psm1"
         $Configuration.TestResult.Enabled = $true
-
         Invoke-Pester -Configuration $Configuration
-        Get-ChildItem
 
   - task: PublishTestResults@2
     displayName: Publish Test Results
