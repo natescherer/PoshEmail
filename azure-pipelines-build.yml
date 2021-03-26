@@ -117,7 +117,12 @@ jobs:
       pwsh: ${{ parameters.pwsh }}
       targetType: inline
       script: |
-        Invoke-Pester -Path ".\test" -CI
+        $Configuration = [PesterConfiguration]::Default
+        $Configuration.Run.Path = ".\test"
+        $Configration.Run.Exit = $true
+        $Configuration.CodeCoverage.Path = $env:MODULENAME
+
+        Invoke-Pester -Configuration $Configuration
         Get-ChildItem
 
   - task: PublishTestResults@2
