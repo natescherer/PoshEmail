@@ -117,10 +117,12 @@ jobs:
       pwsh: ${{ parameters.pwsh }}
       targetType: inline
       script: |
+        Import-Module Pester
         $Configuration = [PesterConfiguration]::Default
         $Configuration.Run.Path = ".\test"
         $Configration.Run.Exit = $true
         $Configuration.CodeCoverage.Path = $env:MODULENAME
+        $Configuration.TestResult.OutputFormat = "NUnit"
 
         Invoke-Pester -Configuration $Configuration
         Get-ChildItem
