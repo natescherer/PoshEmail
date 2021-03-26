@@ -1,11 +1,17 @@
 # NOTE: All pending tests are due to lack of support in MailHog for that specific feature.
 
-BeforeAll {
-    $global:ModuleName = Split-Path -Path ($PSCommandPath -replace '\.Tests\.ps1$','') -Leaf
-    $global:ModulePath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psm1"
-    Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
-    Import-Module -Name $ModulePath -Force -ErrorAction Stop
+$global:ModuleName = Split-Path -Path ($PSCommandPath -replace '\.Tests\.ps1$','') -Leaf
+$global:ModulePath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psm1"
+$global:ModuleManifestPath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psd1"
+$global:NL = [System.Environment]::NewLine
+if ($IsWindows -eq $null) {$IsWindows = $true}
+$global:IsntWindows = !$IsWindows
+$global:EmailSendSleep = 1
 
+Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
+Import-Module -Name $ModulePath -Force -ErrorAction Stop
+
+BeforeAll {
     function ConvertTo-NormalBody {
         param (
             [string]$InputObject
@@ -25,14 +31,6 @@ BeforeAll {
 }
 
 InModuleScope $ModuleName {
-    $global:NL = [System.Environment]::NewLine
-    $ModuleName = Split-Path -Path ($PSCommandPath -replace '\.Tests\.ps1$','') -Leaf
-    $ModulePath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psm1"
-    $global:ModuleManifestPath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psd1"
-    if ($IsWindows -eq $null) {$IsWindows = $true}
-    $global:IsntWindows = !$IsWindows
-    $global:EmailSendSleep = 1
-
     Describe 'Module Manifest Tests' {
         It 'Passes Test-ModuleManifest' {
             Test-ModuleManifest -Path $ModuleManifestPath | Should -Not -BeNullOrEmpty
