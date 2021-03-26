@@ -592,8 +592,10 @@ InModuleScope $ModuleName {
             $Source | Should -Match "ROBOCOPY&ensp;&ensp;&ensp;&ensp;&ensp;::&ensp;&ensp;&ensp;&ensp;&ensp;Robust&ensp;File&ensp;Copy&ensp;for&ensp;Windows"
 
         }
-
-        Remove-Item $IcwewSourcePath -Force -Recurse
-        Remove-Item $IcwewDestPath -Force -Recurse
+        
+        AfterAll {
+            Remove-Item $IcwewSourcePath -Force -Recurse
+            Remove-Item $IcwewDestPath -Force -Recurse
+        }
     }
 }
