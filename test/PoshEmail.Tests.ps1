@@ -532,8 +532,8 @@ InModuleScope $ModuleName {
     Describe 'Invoke-CommandWithEmailWrapper' {
         $global:IcwewSourcePath = "$PSScriptRoot\icwew_source"
         $global:IcwewDestPath = "$PSScriptRoot\icwew_dest"
-        New-Item -Path $IcwewSourcePath -ItemType Directory | Out-Null
-        New-Item -Path $IcwewDestPath -ItemType Directory | Out-Null
+        New-Item -Path $global:IcwewSourcePath -ItemType Directory | Out-Null
+        New-Item -Path $global:IcwewDestPath -ItemType Directory | Out-Null
 
         $File1 = New-Object System.IO.FileStream "$IcwewSourcePath\test1.txt", Create, ReadWrite
         $File1.SetLength(10MB) | Out-Null
@@ -552,7 +552,7 @@ InModuleScope $ModuleName {
                 EmailFrom = "PoshEmail@test.local"
                 EmailTo = "rcpt@test.local"
                 SmtpServer = "127.0.0.1"
-                ScriptBLock = { Get-ChildItem $IcwewSourcePath | Select-Object Length, Name  }
+                ScriptBlock = { Get-ChildItem $IcwewSourcePath | Select-Object Length, Name }
                 JobName = "Test 1"
                 EmailUseSsl = $false
             }
