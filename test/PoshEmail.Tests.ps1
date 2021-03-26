@@ -30,7 +30,7 @@ InModuleScope $ModuleName {
             $Output
         }
     }
-    
+
     Describe 'Module Manifest Tests' {
         It 'Passes Test-ModuleManifest' {
             Test-ModuleManifest -Path $ModuleManifestPath | Should -Not -BeNullOrEmpty
@@ -530,20 +530,20 @@ InModuleScope $ModuleName {
         }
     }
     Describe 'Invoke-CommandWithEmailWrapper' {
-        $SourcePath = "$PSScriptRoot\icwew_source"
-        $DestPath = "$PSScriptRoot\icwew_dest"
-        New-Item -Path $SourcePath -ItemType Directory | Out-Null
-        New-Item -Path $DestPath -ItemType Directory | Out-Null
+        $global:IcwewSourcePath = "$PSScriptRoot\icwew_source"
+        $global:IcwewDestPath = "$PSScriptRoot\icwew_dest"
+        New-Item -Path $IcwewSourcePath -ItemType Directory | Out-Null
+        New-Item -Path $IcwewDestPath -ItemType Directory | Out-Null
 
-        $File1 = New-Object System.IO.FileStream "$SourcePath\test1.txt", Create, ReadWrite
+        $File1 = New-Object System.IO.FileStream "$IcwewSourcePath\test1.txt", Create, ReadWrite
         $File1.SetLength(10MB) | Out-Null
         $File1.Close() | Out-Null
 
-        $File2 = New-Object System.IO.FileStream "$SourcePath\test2.txt", Create, ReadWrite
+        $File2 = New-Object System.IO.FileStream "$IcwewSourcePath\test2.txt", Create, ReadWrite
         $File2.SetLength(100MB) | Out-Null
         $File2.Close() | Out-Null
 
-        $File3 = New-Object System.IO.FileStream "$SourcePath\test3.txt", Create, ReadWrite
+        $File3 = New-Object System.IO.FileStream "$IcwewSourcePath\test3.txt", Create, ReadWrite
         $File3.SetLength(1MB) | Out-Null
         $File3.Close() | Out-Null
 
@@ -552,7 +552,7 @@ InModuleScope $ModuleName {
                 EmailFrom = "PoshEmail@test.local"
                 EmailTo = "rcpt@test.local"
                 SmtpServer = "127.0.0.1"
-                ScriptBLock = { Get-ChildItem $SourcePath | Select-Object Length, Name  }
+                ScriptBLock = { Get-ChildItem $IcwewSourcePath | Select-Object Length, Name  }
                 JobName = "Test 1"
                 EmailUseSsl = $false
             }
@@ -574,7 +574,7 @@ InModuleScope $ModuleName {
                 EmailFrom = "PoshEmail@test.local"
                 EmailTo = "rcpt@test.local"
                 SmtpServer = "127.0.0.1"
-                ScriptBLock = { robocopy $SourcePath $DestPath }
+                ScriptBlock = { robocopy $IcwewSourcePath $IcwewDestPath }
                 JobName = "Test 1"
                 EmailUseSsl = $false
             }
@@ -591,7 +591,7 @@ InModuleScope $ModuleName {
 
         }
 
-        Remove-Item $SourcePath -Force -Recurse
-        Remove-Item $DestPath -Force -Recurse
+        Remove-Item $IcwewSourcePath -Force -Recurse
+        Remove-Item $IcwewDestPath -Force -Recurse
     }
 }
