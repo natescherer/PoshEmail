@@ -406,7 +406,7 @@ function Send-HtmlMailMessage {
             Subject = $Subject
             Body = $CompleteBody
             BodyAsHtml = $true
-            WarningAction = $Ignore
+            WarningAction = "Ignore"
         }
 
         if ($Attachments) {
