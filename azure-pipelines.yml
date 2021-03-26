@@ -6,8 +6,6 @@ trigger:
       - master
       - feature/*
       - bugfix/*
-    exclude:
-      - release/*
 
 variables:
   PowerShellModules: ChangelogManagement,InvokeBuild,Pester,platyPS,MarkdownToHtml,BuildHelpers,PowerShellGet
@@ -17,25 +15,25 @@ jobs:
 - template: azure-pipelines-build.yml
   parameters:
    name: linux
-   vmImage: 'ubuntu-16.04'
+   vmImage: 'ubuntu-latest'
    tempDir: /tmp
    moduleInstallOptions: -Scope CurrentUser
 
 - template: azure-pipelines-build.yml
   parameters:
    name: macos
-   vmImage: 'macOS-10.13'
+   vmImage: 'macOS-latest'
    tempDir: $env:TMPDIR
 
 - template: azure-pipelines-build.yml
   parameters:
     name: windows_w_windows_powershell
-    vmImage: 'vs2017-win2016'
+    vmImage: 'windows-latest'
     tempDir: $env:TEMP
     pwsh: false
 
 - template: azure-pipelines-build.yml
   parameters:
     name: windows_w_powershell_core
-    vmImage: 'vs2017-win2016'
+    vmImage: 'windows-latest'
     tempDir: $env:TEMP
