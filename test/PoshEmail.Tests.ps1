@@ -530,22 +530,24 @@ InModuleScope $ModuleName {
         }
     }
     Describe 'Invoke-CommandWithEmailWrapper' {
-        $global:IcwewSourcePath = "$PSScriptRoot\icwew_source"
-        $global:IcwewDestPath = "$PSScriptRoot\icwew_dest"
-        New-Item -Path $global:IcwewSourcePath -ItemType Directory | Out-Null
-        New-Item -Path $global:IcwewDestPath -ItemType Directory | Out-Null
+        BeforeAll {
+            $IcwewSourcePath = "$PSScriptRoot\icwew_source"
+            $IcwewDestPath = "$PSScriptRoot\icwew_dest"
+            New-Item -Path $IcwewSourcePath -ItemType Directory | Out-Null
+            New-Item -Path $IcwewDestPath -ItemType Directory | Out-Null
 
-        $File1 = New-Object System.IO.FileStream "$IcwewSourcePath\test1.txt", Create, ReadWrite
-        $File1.SetLength(10MB) | Out-Null
-        $File1.Close() | Out-Null
+            $File1 = New-Object System.IO.FileStream "$IcwewSourcePath\test1.txt", Create, ReadWrite
+            $File1.SetLength(10MB) | Out-Null
+            $File1.Close() | Out-Null
 
-        $File2 = New-Object System.IO.FileStream "$IcwewSourcePath\test2.txt", Create, ReadWrite
-        $File2.SetLength(100MB) | Out-Null
-        $File2.Close() | Out-Null
+            $File2 = New-Object System.IO.FileStream "$IcwewSourcePath\test2.txt", Create, ReadWrite
+            $File2.SetLength(100MB) | Out-Null
+            $File2.Close() | Out-Null
 
-        $File3 = New-Object System.IO.FileStream "$IcwewSourcePath\test3.txt", Create, ReadWrite
-        $File3.SetLength(1MB) | Out-Null
-        $File3.Close() | Out-Null
+            $File3 = New-Object System.IO.FileStream "$IcwewSourcePath\test3.txt", Create, ReadWrite
+            $File3.SetLength(1MB) | Out-Null
+            $File3.Close() | Out-Null
+        }
 
         It 'PowerShell ScriptBlock' {
             $ShmmParams = @{
