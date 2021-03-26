@@ -6,13 +6,13 @@ Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
 Import-Module -Name $ModulePath -Force -ErrorAction Stop
 
 InModuleScope $ModuleName {
-    $NL = [System.Environment]::NewLine
+    $global:NL = [System.Environment]::NewLine
     $ModuleName = Split-Path -Path ($PSCommandPath -replace '\.Tests\.ps1$','') -Leaf
     $ModulePath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psm1"
     $ModuleManifestPath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psd1"
     if ($IsWindows -eq $null) {$IsWindows = $true}
-    $IsntWindows = !$IsWindows
-    $EmailSendSleep = 1
+    $global:IsntWindows = !$IsWindows
+    $global:EmailSendSleep = 1
 
     function ConvertTo-NormalBody {
         param (
