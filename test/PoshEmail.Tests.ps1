@@ -11,26 +11,26 @@ $global:EmailSendSleep = 1
 Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
 Import-Module -Name $ModulePath -Force -ErrorAction Stop
 
-BeforeAll {
-    function ConvertTo-NormalBody {
-        param (
-            [string]$InputObject
-        )
-
-        $NL = [System.Environment]::NewLine
-        $Output = ""
-        $Output = $InputObject -replace "=`r`n", ""
-        $Output = $Output -replace "`r`n", ""
-
-        $Output = $Output -replace "=0D=0A", $NL
-        $Output = $Output -replace "=0A", $NL
-        $Output = $Output -replace "=3D", "="
-
-        $Output
-    }
-}
-
 InModuleScope $ModuleName {
+    BeforeAll {
+        function ConvertTo-NormalBody {
+            param (
+                [string]$InputObject
+            )
+
+            $NL = [System.Environment]::NewLine
+            $Output = ""
+            $Output = $InputObject -replace "=`r`n", ""
+            $Output = $Output -replace "`r`n", ""
+
+            $Output = $Output -replace "=0D=0A", $NL
+            $Output = $Output -replace "=0A", $NL
+            $Output = $Output -replace "=3D", "="
+
+            $Output
+        }
+    }
+    
     Describe 'Module Manifest Tests' {
         It 'Passes Test-ModuleManifest' {
             Test-ModuleManifest -Path $ModuleManifestPath | Should -Not -BeNullOrEmpty
