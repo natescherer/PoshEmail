@@ -123,7 +123,6 @@ jobs:
         $Configuration.Run.Exit = $true
         $Configuration.CodeCoverage.Enabled = $true
         $Configuration.CodeCoverage.Path = $env:MODULENAME
-        $Configuration.CodeCoverage.CodeCoverageOutputFile = "coverage.xml"
         $Configuration.TestResult.Enabled = $true
 
         Invoke-Pester -Configuration $Configuration
