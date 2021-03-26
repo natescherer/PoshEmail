@@ -116,13 +116,20 @@ jobs:
     inputs:
       pwsh: ${{ parameters.pwsh }}
       targetType: inline
-      script: Invoke-Pester -Path ".\test" -OutputFormat NUnitXml -OutputFile "out\TestResults.xml" -CodeCoverage "src\$env:PROJECTNAME.psm1" -CodeCoverageOutputFile "out\CoverageResults.xml"
+      script: |
+        $Configuration = [PesterConfiguration] @{
+          Run = @{
+            Path = ".\test"
+          }
+        }
+        Invoke-Pester -Path ".\test" -CI
+        Get-ChildItem
 
   - task: PublishTestResults@2
     displayName: Publish Test Results
     condition: always()
     inputs:
-      testResultsFormat: 'NUnit'
+      testResultsFormat: 'JaCoCo'
       testResultsFiles: '**/TestResults.xml'
       testRunTitle: 'TestResults-$(Agent.OS)_$(psEdition)'
 
