@@ -118,6 +118,7 @@ jobs:
       targetType: inline
       script: |
         Invoke-Pester -Path ".\test" -CI
+        Get-ChildItem
 
   - task: PublishTestResults@2
     displayName: Publish Test Results
