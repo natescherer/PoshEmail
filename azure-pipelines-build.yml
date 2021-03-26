@@ -125,7 +125,7 @@ jobs:
     condition: always()
     inputs:
       testResultsFormat: 'JaCoCo'
-      testResultsFiles: '**/TestResults.xml'
+      testResultsFiles: '**/testResults.xml'
       testRunTitle: 'TestResults-$(Agent.OS)_$(psEdition)'
 
   - task: PublishCodeCoverageResults@1
@@ -133,5 +133,5 @@ jobs:
     condition: always()
     inputs:
       codeCoverageTool: 'JaCoCo'
-      summaryFileLocation: '**/CoverageResults.xml'
+      summaryFileLocation: '**/coverage.xml'
       failIfCoverageEmpty: true
