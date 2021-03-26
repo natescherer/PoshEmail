@@ -124,7 +124,7 @@ jobs:
     displayName: Publish Test Results
     condition: always()
     inputs:
-      testResultsFormat: 'JaCoCo'
+      testResultsFormat: 'NUnit'
       testResultsFiles: '**/testResults.xml'
       testRunTitle: 'TestResults-$(Agent.OS)_$(psEdition)'
 
