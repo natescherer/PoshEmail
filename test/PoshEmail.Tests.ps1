@@ -555,7 +555,7 @@ InModuleScope $ModuleName {
         }
 
         It 'PowerShell Command' {
-            $ShmmParams = @{
+            $IcwewParams = @{
                 EmailFrom = "PoshEmail@test.local"
                 EmailTo = "rcpt@test.local"
                 SmtpServer = "127.0.0.1"
@@ -564,7 +564,7 @@ InModuleScope $ModuleName {
                 EmailUseSsl = $false
             }
 
-            Invoke-CommandWithEmailWrapper @ShmmParams
+            Invoke-CommandWithEmailWrapper @IcwewParams
 
             Start-Sleep -Seconds $EmailSendSleep
 
@@ -577,7 +577,7 @@ InModuleScope $ModuleName {
 
         }
         It 'Cmd Command' -Skip:$IsntWindows {
-            $ShmmParams = @{
+            $IcwewParams = @{
                 EmailFrom = "PoshEmail@test.local"
                 EmailTo = "rcpt@test.local"
                 SmtpServer = "127.0.0.1"
@@ -586,7 +586,7 @@ InModuleScope $ModuleName {
                 EmailUseSsl = $false
             }
 
-            Invoke-CommandWithEmailWrapper @ShmmParams
+            Invoke-CommandWithEmailWrapper @IcwewParams
 
             Start-Sleep -Seconds $EmailSendSleep
 
