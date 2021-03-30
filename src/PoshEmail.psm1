@@ -525,10 +525,10 @@ function Invoke-CommandWithEmailWrapper {
         # TCP Port to connect to SMTP server on. Defaults to 25.
         [int]$SmtpPort = 25,
     
-        [parameter(ParameterSetName="Script",Mandatory=$false)]
-        [parameter(ParameterSetName="ScriptBlock",Mandatory=$false)]
-        # Specifies a source address for messages. Defaults to computername@domain
-        [string]$EmailFrom = "$($env:computername)@$($env:userdnsdomain)",
+        [parameter(ParameterSetName="Script",Mandatory=$true)]
+        [parameter(ParameterSetName="ScriptBlock",Mandatory=$true)]
+        # Specifies a source address for messages.
+        [string]$EmailFrom,
     
         [parameter(ParameterSetName="Script",Mandatory=$true)]
         [parameter(ParameterSetName="ScriptBlock",Mandatory=$true)]
