@@ -82,12 +82,7 @@ function Invoke-CommandWithEmailWrapper {
         [parameter(ParameterSetName = "Script", Mandatory = $false)]
         [parameter(ParameterSetName = "Command", Mandatory = $false)]
         # Indicates that the cmdlet uses the Secure Sockets Layer (SSL) protocol to establish a connection to the remote computer to send mail. Defaults to $true
-        [bool]$EmailUseSsl = $true,
-
-        [parameter(ParameterSetName = "Script", Mandatory = $false)]
-        [parameter(ParameterSetName = "Command", Mandatory = $false)]
-        # Some non-PowerShell commands send non-error output to PowerShell's error or warning streams. Adding this option will redirect all streams to output to prevent this.
-        [bool]$RedirectStreams = $false
+        [bool]$EmailUseSsl = $true
     )
 
     if ($ComputerName) {
@@ -126,6 +121,7 @@ function Invoke-CommandWithEmailWrapper {
             $TempFilePath = "$env:TMPDIR/EmailWrappedCommand.ps1"
         }
         Out-File -FilePath $TempFilePath -InputObject $Command
+
         if ($RedirectStreams) {
             $InvokeCommandParams += @{ ScriptBlock = { & $TempFilePath *>&1 } }
         }
