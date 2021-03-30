@@ -375,16 +375,16 @@ InModuleScope $ModuleName {
                 Body = "Body Text"
                 Heading = "Test Heading"
             }
-    
+
             Send-HtmlMailMessage @ShmmParams
-    
+
             Start-Sleep -Seconds $EmailSendSleep
-    
+
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
-    
+
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-    
+
             $Source | Should -Match "<h2 style=`"text-align: center;`">Test Heading</h2>"
         }
         It '-HeadingAlignment' {
@@ -397,16 +397,16 @@ InModuleScope $ModuleName {
                 Heading = "Test Heading"
                 HeadingAlignment = "Left"
             }
-    
+
             Send-HtmlMailMessage @ShmmParams
-    
+
             Start-Sleep -Seconds $EmailSendSleep
-    
+
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
-    
+
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-    
+
             $Source | Should -Match "<h2 style=`"text-align: left;`">Test Heading</h2>"
         }
         It '-Footer' {
@@ -418,16 +418,16 @@ InModuleScope $ModuleName {
                 Body = "Body Text"
                 Footer = "Test Footer"
             }
-    
+
             Send-HtmlMailMessage @ShmmParams
-    
+
             Start-Sleep -Seconds $EmailSendSleep
-    
+
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
-    
+
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-    
+
             $Source | Should -Match ("<td class=`"content-block`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL" +
                 "                    Test Footer$NL" +
                 "                  </td>$NL")
@@ -441,16 +441,16 @@ InModuleScope $ModuleName {
                 Body = "Body Text"
                 LastLine = "Test LastLine"
             }
-    
+
             Send-HtmlMailMessage @ShmmParams
-    
+
             Start-Sleep -Seconds $EmailSendSleep
-    
+
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
-    
+
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-    
+
             $Source | Should -Match ("<td class=`"content-block powered-by`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL" +
                 "                    Test LastLine$NL" +
                 "                  </td>")
@@ -465,16 +465,16 @@ InModuleScope $ModuleName {
                 ButtonText = "Test ButtonText"
                 ButtonLink = "https://testbuttonlink.com"
             }
-    
+
             Send-HtmlMailMessage @ShmmParams
-    
+
             Start-Sleep -Seconds $EmailSendSleep
-    
+
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
-    
+
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-    
+
             $Source | Should -Match ("<table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"btn btn-primary`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;`">$NL" +
             "                          <tbody>$NL" +
             "                            <tr>$NL" +
@@ -502,16 +502,16 @@ InModuleScope $ModuleName {
                 ButtonLink = "https://testbuttonlink.com"
                 ButtonAlignment = "Left"
             }
-    
+
             Send-HtmlMailMessage @ShmmParams
-    
+
             Start-Sleep -Seconds $EmailSendSleep
-    
+
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
-    
+
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-    
+
             $Source | Should -Match ("<table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"btn btn-primary`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;`">$NL" +
             "                          <tbody>$NL" +
             "                            <tr>$NL" +
@@ -592,7 +592,7 @@ InModuleScope $ModuleName {
             $Source | Should -Match "ROBOCOPY&ensp;&ensp;&ensp;&ensp;&ensp;::&ensp;&ensp;&ensp;&ensp;&ensp;Robust&ensp;File&ensp;Copy&ensp;for&ensp;Windows"
 
         }
-        
+
         AfterAll {
             Remove-Item $IcwewSourcePath -Force -Recurse
             Remove-Item $IcwewDestPath -Force -Recurse
