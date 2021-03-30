@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Make stream redirection optional for Invoke-CommandWithEmailWrapper
 
 ### Changed
+- ScriptBlock parameter for Invoke-CommandWithEmailWrapper changed to Command
 - Make EmailFrom mandatory for Invoke-CommandWithEmailWrapper
 
 ## [1.1.0] - 2019-02-21

@@ -554,12 +554,12 @@ InModuleScope $ModuleName {
             }
         }
 
-        It 'PowerShell ScriptBlock' {
+        It 'PowerShell Command' {
             $ShmmParams = @{
                 EmailFrom = "PoshEmail@test.local"
                 EmailTo = "rcpt@test.local"
                 SmtpServer = "127.0.0.1"
-                ScriptBlock = "Get-ChildItem $IcwewSourcePath"
+                Command = "Get-ChildItem $IcwewSourcePath"
                 JobName = "Test 1"
                 EmailUseSsl = $false
             }
@@ -576,12 +576,12 @@ InModuleScope $ModuleName {
             $Source | Should -Match "104857600&ensp;test2.txt"
 
         }
-        It 'Cmd ScriptBlock' -Skip:$IsntWindows {
+        It 'Cmd Command' -Skip:$IsntWindows {
             $ShmmParams = @{
                 EmailFrom = "PoshEmail@test.local"
                 EmailTo = "rcpt@test.local"
                 SmtpServer = "127.0.0.1"
-                ScriptBlock = { robocopy $IcwewSourcePath $IcwewDestPath }
+                Command = "robocopy $IcwewSourcePath $IcwewDestPath"
                 JobName = "Test 1"
                 EmailUseSsl = $false
             }

@@ -457,22 +457,22 @@ function Send-HtmlMailMessage {
 function Invoke-CommandWithEmailWrapper {
     <#
     .SYNOPSIS
-        Executes a Script or ScriptBlock via Invoke-Command, and provide email alerts either before or before and after execution.
+        Executes a Script or Command via Invoke-Command, and provide email alerts either before or before and after execution.
 
     .DESCRIPTION
-        Executes a Script or ScriptBlock either locally on on a remote computer. Provides output of Script/ScriptBlock
+        Executes a Script or Command either locally on on a remote computer. Provides output of Script/Command
         via email after execution completes. Optionally sends an additional email alert at the start of execution.
 
     .INPUTS
         No inputs
 
     .OUTPUTS
-        Outputs whatever the Script/ScriptBlock you are invoking outputs.
+        Outputs whatever the Script/Command you are invoking outputs.
 
     .EXAMPLE
-        Invoke-CommandWithEmailWrapper -ScriptBlock { robocopy c:\source d:\dest } -JobName "RoboCopy" -SmtpServer "smtp01" -EmailTo "admin@contoso.com"
+        Invoke-CommandWithEmailWrapper -Command "robocopy c:\source d:\dest" -JobName "RoboCopy" -SmtpServer "smtp01" -EmailTo "admin@contoso.com"
 
-        Executes the robocopy command in the ScriptBlock on the local computer, then sends an email with the command's
+        Executes the robocopy command in the Command on the local computer, then sends an email with the command's
         output once it completes.
     
     .EXAMPLE
@@ -488,7 +488,7 @@ function Invoke-CommandWithEmailWrapper {
     [CmdletBinding(DefaultParameterSetName="Script")]
     param (
         [parameter(ParameterSetName="Script",Mandatory=$false)]
-        [parameter(ParameterSetName="ScriptBlock",Mandatory=$false)]
+        [parameter(ParameterSetName="Command",Mandatory=$false)]
         # Computer to execute the command on. Defaults to localhost.
         [string]$ComputerName,
 
@@ -497,51 +497,51 @@ function Invoke-CommandWithEmailWrapper {
         # Script to execute.
         [string]$Script,
 
-        [parameter(ParameterSetName="ScriptBlock",Mandatory=$true)]
+        [parameter(ParameterSetName="Command",Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
-        # ScriptBlock to execute.
-        [string]$ScriptBlock,
+        # Command to execute.
+        [string]$Command,
 
         [parameter(ParameterSetName="Script",Mandatory=$true)]
-        [parameter(ParameterSetName="ScriptBlock",Mandatory=$true)]
+        [parameter(ParameterSetName="Command",Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         # A short job name to include in emails to identify this execution.
         [string]$JobName,
 
         [parameter(ParameterSetName="Script",Mandatory=$true)]
-        [parameter(ParameterSetName="ScriptBlock",Mandatory=$true)]
+        [parameter(ParameterSetName="Command",Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         # Specifies SMTP server used to send email
         [string]$SmtpServer,
     
         [parameter(ParameterSetName="Script",Mandatory=$false)]
-        [parameter(ParameterSetName="ScriptBlock",Mandatory=$false)]
+        [parameter(ParameterSetName="Command",Mandatory=$false)]
         # Specifies to send mail either After or BeforeAndAfter command execution. Defaults to After.
         [ValidateSet("After","BeforeAndAfter")] 
         [string]$EmailMode = "After",
     
         [parameter(ParameterSetName="Script",Mandatory=$false)]
-        [parameter(ParameterSetName="ScriptBlock",Mandatory=$false)]
+        [parameter(ParameterSetName="Command",Mandatory=$false)]
         # TCP Port to connect to SMTP server on. Defaults to 25.
         [int]$SmtpPort = 25,
     
         [parameter(ParameterSetName="Script",Mandatory=$true)]
-        [parameter(ParameterSetName="ScriptBlock",Mandatory=$true)]
+        [parameter(ParameterSetName="Command",Mandatory=$true)]
         # Specifies a source address for messages.
         [string]$EmailFrom,
     
         [parameter(ParameterSetName="Script",Mandatory=$true)]
-        [parameter(ParameterSetName="ScriptBlock",Mandatory=$true)]
+        [parameter(ParameterSetName="Command",Mandatory=$true)]
         # Specifies a comma-separated (i.e. "a@b.com","b@b.com") list of email addresses to email upon job completion
         [string[]]$EmailTo,
 
         [parameter(ParameterSetName="Script",Mandatory=$false)]
-        [parameter(ParameterSetName="ScriptBlock",Mandatory=$false)]
+        [parameter(ParameterSetName="Command",Mandatory=$false)]
         # Indicates that the cmdlet uses the Secure Sockets Layer (SSL) protocol to establish a connection to the remote computer to send mail. Defaults to $true
         [bool]$EmailUseSsl = $true,
 
         [parameter(ParameterSetName="Script",Mandatory=$false)]
-        [parameter(ParameterSetName="ScriptBlock",Mandatory=$false)]
+        [parameter(ParameterSetName="Command",Mandatory=$false)]
         # Some non-PowerShell commands send non-error output to PowerShell's error or warning streams. Adding this option will redirect all streams to output to prevent this.
         [bool]$RedirectStreams = $false
     )
@@ -574,13 +574,13 @@ function Invoke-CommandWithEmailWrapper {
             WarningVariable = $CommandWarning
             InformationVariable = $CommandInfo
         }
-        if ($ScriptBlock) {
+        if ($Command) {
             if ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)) {
                 $TempFilePath = "$env:TMP\EmailWrappedCommand.ps1"
             } else {
                 $TempFilePath = "$env:TMPDIR/EmailWrappedCommand.ps1"
             }
-            Out-File -FilePath $TempFilePath -InputObject $ScriptBlock
+            Out-File -FilePath $TempFilePath -InputObject $Command
             if ($RedirectStreams) {
                 $InvokeCommandParams += @{ ScriptBlock = { & $TempFilePath *>&1 } }
             } else {
