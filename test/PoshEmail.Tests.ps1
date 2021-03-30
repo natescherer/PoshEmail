@@ -531,8 +531,8 @@ InModuleScope $ModuleName {
     }
     Describe 'Invoke-CommandWithEmailWrapper' {
         BeforeAll {
-            $IcwewSourcePath = "$PSScriptRoot\icwew_source"
-            $IcwewDestPath = "$PSScriptRoot\icwew_dest"
+            $global:IcwewSourcePath = "$PSScriptRoot\icwew_source"
+            $global:IcwewDestPath = "$PSScriptRoot\icwew_dest"
             New-Item -Path $IcwewSourcePath -ItemType Directory | Out-Null
             New-Item -Path $IcwewDestPath -ItemType Directory | Out-Null
 
@@ -554,7 +554,7 @@ InModuleScope $ModuleName {
                 EmailFrom = "PoshEmail@test.local"
                 EmailTo = "rcpt@test.local"
                 SmtpServer = "127.0.0.1"
-                ScriptBlock = { Get-ChildItem "$PSScriptRoot\icwew_source" }
+                ScriptBlock = "Get-ChildItem $IcwewSourcePath"
                 JobName = "Test 1"
                 EmailUseSsl = $false
             }
