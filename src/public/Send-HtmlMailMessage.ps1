@@ -190,6 +190,8 @@ function Send-HtmlMailMessage {
         [string]$ButtonAlignment = "Center"
     )
     process {
+        $NL = [System.Environment]::NewLine
+
         if ($BodyPreformatted) {
             $BodyWidth = "1800"
         }
