@@ -573,11 +573,7 @@ function Invoke-CommandWithEmailWrapper {
             if ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)) {
                 $TempFilePath = "$env:TMP\EmailWrappedCommand.ps1"
             } else {
-                if ($env:TMPDIR) {
-                    $TempFilePath = "$env:TMPDIR/EmailWrappedCommand.ps1"
-                } else {
-                    $TempFilePath = "$env:AGENT_TEMPDIRECTORY/EmailWrappedCommand.ps1"
-                }
+                $TempFilePath = "$env:TMPDIR/EmailWrappedCommand.ps1"
             }
             Out-File -FilePath $TempFilePath -InputObject $ScriptBlock
             $InvokeCommandParams += @{ ScriptBlock = { & $TempFilePath *>&1 } }

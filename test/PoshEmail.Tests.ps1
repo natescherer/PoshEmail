@@ -547,6 +547,11 @@ InModuleScope $ModuleName {
             $File3 = New-Object System.IO.FileStream "$IcwewSourcePath\test3.txt", Create, ReadWrite
             $File3.SetLength(1MB) | Out-Null
             $File3.Close() | Out-Null
+
+            if (!$env:TMPDIR) {
+                # This works around a problem with Azure DevOps linux agents
+                $env:TMPDIR = $env:AGENT_TEMPDIRECTORY
+            }
         }
 
         It 'PowerShell ScriptBlock' {
