@@ -538,7 +538,7 @@ function Invoke-CommandWithEmailWrapper {
         [parameter(ParameterSetName="Script",Mandatory=$false)]
         [parameter(ParameterSetName="ScriptBlock",Mandatory=$false)]
         # Indicates that the cmdlet uses the Secure Sockets Layer (SSL) protocol to establish a connection to the remote computer to send mail. Defaults to $true
-        [switch]$EmailUseSsl = $true
+        [bool]$EmailUseSsl = $true
     )
 
     process {
