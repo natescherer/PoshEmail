@@ -490,7 +490,7 @@ function Invoke-CommandWithEmailWrapper {
         [parameter(ParameterSetName="Script",Mandatory=$false)]
         [parameter(ParameterSetName="ScriptBlock",Mandatory=$false)]
         # Computer to execute the command on. Defaults to localhost.
-        [string]$ComputerName = $env:computername,
+        [string]$ComputerName,
 
         [parameter(ParameterSetName="Script",Mandatory=$false)]
         [ValidateScript({Test-Path -Path $_})]
@@ -542,15 +542,21 @@ function Invoke-CommandWithEmailWrapper {
     )
 
     process {
+        if ($ComputerName) {
+            $FriendlyComputerName = $ComputerName
+        } else {
+            $FriendlyComputerName = $env:computername
+        }
+
         $StartTime = Get-Date
 
         if ($EmailMode -like "BeforeAndAfter") {
             $SmtpParamsBefore = @{
                 From = $EmailFrom
                 To = $EmailTo
-                Subject = "'$JobName' Started on $ComputerName"
-                Heading = "'$JobName' Started on $ComputerName at $StartTime"
-                Body = "'$JobName' Started on $ComputerName at $StartTime"
+                Subject = "'$JobName' Started on $FriendlyComputerName"
+                Heading = "'$JobName' Started on $FriendlyComputerName at $StartTime"
+                Body = "'$JobName' Started on $FriendlyComputerName at $StartTime"
                 SmtpServer = $SmtpServer
                 Port = $SmtpPort
                 UseSsl = $EmailUseSsl
@@ -564,7 +570,13 @@ function Invoke-CommandWithEmailWrapper {
             InformationVariable = $CommandInfo
         }
         if ($ScriptBlock) {
-            $InvokeCommandParams += @{ ScriptBlock = { $ScriptBlock *>&1 } }
+            if ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)) {
+                $TempFilePath = "$env:TMP\EmailWrappedCommand.ps1"
+            } else {
+                $TempFilePath = "$env:TMPDIR\EmailWrappedCommand.ps1"
+            }
+            Out-File -FilePath $TempFilePath -InputObject $ScriptBlock
+            $InvokeCommandParams += @{ ScriptBlock = { & $TempFilePath *>&1 } }
         }
         if ($Script) {
             $InvokeCommandParams += @{ ScriptBlock = { & $Script *>&1 } }
@@ -585,8 +597,8 @@ function Invoke-CommandWithEmailWrapper {
             $SmtpParamsAfter = @{
                 From = $EmailFrom
                 To = $EmailTo
-                Subject = "'$JobName' Finished on $ComputerName"
-                Heading =  "'$JobName' Finished on $ComputerName at $EndTime"
+                Subject = "'$JobName' Finished on $FriendlyComputerName"
+                Heading =  "'$JobName' Finished on $FriendlyComputerName at $EndTime"
                 Body = "Output:"
                 BodyPreformatted = $CommandString
                 Footer = "Time elapsed: $ElapsedString"
@@ -594,6 +606,7 @@ function Invoke-CommandWithEmailWrapper {
                 Port = $SmtpPort
                 UseSsl = $EmailUseSsl
             }
+
             Send-HtmlMailMessage @SMTPParamsAfter
         }
 
