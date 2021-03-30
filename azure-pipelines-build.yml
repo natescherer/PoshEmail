@@ -11,6 +11,12 @@ jobs:
     vmImage: ${{ parameters.vmImage }}
   steps:
 
+  - bash: printenv
+    displayName: bash 'printenv'
+
+  - pwsh: Write-Host $env:TMPDIR
+    displayName: PowerShell 'Write-Host $env:TMPDIR'
+
   - task: GoTool@0
     inputs:
       version: '1.10'
