@@ -2,10 +2,7 @@
 
 [![Build Status](https://img.shields.io/azure-devops/build/natescherer/poshemail/3.svg?logo=azuredevops)](https://dev.azure.com/natescherer/poshemail/_build/latest?definitionId=3&branchName=master) ![Tests](https://img.shields.io/azure-devops/tests/natescherer/poshemail/3.svg?logo=azuredevops) ![Code Coverage](https://img.shields.io/azure-devops/coverage/natescherer/poshemail/3.svg?logo=azuredevops) ![Open Issues](https://img.shields.io/github/issues-raw/natescherer/poshemail.svg?logo=github)
 
-PoshEmail is a PowerShell module designed to provide useful email tasks, including the following:
-
-- Easy sending of responsive HTML emails via Send-HtmlMailMessage
-- Wrapping of commands and scripts to provide email alerts when they start/finish, via Invoke-CommandWithEmailWrapper
+PoshEmail is a PowerShell module designed to send responsive HTML email easily from PowerShell.
 
 ## Getting Started
 
@@ -58,21 +55,26 @@ Send-HtmlMailMessage @EmailSplat
 
 Sends a message.
 
-#### Invoke-CommandWithEmailWrapper
+#### Wrapping Commands
+
+Previous versions of this module included a command "Invoke-CommandWithEmailWrapper". This has been removed as it didn't work well on Linux and macOS, and it is recommended you use the following to provide the same functionality if you need it:
 
 ```PowerShell
-Invoke-CommandWithEmailWrapper -ScriptBlock { robocopy c:\source d:\dest } -JobName "RoboCopy" -SmtpServer "smtp01" -EmailTo "admin@contoso.com"
+$Output = ENTERYOURCOMMANDHERE
+$EmailSplat = @{
+    To = "admin@contoso.com"
+    Cc = "admin2@contoso.com"
+    From = "poshemail@contoso.com"
+    Subject = "Command Finished"
+    Body = "Output:"
+    BodyPreformatted = $Output
+    SmtpServer = "smtp.office365.com" 
+    UseSsl = $true
+    Port = 587
+    Credential = $CredentialObject
+}
+Send-HtmlMailMessage @EmailSplat
 ```
-
-Executes the robocopy command in the ScriptBlock on the local computer, then sends an email with the command's
-output once it completes.
-
-```PowerShell
-Invoke-CommandWithEmailWrapper -Script "c:\scripts\script1.ps1" -JobName "Script1" -SmtpServer "smtp01" -EmailTo "admin@contoso.com" -ComputerName "serv01" -EmailMode "BeforeAndAfter"
-```
-
-Executes the the script c:\scripts\script1.ps1 (on the local computer) on the remote computer "serv01", sending
-emails when the script begins and finishes running.
 
 ### Documentation
 
