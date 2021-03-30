@@ -485,6 +485,7 @@ function Invoke-CommandWithEmailWrapper {
         https://github.com/natescherer/PoshEmail
     #>
 
+    [CmdletBinding()]
     param (
         [parameter(ParameterSetName="Script",Mandatory=$false)]
         [parameter(ParameterSetName="Command",Mandatory=$false)]
