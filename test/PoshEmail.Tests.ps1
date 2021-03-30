@@ -554,7 +554,7 @@ InModuleScope $ModuleName {
                 EmailFrom = "PoshEmail@test.local"
                 EmailTo = "rcpt@test.local"
                 SmtpServer = "127.0.0.1"
-                ScriptBlock = { Get-ChildItem "$PSScriptRoot\icwew_source" | Select-Object Length, Name }
+                ScriptBlock = { Get-ChildItem "$PSScriptRoot\icwew_source" }
                 JobName = "Test 1"
                 EmailUseSsl = $false
             }

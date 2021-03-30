@@ -490,7 +490,7 @@ function Invoke-CommandWithEmailWrapper {
         [parameter(ParameterSetName="Script",Mandatory=$false)]
         [parameter(ParameterSetName="ScriptBlock",Mandatory=$false)]
         # Computer to execute the command on. Defaults to localhost.
-        [string]$ComputerName,
+        [string]$ComputerName = $env:computername,
 
         [parameter(ParameterSetName="Script",Mandatory=$false)]
         [ValidateScript({Test-Path -Path $_})]
@@ -542,21 +542,15 @@ function Invoke-CommandWithEmailWrapper {
     )
 
     process {
-        if ($ComputerName) {
-            $FriendlyComputerName = $ComputerName
-        } else {
-            $FriendlyComputerName = $env:computername
-        }
-
         $StartTime = Get-Date
 
         if ($EmailMode -like "BeforeAndAfter") {
             $SmtpParamsBefore = @{
                 From = $EmailFrom
                 To = $EmailTo
-                Subject = "'$JobName' Started on $FriendlyComputerName"
-                Heading = "'$JobName' Started on $FriendlyComputerName at $StartTime"
-                Body = "'$JobName' Started on $FriendlyComputerName at $StartTime"
+                Subject = "'$JobName' Started on $ComputerName"
+                Heading = "'$JobName' Started on $ComputerName at $StartTime"
+                Body = "'$JobName' Started on $ComputerName at $StartTime"
                 SmtpServer = $SmtpServer
                 Port = $SmtpPort
                 UseSsl = $EmailUseSsl
@@ -570,7 +564,7 @@ function Invoke-CommandWithEmailWrapper {
             InformationVariable = $CommandInfo
         }
         if ($ScriptBlock) {
-            $InvokeCommandParams += @{ ScriptBlock = { & $ScriptBlock *>&1 } }
+            $InvokeCommandParams += @{ ScriptBlock = { $ScriptBlock *>&1 } }
         }
         if ($Script) {
             $InvokeCommandParams += @{ ScriptBlock = { & $Script *>&1 } }
@@ -580,6 +574,7 @@ function Invoke-CommandWithEmailWrapper {
         }
 
         $CommandOutput = Invoke-Command @InvokeCommandParams
+        $CommandString = $CommandOutput | Out-String
 
         if ($EmailMode -like "*After") {
             $EndTime = Get-Date
@@ -590,16 +585,15 @@ function Invoke-CommandWithEmailWrapper {
             $SmtpParamsAfter = @{
                 From = $EmailFrom
                 To = $EmailTo
-                Subject = "'$JobName' Finished on $FriendlyComputerName"
-                Heading =  "'$JobName' Finished on $FriendlyComputerName at $EndTime"
+                Subject = "'$JobName' Finished on $ComputerName"
+                Heading =  "'$JobName' Finished on $ComputerName at $EndTime"
                 Body = "Output:"
-                BodyPreformatted = $CommandOutput | Out-String
+                BodyPreformatted = $CommandString
                 Footer = "Time elapsed: $ElapsedString"
                 SmtpServer = $SmtpServer
                 Port = $SmtpPort
                 UseSsl = $EmailUseSsl
             }
-
             Send-HtmlMailMessage @SMTPParamsAfter
         }
 
