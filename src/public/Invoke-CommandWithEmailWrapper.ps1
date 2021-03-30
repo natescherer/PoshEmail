@@ -31,58 +31,63 @@ function Invoke-CommandWithEmailWrapper {
 
     [CmdletBinding()]
     param(
-        [parameter(ParameterSetName = "Script", Mandatory = $false)]
-        [parameter(ParameterSetName = "Command", Mandatory = $false)]
+        [parameter(ParameterSetName = "ScriptSet", Mandatory = $false)]
+        [parameter(ParameterSetName = "CommandSet", Mandatory = $false)]
         # Computer to execute the command on. Defaults to localhost.
         [string]$ComputerName,
 
-        [parameter(ParameterSetName = "Script", Mandatory = $true)]
+        [parameter(ParameterSetName = "ScriptSet", Mandatory = $true)]
         [ValidateScript( { Test-Path -Path $_ })]
         # Script to execute.
         [string]$Script,
 
-        [parameter(ParameterSetName = "Command", Mandatory = $true)]
+        [parameter(ParameterSetName = "CommandSet", Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         # Command to execute.
         [string]$Command,
 
-        [parameter(ParameterSetName = "Script", Mandatory = $true)]
-        [parameter(ParameterSetName = "Command", Mandatory = $true)]
+        [parameter(ParameterSetName = "ScriptSet", Mandatory = $true)]
+        [parameter(ParameterSetName = "CommandSet", Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         # A short job name to include in emails to identify this execution.
         [string]$JobName,
 
-        [parameter(ParameterSetName = "Script", Mandatory = $true)]
-        [parameter(ParameterSetName = "Command", Mandatory = $true)]
+        [parameter(ParameterSetName = "ScriptSet", Mandatory = $true)]
+        [parameter(ParameterSetName = "CommandSet", Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         # Specifies SMTP server used to send email
         [string]$SmtpServer,
 
-        [parameter(ParameterSetName = "Script", Mandatory = $false)]
-        [parameter(ParameterSetName = "Command", Mandatory = $false)]
+        [parameter(ParameterSetName = "ScriptSet", Mandatory = $false)]
+        [parameter(ParameterSetName = "CommandSet", Mandatory = $false)]
         # Specifies to send mail either After or BeforeAndAfter command execution. Defaults to After.
         [ValidateSet("After", "BeforeAndAfter")] 
         [string]$EmailMode = "After",
 
-        [parameter(ParameterSetName = "Script", Mandatory = $false)]
-        [parameter(ParameterSetName = "Command", Mandatory = $false)]
+        [parameter(ParameterSetName = "ScriptSet", Mandatory = $false)]
+        [parameter(ParameterSetName = "CommandSet", Mandatory = $false)]
         # TCP Port to connect to SMTP server on. Defaults to 25.
         [int]$SmtpPort = 25,
 
-        [parameter(ParameterSetName = "Script", Mandatory = $true)]
-        [parameter(ParameterSetName = "Command", Mandatory = $true)]
+        [parameter(ParameterSetName = "ScriptSet", Mandatory = $true)]
+        [parameter(ParameterSetName = "CommandSet", Mandatory = $true)]
         # Specifies a source address for messages.
         [string]$EmailFrom,
 
-        [parameter(ParameterSetName = "Script", Mandatory = $true)]
-        [parameter(ParameterSetName = "Command", Mandatory = $true)]
+        [parameter(ParameterSetName = "ScriptSet", Mandatory = $true)]
+        [parameter(ParameterSetName = "CommandSet", Mandatory = $true)]
         # Specifies a comma-separated (i.e. "a@b.com","b@b.com") list of email addresses to email upon job completion
         [string[]]$EmailTo,
 
-        [parameter(ParameterSetName = "Script", Mandatory = $false)]
-        [parameter(ParameterSetName = "Command", Mandatory = $false)]
+        [parameter(ParameterSetName = "ScriptSet", Mandatory = $false)]
+        [parameter(ParameterSetName = "CommandSet", Mandatory = $false)]
         # Indicates that the cmdlet uses the Secure Sockets Layer (SSL) protocol to establish a connection to the remote computer to send mail. Defaults to $true
-        [bool]$EmailUseSsl = $true
+        [bool]$EmailUseSsl = $true,
+
+        [parameter(ParameterSetName = "ScriptSet", Mandatory = $false)]
+        [parameter(ParameterSetName = "CommandSet", Mandatory = $false)]
+        # Some non-PowerShell commands send non-error output to PowerShell's error or warning streams. Adding this option will redirect all streams to output to prevent this.
+        [bool]$RedirectStreams = $false
     )
 
     if ($ComputerName) {
