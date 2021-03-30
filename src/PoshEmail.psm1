@@ -500,7 +500,7 @@ function Invoke-CommandWithEmailWrapper {
         [parameter(ParameterSetName="ScriptBlock",Mandatory=$false)]
         [ValidateNotNullOrEmpty()]
         # ScriptBlock to execute.
-        [scriptblock]$ScriptBlock,
+        [string]$ScriptBlock,
 
         [parameter(ParameterSetName="Script",Mandatory=$true)]
         [parameter(ParameterSetName="ScriptBlock",Mandatory=$true)]
