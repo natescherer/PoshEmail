@@ -586,6 +586,7 @@ function Invoke-CommandWithEmailWrapper {
         }
 
         $CommandOutput = Invoke-Command @InvokeCommandParams
+        Write-Host $CommandOutput
         $CommandString = $CommandOutput | Out-String
 
         if ($EmailMode -like "*After") {
