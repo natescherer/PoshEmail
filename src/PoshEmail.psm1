@@ -2,7 +2,7 @@
 # in the format 'This-IsFunctionName.ps1'. Put functions that are only used internally by this module in the 'Private'
 # directory in the same name format.
 
-$PrivateFiles = Get-ChildItem -Path $PSScriptRoot\private\*.ps1 -Recurse
+$PrivateFiles = Get-ChildItem -Path $PSScriptRoot\private\*.ps1 -Recurse -ErrorAction SilentlyContinue
 foreach ($PrivateFile in $PrivateFiles) {
     . $PrivateFile.FullName
 }
