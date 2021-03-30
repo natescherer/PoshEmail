@@ -584,14 +584,14 @@ function Invoke-CommandWithEmailWrapper {
             if ($RedirectStreams) {
                 $InvokeCommandParams += @{ ScriptBlock = { & $TempFilePath *>&1 } }
             } else {
-                $InvokeCommandParams += @{ Script = $TempFilePath }
+                $InvokeCommandParams += @{ FilePath = $TempFilePath }
             }
         }
         if ($Script) {
             if ($RedirectStreams) {
                 $InvokeCommandParams += @{ ScriptBlock = { & $Script *>&1 } }
             } else {
-                $InvokeCommandParams += @{ Script = $Script }
+                $InvokeCommandParams += @{ FilePath = $Script }
             }
         }
         if ($ComputerName) {
