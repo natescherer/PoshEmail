@@ -559,7 +559,7 @@ InModuleScope $ModuleName {
                 EmailFrom = "PoshEmail@test.local"
                 EmailTo = "rcpt@test.local"
                 SmtpServer = "127.0.0.1"
-                Command = "Get-ChildItem $IcwewSourcePath"
+                ScriptBlock = "Get-ChildItem $IcwewSourcePath"
                 JobName = "Test 1"
                 EmailUseSsl = $false
             }
