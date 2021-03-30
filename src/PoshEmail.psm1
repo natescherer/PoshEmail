@@ -492,12 +492,12 @@ function Invoke-CommandWithEmailWrapper {
         # Computer to execute the command on. Defaults to localhost.
         [string]$ComputerName,
 
-        [parameter(ParameterSetName="Script",Mandatory=$false)]
+        [parameter(ParameterSetName="Script",Mandatory=$true)]
         [ValidateScript({Test-Path -Path $_})]
         # Script to execute.
         [string]$Script,
 
-        [parameter(ParameterSetName="ScriptBlock",Mandatory=$false)]
+        [parameter(ParameterSetName="ScriptBlock",Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         # ScriptBlock to execute.
         [string]$ScriptBlock,
