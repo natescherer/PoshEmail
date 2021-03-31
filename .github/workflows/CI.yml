@@ -53,4 +53,4 @@ jobs:
           gist_name: ${{ env.BARE_REPOSITORY }}_TestResults_${{ runner.os }}_${{ matrix.shell }}
           gist_badge_label: Tests %PassedCount%/%TotalCount%
           gist_token: ${{ secrets.PESTER_GIST_TOKEN }}
-          tests_fail_step: true
+          # tests_fail_step: true
