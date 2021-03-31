@@ -23,17 +23,17 @@ jobs:
         uses: actions/setup-go@v2.1.3
       - name: Install Mailhog
         run: go get github.com/mailhog/MailHog
-      - name: Start Mailhog
+      - name: Start Mailhog (Windows)
         run: |
-          if ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)) {
-            Start-Process -FilePath "MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-api-bind-addr", "0.0.0.0:8025", "-ui-bind-addr", "0.0.0.0:8025"
-            Start-Process -FilePath "MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:1025", "-api-bind-addr", "0.0.0.0:9025", "-ui-bind-addr", "0.0.0.0:9025"
-            Start-Process -FilePath "MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:10025", "-ui-bind-addr", "0.0.0.0:10025", "-auth-file", "$env:GITHUB_WORKSPACE\test\mhcreds.txt"
-          } else {
-            sudo nohup MailHog -smtp-bind-addr 0.0.0.0:25 -api-bind-addr 0.0.0.0:8025 -ui-bind-addr 0.0.0.0:8025 &>/dev/null &
-            sudo nohup MailHog -smtp-bind-addr 0.0.0.0:1025 -api-bind-addr 0.0.0.0:9025 -ui-bind-addr 0.0.0.0:9025 &>/dev/null &
-            sudo nohup MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:10025 -ui-bind-addr 0.0.0.0:10025 -auth-file $env:GITHUB_WORKSPACE/test/mhcreds.txt &>/dev/null &
-          }
+          Start-Process -FilePath "$env:GOBIN\MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:25", "-api-bind-addr", "0.0.0.0:8025", "-ui-bind-addr", "0.0.0.0:8025"
+          Start-Process -FilePath "$env:GOBIN\MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:1025", "-api-bind-addr", "0.0.0.0:9025", "-ui-bind-addr", "0.0.0.0:9025"
+          Start-Process -FilePath "$env:GOBIN\MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:10025", "-ui-bind-addr", "0.0.0.0:10025", "-auth-file", "$env:GITHUB_WORKSPACE\test\mhcreds.txt"
+        shell: bash
+      - name: Start Mailhog (macOS/Ubuntu)
+        run: |
+          sudo nohup MailHog -smtp-bind-addr 0.0.0.0:25 -api-bind-addr 0.0.0.0:8025 -ui-bind-addr 0.0.0.0:8025 &>/dev/null &
+          sudo nohup MailHog -smtp-bind-addr 0.0.0.0:1025 -api-bind-addr 0.0.0.0:9025 -ui-bind-addr 0.0.0.0:9025 &>/dev/null &
+          sudo nohup MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:10025 -ui-bind-addr 0.0.0.0:10025 -auth-file $env:GITHUB_WORKSPACE/test/mhcreds.txt &>/dev/null &
       - name: Run Pester Tests
         uses: zyborg/pester-tests-report@v1.3.3
         with:
