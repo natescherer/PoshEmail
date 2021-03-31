@@ -31,18 +31,18 @@ jobs:
       - name: Start Mailhog (Windows)
         run: |
           Start-Process -FilePath "MailHog"
-          Start-Process -FilePath "MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:9025", "-ui-bind-addr", "0.0.0.0:10025", "-auth-file", "$env:GITHUB_WORKSPACE\test\mhcreds.txt"
+          Start-Process -FilePath "MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:9025", "-ui-bind-addr", "0.0.0.0:9025", "-auth-file", "$env:GITHUB_WORKSPACE\test\mhcreds.txt"
         if: ${{ runner.os == 'Windows' }}
       - name: Start Mailhog (Ubuntu)
         run: |
           nohup MailHog &>/dev/null &
-          nohup MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:9025 -ui-bind-addr 0.0.0.0:10025 -auth-file $GITHUB_WORKSPACE/test/mhcreds.txt &>/dev/null &
+          nohup MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:9025 -ui-bind-addr 0.0.0.0:9025 -auth-file $GITHUB_WORKSPACE/test/mhcreds.txt &>/dev/null &
         shell: bash
         if: ${{ runner.os == 'Linux' }}
       - name: Start Mailhog (macOS)
         run: |
           sudo nohup MailHog &>/dev/null &
-          sudo nohup MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:10025 -ui-bind-addr 0.0.0.0:9025 -auth-file $GITHUB_WORKSPACE/test/mhcreds.txt &>/dev/null &
+          sudo nohup MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:9025 -ui-bind-addr 0.0.0.0:9025 -auth-file $GITHUB_WORKSPACE/test/mhcreds.txt &>/dev/null &
         shell: bash
         if: ${{ runner.os == 'macOS' }}
       - name: Run Pester Tests
