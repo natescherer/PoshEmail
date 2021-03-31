@@ -51,6 +51,6 @@ jobs:
           report_name: TestResults_${{ runner.os }}_${{ matrix.shell }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           gist_name: ${{ env.BARE_REPOSITORY }}_TestResults_${{ runner.os }}_${{ matrix.shell }}.md
-          gist_badge_label: Test Results
+          gist_badge_label: ${{ runner.os }} ${{ matrix.shell }}
           gist_token: ${{ secrets.PESTER_GIST_TOKEN }}
           # tests_fail_step: true
