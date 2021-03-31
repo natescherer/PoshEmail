@@ -35,12 +35,13 @@ jobs:
         run: |
           sudo nohup MailHog -smtp-bind-addr 0.0.0.0:25 -api-bind-addr 0.0.0.0:8025 -ui-bind-addr 0.0.0.0:8025 &>/dev/null &
           sudo nohup MailHog -smtp-bind-addr 0.0.0.0:1025 -api-bind-addr 0.0.0.0:9025 -ui-bind-addr 0.0.0.0:9025 &>/dev/null &
-          sudo nohup MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:10025 -ui-bind-addr 0.0.0.0:10025 -auth-file $env:GITHUB_WORKSPACE/test/mhcreds.txt &>/dev/null &
+          sudo nohup MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:10025 -ui-bind-addr 0.0.0.0:10025 -auth-file $GITHUB_WORKSPACE/test/mhcreds.txt &>/dev/null &
         shell: bash
         if: ${{ runner.os != 'Windows' }}
       - name: Run Pester Tests
         uses: zyborg/pester-tests-report@v1.3.3
         with:
+          report_name: TEST_RESULTS_${{ matrix.os }}_${{ matrix.shell }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           gist_name: ${{ github.repository }}-TestResults
           gist_badge_label: Tests %PassedCount%/%TotalCount%
