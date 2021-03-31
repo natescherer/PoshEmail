@@ -31,26 +31,26 @@ jobs:
       - name: Start Mailhog (Windows)
         run: |
           Start-Process -FilePath "MailHog"
-          Start-Process -FilePath "MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:10025", "-ui-bind-addr", "0.0.0.0:10025", "-auth-file", "$env:GITHUB_WORKSPACE\test\mhcreds.txt"
+          Start-Process -FilePath "MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:9025", "-ui-bind-addr", "0.0.0.0:10025", "-auth-file", "$env:GITHUB_WORKSPACE\test\mhcreds.txt"
         if: ${{ runner.os == 'Windows' }}
       - name: Start Mailhog (Ubuntu)
         run: |
           nohup MailHog &>/dev/null &
-          nohup MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:10025 -ui-bind-addr 0.0.0.0:10025 -auth-file $GITHUB_WORKSPACE/test/mhcreds.txt &>/dev/null &
+          nohup MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:9025 -ui-bind-addr 0.0.0.0:10025 -auth-file $GITHUB_WORKSPACE/test/mhcreds.txt &>/dev/null &
         shell: bash
         if: ${{ runner.os == 'Linux' }}
       - name: Start Mailhog (macOS)
         run: |
-          sudo nohup MailHog -smtp-bind-addr 0.0.0.0:25 -api-bind-addr 0.0.0.0:8025 -ui-bind-addr 0.0.0.0:8025 &>/dev/null &
-          sudo nohup MailHog -smtp-bind-addr 0.0.0.0:1025 -api-bind-addr 0.0.0.0:9025 -ui-bind-addr 0.0.0.0:9025 &>/dev/null &
-          sudo nohup MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:10025 -ui-bind-addr 0.0.0.0:10025 -auth-file $GITHUB_WORKSPACE/test/mhcreds.txt &>/dev/null &
+          sudo nohup MailHog &>/dev/null &
+          sudo nohup MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:10025 -ui-bind-addr 0.0.0.0:9025 -auth-file $GITHUB_WORKSPACE/test/mhcreds.txt &>/dev/null &
         shell: bash
         if: ${{ runner.os == 'macOS' }}
       - name: Run Pester Tests
-        uses: zyborg/pester-tests-report@v1.3.3
+        uses: natescherer/pester-tests-report@3f2d00622f98948414fcfd3ed39b83fdaa290126
         with:
           report_name: TestResults_${{ runner.os }}_${{ matrix.shell }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           gist_name: ${{ env.BARE_REPOSITORY }}_TestResults_${{ runner.os }}_${{ matrix.shell }}
           gist_badge_label: Tests %PassedCount%/%TotalCount%
           gist_token: ${{ secrets.PESTER_GIST_TOKEN }}
+          tests_fail_step: true
