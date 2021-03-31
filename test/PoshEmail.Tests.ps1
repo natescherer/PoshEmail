@@ -45,6 +45,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
             }
 
@@ -199,6 +200,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
                 BodyAlignment = "Center"
             }
@@ -220,6 +222,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = "1025"
                 Body = "Body Text"
                 BodyPreformatted = ("$NL" +
                     "$NL" +
@@ -290,6 +293,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
                 Attachments = "$PSScriptRoot\attachment.txt"
             }
@@ -327,10 +331,10 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
 
             if ($PSVersionTable.PSVersion -ge "6.0") {
-                $Response = Invoke-RestMethod -Uri http://localhost:10025/api/v2/messages -Credential $PSCreds -AllowUnencryptedAuthentication
+                $Response = Invoke-RestMethod -Uri http://localhost:9025/api/v2/messages -Credential $PSCreds -AllowUnencryptedAuthentication
                 Invoke-RestMethod -Uri http://localhost:10025/api/v1/messages -Method "DELETE" -Credential $PSCreds -AllowUnencryptedAuthentication | Out-Null
             } else {
-                $Response = Invoke-RestMethod -Uri http://localhost:10025/api/v2/messages -Credential $PSCreds
+                $Response = Invoke-RestMethod -Uri http://localhost:9025/api/v2/messages -Credential $PSCreds
                 Invoke-RestMethod -Uri http://localhost:10025/api/v1/messages -Method "DELETE" -Credential $PSCreds | Out-Null
             }
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
@@ -340,27 +344,6 @@ InModuleScope $ModuleName {
         It '-DeliveryNotificationOption' -Pending {
         }
         It '-Encoding' -Pending {
-        }
-        It '-Port' {
-            $ShmmParams = @{
-                From = "PoshEmail@test.local"
-                To = "rcpt@test.local"
-                Subject = "PoshEmail Test"
-                SmtpServer = "127.0.0.1"
-                Body = "Body Text"
-                Port = "1025"
-            }
-
-            Send-HtmlMailMessage @ShmmParams
-
-            Start-Sleep -Seconds $EmailSendSleep
-
-            $Response = Invoke-RestMethod -Uri http://localhost:9025/api/v2/messages
-            Invoke-RestMethod -Uri http://localhost:9025/api/v1/messages -Method "DELETE" | Out-Null
-
-            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-
-            $Source | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: left;`">Body Text</p>"
         }
         It '-UseSsl' -Pending {
         }
@@ -372,6 +355,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
                 Heading = "Test Heading"
             }
@@ -393,6 +377,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
                 Heading = "Test Heading"
                 HeadingAlignment = "Left"
@@ -415,6 +400,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
                 Footer = "Test Footer"
             }
@@ -438,6 +424,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
                 LastLine = "Test LastLine"
             }
@@ -461,6 +448,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
                 ButtonText = "Test ButtonText"
                 ButtonLink = "https://testbuttonlink.com"
@@ -497,6 +485,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
                 ButtonText = "Test ButtonText"
                 ButtonLink = "https://testbuttonlink.com"

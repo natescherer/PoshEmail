@@ -114,14 +114,14 @@ function Send-HtmlMailMessage {
         # ASCII is the default.
         [string]$Encoding,
 
-        [parameter(ParameterSetName = "Default", Mandatory = $false)]
-        [parameter(ParameterSetName = "Button", Mandatory = $false)]
+        [parameter(ParameterSetName = "Default", Mandatory = $true)]
+        [parameter(ParameterSetName = "Button", Mandatory = $true)]
         [ValidateNotNull()]
         # Specifies an alternate port on the SMTP server. The default value is 25, which is the default SMTP port.
         [int]$Port,
 
-        [parameter(ParameterSetName = "Default", Mandatory = $false)]
-        [parameter(ParameterSetName = "Button", Mandatory = $false)]
+        [parameter(ParameterSetName = "Default", Mandatory = $true)]
+        [parameter(ParameterSetName = "Button", Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         # Specifies the name of the SMTP server that sends the email message.
         # The default value is the value of the $PSEmailServer preference variable. If the preference variable is not set and this parameter is omitted, the command fails.
@@ -402,11 +402,13 @@ function Send-HtmlMailMessage {
     $HtmlDataToFooter + $Footer + $HtmlFooterToLastLine + $LastLine + $HtmlBottom
 
     $SmmParams = @{
-        From          = $From
-        To            = $To
-        Subject       = $Subject
-        Body          = $CompleteBody
-        BodyAsHtml    = $true
+        SmtpServer = $SmtpServer
+        Port = $Port
+        From = $From
+        To = $To
+        Subject = $Subject
+        Body = $CompleteBody
+        BodyAsHtml = $true
         WarningAction = "Ignore"
     }
 
@@ -434,16 +436,8 @@ function Send-HtmlMailMessage {
         $SmmParams += @{Encoding = $Encoding }
     }
 
-    if ($Port) {
-        $SmmParams += @{Port = $Port }
-    }
-
     if ($Priority) {
         $SmmParams += @{Priority = $Priority }
-    }
-
-    if ($SmtpServer) {
-        $SmmParams += @{SmtpServer = $SmtpServer }
     }
 
     if ($UseSsl) {
