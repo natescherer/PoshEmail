@@ -3,7 +3,11 @@ on: [push]
 jobs:
   Build:
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: pwsh
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         shell: [pwsh, powershell]
@@ -30,6 +34,7 @@ jobs:
             sudo nohup $env:GOPATH/bin/MailHog -smtp-bind-addr 0.0.0.0:1025 -api-bind-addr 0.0.0.0:9025 -ui-bind-addr 0.0.0.0:9025 &>/dev/null &
             sudo nohup $env:GOPATH/bin/MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:10025 -ui-bind-addr 0.0.0.0:10025 -auth-file $env:GITHUB_WORKSPACE/test/mhcreds.txt &>/dev/null &
           }
+
       - name: Run Pester Tests
         uses: zyborg/pester-tests-report@v1.3.3
         with:
