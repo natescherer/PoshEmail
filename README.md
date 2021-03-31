@@ -1,6 +1,15 @@
 # PoshEmail
 
-[![Build Status](https://img.shields.io/azure-devops/build/natescherer/poshemail/3.svg?logo=azuredevops)](https://dev.azure.com/natescherer/poshemail/_build/latest?definitionId=3&branchName=master) ![Tests](https://img.shields.io/azure-devops/tests/natescherer/poshemail/3.svg?logo=azuredevops) ![Code Coverage](https://img.shields.io/azure-devops/coverage/natescherer/poshemail/3.svg?logo=azuredevops) ![Open Issues](https://img.shields.io/github/issues-raw/natescherer/poshemail.svg?logo=github)
+![Open Issues](https://img.shields.io/github/issues-raw/natescherer/poshemail.svg?logo=github)
+
+| Platform | Test Results |
+| --- | --- |
+| Windows PowerShell 5.1 | [![Windows PowerShell 5.1](https://gist.github.com/natescherer/1c2023ac9a4dd9e28dad8d74f6a29b22/raw/8396d2a280100320d5a2aacdce528bf2ab131499/PoshEmail_TestResults_Windows_powershell_badge.svg)](https://gist.github.com/natescherer/02183605ce80aa4683e97188946cb169) |
+| PowerShell 7 on Windows |[![PowerShell 7 on Windows](https://gist.github.com/natescherer/02183605ce80aa4683e97188946cb169/raw/99e13f3761bd7e2a403c617d40cbb7b2380a456f/PoshEmail_TestResults_Windows_pwsh_badge.svg)](https://gist.github.com/natescherer/02183605ce80aa4683e97188946cb169) |
+| PowerShell 7 on Linux | |
+| PowerShell 7 on macOS | |
+
+[![Build Status](https://img.shields.io/azure-devops/build/natescherer/poshemail/3.svg?logo=azuredevops)](https://dev.azure.com/natescherer/poshemail/_build/latest?definitionId=3&branchName=master) ![Tests](https://img.shields.io/azure-devops/tests/natescherer/poshemail/3.svg?logo=azuredevops) ![Code Coverage](https://img.shields.io/azure-devops/coverage/natescherer/poshemail/3.svg?logo=azuredevops) 
 
 PoshEmail is a PowerShell module designed to send responsive HTML email easily from PowerShell.
 
