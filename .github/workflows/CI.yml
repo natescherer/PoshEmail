@@ -17,6 +17,9 @@ jobs:
           - os: macos-latest
             shell: powershell
     steps:
+      - name: Set Variables
+        run: |
+          $env:BARE_REPOSITORY = $env:GITHUB_REPOSITORY.split("/")[1]
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup Go environment
@@ -43,6 +46,6 @@ jobs:
         with:
           report_name: TEST_RESULTS_${{ matrix.os }}_${{ matrix.shell }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          gist_name: ${{ github.repository }}-TestResults
+          gist_name: ${{ env.BARE_REPOSITORY }}-TestResults
           gist_badge_label: Tests %PassedCount%/%TotalCount%
           gist_token: ${{ secrets.PESTER_GIST_TOKEN }}
