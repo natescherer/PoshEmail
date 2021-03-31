@@ -46,7 +46,7 @@ jobs:
         shell: bash
         if: ${{ runner.os == 'macOS' }}
       - name: Run Pester Tests
-        uses: natescherer/pester-tests-report@3f2d00622f98948414fcfd3ed39b83fdaa290126
+        uses: natescherer/pester-tests-report@feature/fail-step-on-test-failure
         with:
           report_name: TestResults_${{ runner.os }}_${{ matrix.shell }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
