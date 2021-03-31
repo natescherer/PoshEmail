@@ -517,8 +517,5 @@ InModuleScope $ModuleName {
             "                          </tbody>$NL" +
             "                        </table>")
         }
-        It 'Intentional Failure' {
-            1 | Should -Be 2
-        }
     }
 }
