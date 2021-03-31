@@ -1,0 +1,12 @@
+name: CI
+on: [push]
+jobs:
+  Build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run Pester Tests
+        uses: zyborg/pester-tests-report@v1.3.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
