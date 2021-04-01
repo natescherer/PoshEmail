@@ -8,6 +8,9 @@ jobs:
       run:
         shell: pwsh
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
       - name: Publish Module to Packages
         uses: natescherer/action-publish-powershell-to-github-packages@main
         with:
