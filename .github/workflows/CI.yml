@@ -1,5 +1,9 @@
 name: CI
-on: [push]
+on: 
+  push:
+    paths-ignore:
+    - '**.md'
+    - '**.yml'
 jobs:
   Test:
     runs-on: ${{ matrix.os }}
