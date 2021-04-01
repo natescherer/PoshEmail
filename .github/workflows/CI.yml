@@ -59,6 +59,7 @@ jobs:
           coverage_gist: true
           coverage_gist_badge: true
   PublishToPackages:
+    needs: Test
     runs-on: windows-latest
     defaults:
       run:
