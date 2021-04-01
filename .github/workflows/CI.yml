@@ -1,7 +1,7 @@
 name: CI
 on: [push]
 jobs:
-  Build:
+  Test:
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -46,7 +46,7 @@ jobs:
         shell: bash
         if: ${{ runner.os == 'macOS' }}
       - name: Run Pester Tests
-        uses: natescherer/pester-tests-report@feature/fail-step-on-test-failure
+        uses: natescherer/pester-tests-report@feature/code-coverage
         with:
           report_name: TestResults_${{ runner.os }}_${{ matrix.shell }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -54,3 +54,7 @@ jobs:
           gist_badge_label: ${{ runner.os }} ${{ matrix.shell }}
           gist_token: ${{ secrets.PESTER_GIST_TOKEN }}
           # tests_fail_step: true
+          coverage_paths: ${{ env.GITHUB_WORKSPACE }}\src\${{ env.BARE_REPOSITORY }}.psm1"
+          coverage_report_name: CoverageResults_${{ runner.os }}_${{ matrix.shell }}
+          coverage_gist: true
+          coverage_gist_badge: true
