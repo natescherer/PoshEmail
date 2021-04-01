@@ -1,0 +1,16 @@
+name: CI
+on: workflow_dispatch
+jobs:
+  PublishToPackages:
+    needs: Test
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Publish Module to Packages
+        uses: natescherer/action-publish-powershell-to-github-packages@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          publish-type: module
+          path: src
