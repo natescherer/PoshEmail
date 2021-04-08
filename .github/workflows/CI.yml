@@ -1,0 +1,64 @@
+name: CI
+on: 
+  push:
+    paths-ignore:
+    - '**.md'
+    - '**.yml'
+jobs:
+  Test:
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: pwsh
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        shell: [pwsh, powershell]
+        exclude:
+          - os: ubuntu-latest
+            shell: powershell
+          - os: macos-latest
+            shell: powershell
+    steps:
+      - name: Set Variables
+        run: |
+          "BARE_REPOSITORY=$($env:GITHUB_REPOSITORY.split("/")[1])" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Go environment
+        uses: actions/setup-go@v2.1.3
+        with:
+          go-version: '1.10'
+      - name: Install Mailhog
+        run: go get github.com/mailhog/MailHog
+      - name: Start Mailhog (Windows)
+        run: |
+          Start-Process -FilePath "MailHog"
+          Start-Process -FilePath "MailHog" -ArgumentList "-smtp-bind-addr", "0.0.0.0:2025", "-api-bind-addr", "0.0.0.0:9025", "-ui-bind-addr", "0.0.0.0:9025", "-auth-file", "$env:GITHUB_WORKSPACE\test\mhcreds.txt"
+        if: ${{ runner.os == 'Windows' }}
+      - name: Start Mailhog (Ubuntu)
+        run: |
+          nohup MailHog &>/dev/null &
+          nohup MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:9025 -ui-bind-addr 0.0.0.0:9025 -auth-file $GITHUB_WORKSPACE/test/mhcreds.txt &>/dev/null &
+        shell: bash
+        if: ${{ runner.os == 'Linux' }}
+      - name: Start Mailhog (macOS)
+        run: |
+          sudo nohup MailHog &>/dev/null &
+          sudo nohup MailHog -smtp-bind-addr 0.0.0.0:2025 -api-bind-addr 0.0.0.0:9025 -ui-bind-addr 0.0.0.0:9025 -auth-file $GITHUB_WORKSPACE/test/mhcreds.txt &>/dev/null &
+        shell: bash
+        if: ${{ runner.os == 'macOS' }}
+      - name: Run Pester Tests
+        uses: natescherer/pester-tests-report@feature/code-coverage
+        with:
+          report_name: TestResults_${{ runner.os }}_${{ matrix.shell }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          gist_name: ${{ env.BARE_REPOSITORY }}_TestResults_${{ runner.os }}_${{ matrix.shell }}.md
+          gist_badge_label: ${{ runner.os }} ${{ matrix.shell }}
+          gist_token: ${{ secrets.PESTER_GIST_TOKEN }}
+          # tests_fail_step: true
+          coverage_paths: src
+          coverage_report_name: CoverageResults_${{ runner.os }}_${{ matrix.shell }}
+          coverage_gist: true
+          coverage_gist_badge: true

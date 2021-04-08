@@ -45,6 +45,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
             }
 
@@ -199,6 +200,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
                 BodyAlignment = "Center"
             }
@@ -220,6 +222,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = "1025"
                 Body = "Body Text"
                 BodyPreformatted = ("$NL" +
                     "$NL" +
@@ -290,6 +293,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
                 Attachments = "$PSScriptRoot\attachment.txt"
             }
@@ -327,11 +331,11 @@ InModuleScope $ModuleName {
             Start-Sleep -Seconds $EmailSendSleep
 
             if ($PSVersionTable.PSVersion -ge "6.0") {
-                $Response = Invoke-RestMethod -Uri http://localhost:10025/api/v2/messages -Credential $PSCreds -AllowUnencryptedAuthentication
-                Invoke-RestMethod -Uri http://localhost:10025/api/v1/messages -Method "DELETE" -Credential $PSCreds -AllowUnencryptedAuthentication | Out-Null
+                $Response = Invoke-RestMethod -Uri http://localhost:9025/api/v2/messages -Credential $PSCreds -AllowUnencryptedAuthentication
+                Invoke-RestMethod -Uri http://localhost:9025/api/v1/messages -Method "DELETE" -Credential $PSCreds -AllowUnencryptedAuthentication | Out-Null
             } else {
-                $Response = Invoke-RestMethod -Uri http://localhost:10025/api/v2/messages -Credential $PSCreds
-                Invoke-RestMethod -Uri http://localhost:10025/api/v1/messages -Method "DELETE" -Credential $PSCreds | Out-Null
+                $Response = Invoke-RestMethod -Uri http://localhost:9025/api/v2/messages -Credential $PSCreds
+                Invoke-RestMethod -Uri http://localhost:9025/api/v1/messages -Method "DELETE" -Credential $PSCreds | Out-Null
             }
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
@@ -340,27 +344,6 @@ InModuleScope $ModuleName {
         It '-DeliveryNotificationOption' -Pending {
         }
         It '-Encoding' -Pending {
-        }
-        It '-Port' {
-            $ShmmParams = @{
-                From = "PoshEmail@test.local"
-                To = "rcpt@test.local"
-                Subject = "PoshEmail Test"
-                SmtpServer = "127.0.0.1"
-                Body = "Body Text"
-                Port = "1025"
-            }
-
-            Send-HtmlMailMessage @ShmmParams
-
-            Start-Sleep -Seconds $EmailSendSleep
-
-            $Response = Invoke-RestMethod -Uri http://localhost:9025/api/v2/messages
-            Invoke-RestMethod -Uri http://localhost:9025/api/v1/messages -Method "DELETE" | Out-Null
-
-            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-
-            $Source | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: left;`">Body Text</p>"
         }
         It '-UseSsl' -Pending {
         }
@@ -372,6 +355,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
                 Heading = "Test Heading"
             }
@@ -393,6 +377,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
                 Heading = "Test Heading"
                 HeadingAlignment = "Left"
@@ -415,6 +400,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
                 Footer = "Test Footer"
             }
@@ -438,6 +424,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
                 LastLine = "Test LastLine"
             }
@@ -461,6 +448,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
                 ButtonText = "Test ButtonText"
                 ButtonLink = "https://testbuttonlink.com"
@@ -497,6 +485,7 @@ InModuleScope $ModuleName {
                 To = "rcpt@test.local"
                 Subject = "PoshEmail Test"
                 SmtpServer = "127.0.0.1"
+                Port = 1025
                 Body = "Body Text"
                 ButtonText = "Test ButtonText"
                 ButtonLink = "https://testbuttonlink.com"
@@ -527,80 +516,6 @@ InModuleScope $ModuleName {
             "                            </tr>$NL" +
             "                          </tbody>$NL" +
             "                        </table>")
-        }
-    }
-    Describe 'Invoke-CommandWithEmailWrapper' {
-        BeforeAll {
-            $global:IcwewSourcePath = "$PSScriptRoot\icwew_source"
-            $global:IcwewDestPath = "$PSScriptRoot\icwew_dest"
-            New-Item -Path $IcwewSourcePath -ItemType Directory | Out-Null
-            New-Item -Path $IcwewDestPath -ItemType Directory | Out-Null
-
-            $File1 = New-Object System.IO.FileStream "$IcwewSourcePath\test1.txt", Create, ReadWrite
-            $File1.SetLength(10MB) | Out-Null
-            $File1.Close() | Out-Null
-
-            $File2 = New-Object System.IO.FileStream "$IcwewSourcePath\test2.txt", Create, ReadWrite
-            $File2.SetLength(100MB) | Out-Null
-            $File2.Close() | Out-Null
-
-            $File3 = New-Object System.IO.FileStream "$IcwewSourcePath\test3.txt", Create, ReadWrite
-            $File3.SetLength(1MB) | Out-Null
-            $File3.Close() | Out-Null
-
-            if (!$env:TMPDIR) {
-                # This works around a problem with Azure DevOps linux agents
-                $env:TMPDIR = $env:AGENT_TEMPDIRECTORY
-            }
-        }
-
-        It 'PowerShell Command' {
-            $IcwewParams = @{
-                EmailFrom = "PoshEmail@test.local"
-                EmailTo = "rcpt@test.local"
-                SmtpServer = "127.0.0.1"
-                ScriptBlock = "Get-ChildItem $IcwewSourcePath"
-                JobName = "Test 1"
-                EmailUseSsl = $false
-            }
-
-            Invoke-CommandWithEmailWrapper @IcwewParams
-
-            Start-Sleep -Seconds $EmailSendSleep
-
-            $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
-
-            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-
-            $Source | Should -Match "104857600&ensp;test2.txt"
-
-        }
-        It 'Cmd Command' -Skip:$IsntWindows {
-            $IcwewParams = @{
-                EmailFrom = "PoshEmail@test.local"
-                EmailTo = "rcpt@test.local"
-                SmtpServer = "127.0.0.1"
-                Command = "robocopy $IcwewSourcePath $IcwewDestPath"
-                JobName = "Test 1"
-                EmailUseSsl = $false
-            }
-
-            Invoke-CommandWithEmailWrapper @IcwewParams
-
-            Start-Sleep -Seconds $EmailSendSleep
-
-            $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-
-            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-
-            $Source | Should -Match "ROBOCOPY&ensp;&ensp;&ensp;&ensp;&ensp;::&ensp;&ensp;&ensp;&ensp;&ensp;Robust&ensp;File&ensp;Copy&ensp;for&ensp;Windows"
-
-        }
-
-        AfterAll {
-            Remove-Item $IcwewSourcePath -Force -Recurse
-            Remove-Item $IcwewDestPath -Force -Recurse
         }
     }
 }

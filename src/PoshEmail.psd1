@@ -27,7 +27,7 @@ Author = 'Nate Scherer'
 CompanyName = 'Nate Scherer'
 
 # Copyright statement for this module
-Copyright = '(c) 2018 Nate Scherer. All rights reserved.'
+Copyright = '(c) 2021 Nate Scherer. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'PoshEmail is a PowerShell module designed to provide useful email tasks, including the following:
