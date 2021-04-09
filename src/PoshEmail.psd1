@@ -32,7 +32,8 @@ Copyright = '(c) 2021 Nate Scherer. All rights reserved.'
 # Description of the functionality provided by this module
 Description = 'PoshEmail is a PowerShell module designed to provide useful email tasks, including the following:
 
-- Easy sending of responsive HTML emails via Send-HtmlMailMessage'
+- Easy sending of responsive HTML emails via Send-HtmlMailMessage
+'
 
 # Minimum version of the Windows PowerShell engine required by this module
 # PowerShellVersion = ''
