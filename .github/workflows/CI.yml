@@ -50,6 +50,7 @@ jobs:
         shell: bash
         if: ${{ runner.os == 'macOS' }}
       - name: Run Pester Tests
+        id: pester
         uses: natescherer/pester-tests-report@feature/code-coverage
         with:
           report_name: TestResults_${{ runner.os }}_${{ matrix.shell }}
@@ -62,6 +63,11 @@ jobs:
           coverage_report_name: CoverageResults_${{ runner.os }}_${{ matrix.shell }}
           coverage_gist: true
           coverage_gist_badge: true
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v1.3.2
+        with:
+          files: ${{ steps.pester.outputs.coverage_results_path }}
+          fail_ci_if_error: true
   PublishToPackages:
     needs: Test
     runs-on: windows-latest
