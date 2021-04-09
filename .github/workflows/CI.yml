@@ -81,10 +81,10 @@ jobs:
         uses: roryprimrose/rungitversion@v1.0.0
       - name: Update PowerShell Metadata
         uses: natescherer/update-powershell-metadata-action@main
-          with:
-            path: src
-            version: ${{ steps.gitversion.outputs.NuGetVersionV2 }}
-            copyright: (c) YYYY Nate Scherer. All rights reserved.
+        with:
+          path: src
+          version: ${{ steps.gitversion.outputs.NuGetVersionV2 }}
+          copyright: (c) YYYY Nate Scherer. All rights reserved.
       - name: Publish Module to Packages
         uses: natescherer/action-publish-powershell-to-github-packages@main
         with:
