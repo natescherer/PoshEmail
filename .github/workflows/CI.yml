@@ -68,7 +68,7 @@ jobs:
         with:
           files: ${{ steps.pester.outputs.coverage_results_path }}
           fail_ci_if_error: true
-        if: ${{ runner.os == 'Windows' && matrix.shell = 'pwsh' }}
+        if: ${{ runner.os == 'Windows' && matrix.shell == 'pwsh' }}
   PublishToPackages:
     needs: Test
     runs-on: windows-latest
