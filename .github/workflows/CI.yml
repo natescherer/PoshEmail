@@ -4,6 +4,7 @@ on:
     paths-ignore:
     - '**.md'
     - '**.yml'
+  workflow_dispatch:
 jobs:
   Test:
     runs-on: ${{ matrix.os }}
