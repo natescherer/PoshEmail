@@ -74,7 +74,7 @@ jobs:
           fi
         shell: bash
       - name: Echo Path
-        shell: Write-Host $env:CODE_COVERAGE_PATH
+        run: Write-Host $env:CODE_COVERAGE_PATH
       - name: Upload to Codecov
         uses: codecov/codecov-action@v1.3.2
         with:
