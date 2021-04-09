@@ -67,7 +67,8 @@ jobs:
       - name: Convert Coverage File Encoding
         run: |
           $Path = "${{ steps.pester.outputs.coverage_results_path }}"
-          Get-Content -Path $Path | Set-Content -Path $Path -Encoding "utf8NoBOM"
+          $Content = Get-Content -Path $Path 
+          Set-Content -Path $Path -Value $Content -Encoding "utf8NoBOM" -Force
       - name: Upload to Codecov
         uses: codecov/codecov-action@v1.3.2
         with:
