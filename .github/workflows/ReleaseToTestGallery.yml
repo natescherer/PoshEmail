@@ -25,9 +25,9 @@ jobs:
           path: src
           version: ${{ steps.gitversion.outputs.NuGetVersionV2 }}
           copyright: (c) YYYY Nate Scherer. All rights reserved.
-      - name: Publish Module to Packages
+      - name: Publish Module to PoshTestGallery
         uses: natescherer/publish-powershell-action@main
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.POSHTESTGALLERY_TOKEN }}
           target: testgallery
           path: src
