@@ -64,12 +64,15 @@ jobs:
           coverage_report_name: CoverageResults_${{ runner.os }}_${{ matrix.shell }}
           coverage_gist: true
           coverage_gist_badge: true
+      - name: Convert Coverage File Encoding
+        run: |
+          $Path = "${{ steps.pester.outputs.coverage_results_path }}"
+          Get-Content -Path $Path | Set-Content -Path $Path -Encoding "utf8NoBOM"
       - name: Upload to Codecov
         uses: codecov/codecov-action@v1.3.2
         with:
           files: ${{ steps.pester.outputs.coverage_results_path }}
           fail_ci_if_error: true
-        #if: ${{ runner.os == 'Windows' && matrix.shell == 'pwsh' }}
   PublishToPackages:
     needs: Test
     runs-on: windows-latest
