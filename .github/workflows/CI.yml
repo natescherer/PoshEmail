@@ -103,7 +103,7 @@ jobs:
           version: ${{ steps.gitversion.outputs.NuGetVersionV2 }}
           copyright: (c) YYYY Nate Scherer. All rights reserved.
       - name: Publish Module to Packages
-        uses: natescherer/action-publish-powershell-to-github-packages@main
+        uses: natescherer/publish-powershell-action@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           target: packages
