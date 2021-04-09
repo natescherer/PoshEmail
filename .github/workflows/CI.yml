@@ -57,8 +57,37 @@ jobs:
           gist_name: ${{ env.BARE_REPOSITORY }}_TestResults_${{ runner.os }}_${{ matrix.shell }}.md
           gist_badge_label: ${{ runner.os }} ${{ matrix.shell }}
           gist_token: ${{ secrets.PESTER_GIST_TOKEN }}
-          # tests_fail_step: true
+          tests_fail_step: true
           coverage_paths: src
           coverage_report_name: CoverageResults_${{ runner.os }}_${{ matrix.shell }}
           coverage_gist: true
           coverage_gist_badge: true
+  PublishToPackages:
+    needs: Test
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Prepare for GitVersion
+        run: git fetch --tags
+      - name: Fetch main for GitVersion
+        if: github.ref != 'refs/heads/main'
+        run: git branch --create-reflog main origin/main
+      - name: Run GitVersion
+        id: gitversion
+        uses: roryprimrose/rungitversion@v1.0.0
+      - name: Update PowerShell Metadata
+        uses: natescherer/update-powershell-metadata-action@main
+          with:
+            path: src
+            version: ${{ steps.gitversion.outputs.NuGetVersionV2 }}
+            copyright: (c) YYYY Nate Scherer. All rights reserved.
+      - name: Publish Module to Packages
+        uses: natescherer/action-publish-powershell-to-github-packages@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target: packages
+          path: src
