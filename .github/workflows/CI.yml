@@ -73,8 +73,6 @@ jobs:
             echo "CODE_COVERAGE_PATH=${{ steps.pester.outputs.coverage_results_path }}" >> $GITHUB_ENV
           fi
         shell: bash
-      - name: Echo Path
-        run: Write-Host $env:CODE_COVERAGE_PATH
       - name: Upload to Codecov
         uses: codecov/codecov-action@v1.3.2
         with:
@@ -89,14 +87,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Prepare for GitVersion
-        run: git fetch --tags
-      - name: Fetch main for GitVersion
-        if: github.ref != 'refs/heads/main'
-        run: git branch --create-reflog main origin/main
-      - name: Run GitVersion
+        with:
+          fetch-depth: 0
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
+        with:
+          versionSpec: '5.x'
+      - name: Determine Version
         id: gitversion
-        uses: roryprimrose/rungitversion@v1.0.0
+        uses: gittools/actions/gitversion/execute@v0.9.7
       - name: Update PowerShell Metadata
         uses: natescherer/update-powershell-metadata-action@main
         with:
