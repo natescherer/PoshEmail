@@ -64,15 +64,21 @@ jobs:
           coverage_report_name: CoverageResults_${{ runner.os }}_${{ matrix.shell }}
           coverage_gist: true
           coverage_gist_badge: true
-      - name: Convert Coverage File Encoding
+      - name: Convert Path for Codecov Action
         run: |
-          $Path = "${{ steps.pester.outputs.coverage_results_path }}"
-          $Content = Get-Content -Path $Path 
-          Set-Content -Path $Path -Value $Content -Encoding "utf8NoBOM" -Force
+          if [[ "${{ matrix.os }}" -eq "windows-latest" ]] 
+          then
+            echo "CODE_COVERAGE_PATH=$(cygpath -u '${{ steps.pester.outputs.coverage_results_path }}')" >> $GITHUB_ENV
+          else
+            echo "CODE_COVERAGE_PATH=${{ steps.pester.outputs.coverage_results_path }}" >> $GITHUB_ENV
+          fi
+        shell: bash
+      - name: Echo Path
+        shell: Write-Host $env:CODE_COVERAGE_PATH
       - name: Upload to Codecov
         uses: codecov/codecov-action@v1.3.2
         with:
-          files: ${{ steps.pester.outputs.coverage_results_path }}
+          files: ${{ env.CODE_COVERAGE_PATH }}
           fail_ci_if_error: true
   PublishToPackages:
     needs: Test
