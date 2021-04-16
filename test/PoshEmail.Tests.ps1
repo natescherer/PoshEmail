@@ -4,8 +4,6 @@ $global:ModuleName = Split-Path -Path ($PSCommandPath -replace '\.Tests\.ps1$','
 $global:ModulePath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psm1"
 $global:ModuleManifestPath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psd1"
 $global:NL = [System.Environment]::NewLine
-if ($IsWindows -eq $null) {$IsWindows = $true}
-$global:IsntWindows = !$IsWindows
 $global:EmailSendSleep = 1
 
 Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
