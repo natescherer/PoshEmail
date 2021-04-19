@@ -36,7 +36,7 @@ jobs:
         run: |
           New-Item -Path "$env:GITHUB_WORKSPACE\out" -Type Directory | Out-Null
           Copy-Item -Path "$env:GITHUB_WORKSPACE\src" -Destination "$env:GITHUB_WORKSPACE\out" -Recurse
-          Get-ChildItem -Path "$env:GITHUB_WORKSPACE"
+          Get-ChildItem -Path "$env:GITHUB_WORKSPACE" -Recurse
       - name: Create Documentation for Release
         uses: natescherer/markdown-to-html-with-github-style-action@main
         with:
