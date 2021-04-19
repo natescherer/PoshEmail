@@ -19,15 +19,32 @@ jobs:
       - name: Determine Version
         id: gitversion
         uses: gittools/actions/gitversion/execute@v0.9.7
+      - name: Update Changelog for Release
+        id: changelog
+        uses: natescherer/changelog-management-action@main
+        with:
+          mode: release
+          releaseversion: ${{ steps.gitversion.outputs.NuGetVersionV2 }}
       - name: Update PowerShell Metadata
         uses: natescherer/update-powershell-metadata-action@main
         with:
           path: src
           version: ${{ steps.gitversion.outputs.NuGetVersionV2 }}
           copyright: (c) YYYY Nate Scherer. All rights reserved.
+          releasenotes: ${{ steps.changelog.outputs.releasenotes }}
+      - name: Build 'out' Directory
+        run: |
+          New-Item -Path "out" -Type Directory | Out-Null
+          Copy-Item -Path "src" -Destination "out" -Recurse
+      - name: Create Documentation for Release
+        uses: natescherer/markdown-to-html-with-github-style-action@v1.0.0
+        with:
+          path: README.md,CHANGELOG.md
+          outputpath: out
+          matchpathstructure: true
       - name: Publish Module to PoshTestGallery
         uses: natescherer/publish-powershell-action@main
         with:
           token: ${{ secrets.POSHTESTGALLERY_TOKEN }}
           target: testgallery
-          path: src
+          path: out
