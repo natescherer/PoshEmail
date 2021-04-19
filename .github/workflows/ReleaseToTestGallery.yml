@@ -38,7 +38,7 @@ jobs:
       - name: Create Documentation for Release
         uses: natescherer/markdown-to-html-with-github-style-action@main
         with:
-          path: README.md,CHANGELOG.md
+          path: README.md,CHANGELOG.md,docs
           outputpath: out
           matchpathstructure: true
       - name: Publish Module to PoshTestGallery
