@@ -38,7 +38,7 @@ jobs:
           Install-Module -Name platyPs
           New-Item -Path "docs" -ItemType Directory  -ErrorAction SilentlyContinue | Out-Null
           Remove-Item -Path "docs\*" -Recurse -ErrorAction SilentlyContinue
-          $ModulePath = Get-ChildItem -Path "$env:GITHUB_WORKSPACE\src" -Include "*.psm1"
+          $ModulePath = (Get-ChildItem -Path "$env:GITHUB_WORKSPACE\src" -Include "*.psm1").FullName
           $ModuleName = Split-Path -Path $ModulePath -LeafBase
           Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
           Import-Module -Name $ModulePath -Force -ErrorAction Stop
