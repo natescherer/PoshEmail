@@ -187,7 +187,31 @@ function Send-HtmlMailMessage {
         # - Center
         # - Right
         # Center is the default.
-        [string]$ButtonAlignment = "Center"
+        [string]$ButtonAlignment = "Center",
+
+        [parameter(ParameterSetName = "Default", Mandatory = $false)]
+        [parameter(ParameterSetName = "Button", Mandatory = $false)]
+        [ValidateScript({
+            [string]::IsNullOrEmpty($_.BodyTextColor) -and
+            [string]::IsNullOrEmpty($_.BackgroundColor) -and
+            [string]::IsNullOrEmpty($_.ContainerColor) -and
+            [string]::IsNullOrEmpty($_.HeadingTextColor) -and
+            [string]::IsNullOrEmpty($_.FooterTextColor) -and
+            [string]::IsNullOrEmpty($_.LinkColor) -and
+            [string]::IsNullOrEmpty($_.ButtonColor) -and
+            [string]::IsNullOrEmpty($_.ButtonTextColor)
+        })]
+        # Specifies a hashtable containing a color scheme if you wish to use non-default colors.
+        [hashtable]$ColorScheme = @{
+            BodyTextColor = "#000000"
+            BackgroundColor = "#f6f6f6"
+            ContainerColor = "#ffffff"
+            HeadingTextColor = "#000000"
+            FooterTextColor = "#999999"
+            LinkColor = "#999999"
+            ButtonColor = "#3498db"
+            ButtonTextColor = "#ffffff"
+        }
     )
 
     $NL = [System.Environment]::NewLine
@@ -273,25 +297,25 @@ function Send-HtmlMailMessage {
         "        line-height: 100%;$NL" +
         "      }$NL" +
         "      .btn-primary table td:hover {$NL" +
-        "        background-color: #34495e !important;$NL" +
+        "        background-color: $($ColorScheme.ButtonColor) !important;$NL" +
         "      }$NL" +
         "      .btn-primary a:hover {$NL" +
-        "        background-color: #34495e !important;$NL" +
-        "        border-color: #34495e !important;$NL" +
+        "        background-color: $($ColorScheme.ButtonColor) !important;$NL" +
+        "        border-color: $($ColorScheme.ButtonColor) !important;$NL" +
         "      }$NL" +
         "    }$NL" +
         "   </style>$NL" +
         "  </head>$NL" +
-        "  <body class=`"`" style=`"background-color: #f6f6f6; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;`">$NL" +
-        "    <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"body`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background-color: #f6f6f6;`">$NL" +
+        "  <body class=`"`" style=`"background-color: $($ColorScheme.BackgroundColor); font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;`">$NL" +
+        "    <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"body`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background-color: $($ColorScheme.BackgroundColor);`">$NL" +
         "      <tr>$NL" +
         "        <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">&nbsp;</td>$NL" +
         "        <td class=`"container`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; display: block; margin: 0 auto; max-width: $($BodyWidth)px; padding: 10px;`">$NL" +
         "          <div class=`"content`" style=`"box-sizing: border-box; display: block; margin: 0 auto; max-width: 100%; padding: 10px;`">$NL" +
         "$NL" +
-        "            <!-- START CENTERED WHITE CONTAINER -->$NL" +
+        "            <!-- START CENTERED CONTAINER -->$NL" +
         "            <span class=`"preheader`" style=`"color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;`"></span>$NL" +
-        "            <table class=`"main`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background: #ffffff; border-radius: 3px;`">$NL" +
+        "            <table class=`"main`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background: $($ColorScheme.ContainerColor); border-radius: 3px;`">$NL" +
         "$NL" +
         "              <!-- START MAIN CONTENT AREA -->$NL" +
         "              <tr>$NL" +
@@ -307,7 +331,7 @@ function Send-HtmlMailMessage {
         "                                <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;`">$NL" +
         "                                  <tbody>$NL" +
         "                                    <tr>$NL" +
-        "                                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #3498db; border-radius: 5px; text-align: center;`"> <a href=`"$ButtonLink`" target=`"_blank`" style=`"display: inline-block; color: #ffffff; background-color: #3498db; border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db;`">$ButtonText</a> </td>$NL" +
+        "                                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: $($ColorScheme.ButtonColor); border-radius: 5px; text-align: center;`"> <a href=`"$ButtonLink`" target=`"_blank`" style=`"display: inline-block; color: $($ColorScheme.ButtonTextColor); background-color: $($ColorScheme.ButtonColor); border: solid 1px $($ColorScheme.ButtonColor); border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: $($ColorScheme.ButtonColor);`">$ButtonText</a> </td>$NL" +
         "                                    </tr>$NL" +
         "                                  </tbody>$NL" +
         "                                </table>$NL" +
@@ -334,7 +358,7 @@ function Send-HtmlMailMessage {
     $HtmlFooterToLastLine = ("                  </td>$NL" +
         "                </tr>$NL" +
         "                <tr>$NL" +
-        "                  <td class=`"content-block powered-by`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL")
+        "                  <td class=`"content-block powered-by`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: $($ColorScheme.FooterTextColor); text-align: center;`">$NL")
 
     $HtmlBottom = ("                  </td>$NL" +
         "                </tr>$NL" +
@@ -342,7 +366,7 @@ function Send-HtmlMailMessage {
         "            </div>$NL" +
         "            <!-- END FOOTER -->$NL" +
         "$NL" +
-        "          <!-- END CENTERED WHITE CONTAINER -->$NL" +
+        "          <!-- END CENTERED CONTAINER -->$NL" +
         "          </div>$NL" +
         "        </td>$NL" +
         "        <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">&nbsp;</td>$NL" +
@@ -355,7 +379,7 @@ function Send-HtmlMailMessage {
         $HtmlButton = ""
     }
 
-    $Heading = "                        <h2 style=`"text-align: $($HeadingAlignment.ToLower());`">$Heading</h2>$NL"
+    $Heading = "                        <h2 style=`"text-align: $($HeadingAlignment.ToLower()); color: $($ColorScheme.HeadingTextColor);`">$Heading</h2>$NL"
 
     if ($Body -notlike "*<p>*") {
         $Body = "<p>$Body</p>"
@@ -373,7 +397,7 @@ function Send-HtmlMailMessage {
 
     $LastLine = "                    $LastLine$NL"
 
-    $Body = $Body -replace "<p>", "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: $($BodyAlignment.ToLower());`">"
+    $Body = $Body -replace "<p>", "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; color: $($ColorScheme.BodyTextColor); margin: 0; margin-bottom: 15px; text-align: $($BodyAlignment.ToLower());`">"
     $Body = $Body -replace "</p>", "</p>$NL"
     if ($BodyPreformatted -ne "") {
         $BodyReformatted = ""
@@ -395,6 +419,7 @@ function Send-HtmlMailMessage {
             "                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">$NL" +
             "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: $($BodyAlignment.ToLower());`">&nbsp;</p>$NL")
     }
+    $Body = $Body -replace "<a ", "<a style=`"text-decoration: underline; color: $($ColorScheme.LinkColor); font-size: 16px; text-align: center;`" "
     $Footer = $Footer -replace "<a ", "<a style=`"text-decoration: underline; color: #999999; font-size: 12px; text-align: center;`" "
     $LastLine = $LastLine -replace "<a ", "<a style=`"text-decoration: underline; color: #999999; font-size: 12px; text-align: center;`" "
 
