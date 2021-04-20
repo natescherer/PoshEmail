@@ -32,6 +32,17 @@ jobs:
           version: ${{ steps.gitversion.outputs.NuGetVersionV2 }}
           copyright: (c) YYYY Nate Scherer. All rights reserved.
           releasenotes: ${{ steps.changelog.outputs.releasenotes }}
+          functionstoexportpath: src\public
+      - name: Generate Markdown Help Files
+        run: |
+          Install-Module -Name platyPs
+          New-Item -Path "docs" -ItemType Directory  -ErrorAction SilentlyContinue | Out-Null
+          Remove-Item -Path "docs\*" -Recurse -ErrorAction SilentlyContinue
+          $ModulePath = Get-ChildItem -Path "$env:GITHUB_WORKSPACE\src" -Include "*.psm1"
+          $ModuleName = Split-Path -Path $ModulePath -LeafBase
+          Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
+          Import-Module -Name $ModulePath -Force -ErrorAction Stop
+          New-MarkdownHelp -Module $ModuleName -OutputFolder "docs" -NoMetadata | Out-Null
       - name: Build 'out' Directory
         run: |
           Copy-Item -Path "$env:GITHUB_WORKSPACE\src" -Destination "$env:GITHUB_WORKSPACE\out" -Recurse
