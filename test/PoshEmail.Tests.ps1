@@ -146,7 +146,7 @@ InModuleScope $ModuleName {
                 "        <td class=`"container`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; display: block; margin: 0 auto; max-width: 580px; padding: 10px;`">$NL" +
                 "          <div class=`"content`" style=`"box-sizing: border-box; display: block; margin: 0 auto; max-width: 100%; padding: 10px;`">$NL" +
                 "$NL" +
-                "            <!-- START CENTERED WHITE CONTAINER -->$NL" +
+                "            <!-- START CENTERED CONTAINER -->$NL" +
                 "            <span class=`"preheader`" style=`"color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;`"></span>$NL" +
                 "            <table class=`"main`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background: #ffffff; border-radius: 3px;`">$NL" +
                 "$NL" +
@@ -183,7 +183,7 @@ InModuleScope $ModuleName {
                 "            </div>$NL" +
                 "            <!-- END FOOTER -->$NL" +
                 "$NL" +
-                "          <!-- END CENTERED WHITE CONTAINER -->$NL" +
+                "          <!-- END CENTERED CONTAINER -->$NL" +
                 "          </div>$NL" +
                 "        </td>$NL" +
                 "        <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">&nbsp;</td>$NL" +
