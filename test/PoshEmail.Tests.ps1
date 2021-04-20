@@ -157,7 +157,7 @@ InModuleScope $ModuleName {
                 "                    <tr>$NL" +
                 "                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">$NL" +
                 "                        <h2 style=`"text-align: center; color: #000000;`"></h2>$NL" +
-                "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: left;`">Body Text</p>$NL" +
+                "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; color: #000000; margin: 0; margin-bottom: 15px; text-align: left;`">Body Text</p>$NL" +
                 "                      </td>$NL" +
                 "                    </tr>$NL" +
                 "                  </table>$NL" +
