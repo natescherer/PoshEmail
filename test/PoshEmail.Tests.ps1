@@ -130,11 +130,11 @@ InModuleScope $ModuleName {
                 "        line-height: 100%;$NL" +
                 "      }$NL" +
                 "      .btn-primary table td:hover {$NL" +
-                "        background-color: #34495e !important;$NL" +
+                "        background-color: #3498db !important;$NL" +
                 "      }$NL" +
                 "      .btn-primary a:hover {$NL" +
-                "        background-color: #34495e !important;$NL" +
-                "        border-color: #34495e !important;$NL" +
+                "        background-color: #3498db !important;$NL" +
+                "        border-color: #3498db !important;$NL" +
                 "      }$NL" +
                 "    }$NL" +
                 "   </style>$NL" +
@@ -212,7 +212,7 @@ InModuleScope $ModuleName {
 
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
-            $Source | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: center;`">Body Text</p>$NL"
+            $Source | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; color: #000000; margin: 0; margin-bottom: 15px; text-align: center;`">Body Text</p>$NL"
         }    
         It '-BodyPreformatted' {
             $ShmmParams = @{
@@ -337,7 +337,7 @@ InModuleScope $ModuleName {
             }
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
-            $Source | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: left;`">Body Text</p>"
+            $Source | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; color: #000000; margin: 0; margin-bottom: 15px; text-align: left;`">Body Text</p>"
         }
         It '-DeliveryNotificationOption' -Pending {
         }
@@ -367,7 +367,7 @@ InModuleScope $ModuleName {
 
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
-            $Source | Should -Match "<h2 style=`"text-align: center;`">Test Heading</h2>"
+            $Source | Should -Match "<h2 style=`"text-align: center; color: #000000;`">Test Heading</h2>"
         }
         It '-HeadingAlignment' {
             $ShmmParams = @{
@@ -390,7 +390,7 @@ InModuleScope $ModuleName {
 
             $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
-            $Source | Should -Match "<h2 style=`"text-align: left;`">Test Heading</h2>"
+            $Source | Should -Match "<h2 style=`"text-align: left; color: #000000;`">Test Heading</h2>"
         }
         It '-Footer' {
             $ShmmParams = @{
