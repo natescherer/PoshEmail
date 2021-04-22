@@ -3,7 +3,6 @@ on:
   push:
     paths-ignore:
     - '**.md'
-    - '**.yml'
   workflow_dispatch:
 jobs:
   Test:
@@ -96,11 +95,17 @@ jobs:
       - name: Determine Version
         id: gitversion
         uses: gittools/actions/gitversion/execute@v0.9.7
+      - name: Remove Dashes from Prerelease String
+        id: cleanversion
+        run: |
+          $CleanVersion = "${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}" -replace "-",""
+          $CleanVersion = "${{ steps.gitversion.outputs.MajorMinorPatch }}" + "-" + $CleanVersion
+          Write-Output -InputObject "::set-output name=cleanversion::$CleanVersion"
       - name: Update PowerShell Metadata
         uses: natescherer/update-powershell-metadata-action@main
         with:
           path: src
-          version: ${{ steps.gitversion.outputs.NuGetVersionV2 }}
+          version: ${{ steps.cleanversion.outputs.cleanversion }}
           copyright: (c) YYYY Nate Scherer. All rights reserved.
       - name: Publish Module to Packages
         uses: natescherer/publish-powershell-action@main
@@ -108,3 +113,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           target: packages
           path: src
+      - name: Publish Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: testartifact
+          path: ${{ github.workspace }}
