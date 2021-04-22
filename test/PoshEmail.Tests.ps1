@@ -515,5 +515,170 @@ InModuleScope $ModuleName {
             "                          </tbody>$NL" +
             "                        </table>")
         }
+        IT '-ColorScheme' {
+            $ShmmParams = @{
+                From = "PoshEmail@test.local"
+                To = "rcpt@test.local"
+                Subject = "PoshEmail Test"
+                SmtpServer = "127.0.0.1"
+                Port = 1025
+                Body = "Body Text"
+                ColorScheme = @{
+                    BodyTextColor = "#000000"
+                    BackgroundColor = "#f7f2ed"
+                    ContainerColor = "#ffffff"
+                    HeadingTextColor = "#000000"
+                    FooterTextColor = "#999999"
+                    LinkColor = "#999999"
+                    ButtonColor = "#3498db"
+                    ButtonTextColor  = "#ffffff"
+                }
+            }
+
+            Send-HtmlMailMessage @ShmmParams
+
+            Start-Sleep -Seconds $EmailSendSleep
+
+            $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
+
+            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
+
+            $Source | Should -Be ("<!doctype html>$NL" +
+                "<html>$NL" +
+                "  <head>$NL" +
+                "    <meta name=`"viewport`" content=`"width=device-width`">$NL" +
+                "    <meta http-equiv=`"Content-Type`" content=`"text/html; charset=UTF-8`">$NL" +
+                "    <title></title>$NL" +
+                "    <style>$NL" +
+                "    /* -------------------------------------$NL" +
+                "        INLINED WITH htmlemail.io/inline$NL" +
+                "    ------------------------------------- */$NL" +
+                "    /* -------------------------------------$NL" +
+                "        RESPONSIVE AND MOBILE FRIENDLY STYLES$NL" +
+                "    ------------------------------------- */$NL" +
+                "    @media only screen and (max-width: 620px) {$NL" +
+                "      table[class=body] h1 {$NL" +
+                "        font-size: 28px !important;$NL" +
+                "        margin-bottom: 10px !important;$NL" +
+                "      }$NL" +
+                "      table[class=body] p,$NL" +
+                "      table[class=body] ul,$NL" +
+                "      table[class=body] ol,$NL" +
+                "      table[class=body] td,$NL" +
+                "      table[class=body] span,$NL" +
+                "      table[class=body] a {$NL" +
+                "        font-size: 16px !important;$NL" +
+                "      }$NL" +
+                "      table[class=body] .preformatted {$NL" +
+                "        font-size: 11px !important;$NL" +
+                "      }$NL" +
+                "      table[class=body] .wrapper,$NL" +
+                "            table[class=body] .article {$NL" +
+                "        padding: 10px !important;$NL" +
+                "      }$NL" +
+                "      table[class=body] .content {$NL" +
+                "        padding: 0 !important;$NL" +
+                "      }$NL" +
+                "      table[class=body] .container {$NL" +
+                "        padding: 0 !important;$NL" +
+                "        width: 100% !important;$NL" +
+                "      }$NL" +
+                "      table[class=body] .main {$NL" +
+                "        border-left-width: 0 !important;$NL" +
+                "        border-radius: 0 !important;$NL" +
+                "        border-right-width: 0 !important;$NL" +
+                "      }$NL" +
+                "      table[class=body] .btn table {$NL" +
+                "        width: 100% !important;$NL" +
+                "      }$NL" +
+                "      table[class=body] .btn a {$NL" +
+                "        width: 100% !important;$NL" +
+                "      }$NL" +
+                "      table[class=body] .img-responsive {$NL" +
+                "        height: auto !important;$NL" +
+                "        max-width: 100% !important;$NL" +
+                "        width: auto !important;$NL" +
+                "      }$NL" +
+                "    }$NL" +
+                "$NL" +
+                "    /* -------------------------------------$NL" +
+                "        PRESERVE THESE STYLES IN THE HEAD$NL" +
+                "    ------------------------------------- */$NL" +
+                "    @media all {$NL" +
+                "      .ExternalClass {$NL" +
+                "        width: 100%;$NL" +
+                "      }$NL" +
+                "      .ExternalClass,$NL" +
+                "      .ExternalClass p,$NL" +
+                "      .ExternalClass span,$NL" +
+                "      .ExternalClass font,$NL" +
+                "      .ExternalClass td,$NL" +
+                "      .ExternalClass div {$NL" +
+                "        line-height: 100%;$NL" +
+                "      }$NL" +
+                "      .btn-primary table td:hover {$NL" +
+                "        background-color: #3498db !important;$NL" +
+                "      }$NL" +
+                "      .btn-primary a:hover {$NL" +
+                "        background-color: #3498db !important;$NL" +
+                "        border-color: #3498db !important;$NL" +
+                "      }$NL" +
+                "    }$NL" +
+                "   </style>$NL" +
+                "  </head>$NL" +
+                "  <body class=`"`" style=`"background-color: #f7f2ed; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;`">$NL" +
+                "    <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"body`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background-color: #f7f2ed;`">$NL" +
+                "      <tr>$NL" +
+                "        <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">&nbsp;</td>$NL" +
+                "        <td class=`"container`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; display: block; margin: 0 auto; max-width: 580px; padding: 10px;`">$NL" +
+                "          <div class=`"content`" style=`"box-sizing: border-box; display: block; margin: 0 auto; max-width: 100%; padding: 10px;`">$NL" +
+                "$NL" +
+                "            <!-- START CENTERED CONTAINER -->$NL" +
+                "            <span class=`"preheader`" style=`"color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;`"></span>$NL" +
+                "            <table class=`"main`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background: #ffffff; border-radius: 3px;`">$NL" +
+                "$NL" +
+                "              <!-- START MAIN CONTENT AREA -->$NL" +
+                "              <tr>$NL" +
+                "                <td class=`"wrapper`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; box-sizing: border-box; padding: 20px;`">$NL" +
+                "                  <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;`">$NL" +
+                "                    <tr>$NL" +
+                "                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">$NL" +
+                "                        <h2 style=`"text-align: center; color: #000000;`"></h2>$NL" +
+                "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; color: #000000; margin: 0; margin-bottom: 15px; text-align: left;`">Body Text</p>$NL" +
+                "                      </td>$NL" +
+                "                    </tr>$NL" +
+                "                  </table>$NL" +
+                "                </td>$NL" +
+                "              </tr>$NL" +
+                "$NL" +
+                "            <!-- END MAIN CONTENT AREA -->$NL" +
+                "            </table>$NL" +
+                "$NL" +
+                "            <!-- START FOOTER -->$NL" +
+                "            <div class=`"footer`" style=`"clear: both; margin-top: 10px; text-align: center; width: 100%;`">$NL" +
+                "              <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;`">$NL" +
+                "                <tr>$NL" +
+                "                  <td class=`"content-block`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL" +
+                "                  </td>$NL" +
+                "                </tr>$NL" +
+                "                <tr>$NL" +
+                "                  <td class=`"content-block powered-by`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL" +
+                "                    $NL" +
+                "                  </td>$NL" +
+                "                </tr>$NL" +
+                "              </table>$NL" +
+                "            </div>$NL" +
+                "            <!-- END FOOTER -->$NL" +
+                "$NL" +
+                "          <!-- END CENTERED CONTAINER -->$NL" +
+                "          </div>$NL" +
+                "        </td>$NL" +
+                "        <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">&nbsp;</td>$NL" +
+                "      </tr>$NL" +
+                "    </table>$NL" +
+                "  </body>$NL" +
+                "</html>$NL")
+        }
     }
 }
