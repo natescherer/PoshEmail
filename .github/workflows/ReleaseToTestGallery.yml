@@ -21,7 +21,8 @@ jobs:
         uses: gittools/actions/gitversion/execute@v0.9.7
       - name: Remove Dashes from Version
         run: |
-          $CleanVersion = "${{ steps.gitversion.outputs.NuGetVersionV2 }}" -replace "-",""
+          $CleanVersion = "${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}" -replace "-",""
+          $CleanVersion = "${{ steps.gitversion.outputs.MajorMinorPatch }}" + "-" + $CleanVersion
           Write-Host "CLEAN_VERSION=$CleanVersion" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
       - name: Update Changelog for Release
         id: changelog
