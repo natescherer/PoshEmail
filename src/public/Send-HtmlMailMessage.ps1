@@ -192,14 +192,14 @@ function Send-HtmlMailMessage {
         [parameter(ParameterSetName = "Default", Mandatory = $false)]
         [parameter(ParameterSetName = "Button", Mandatory = $false)]
         [ValidateScript({
-            [string]::IsNullOrEmpty($_.BodyTextColor) -and
-            [string]::IsNullOrEmpty($_.BackgroundColor) -and
-            [string]::IsNullOrEmpty($_.ContainerColor) -and
-            [string]::IsNullOrEmpty($_.HeadingTextColor) -and
-            [string]::IsNullOrEmpty($_.FooterTextColor) -and
-            [string]::IsNullOrEmpty($_.LinkColor) -and
-            [string]::IsNullOrEmpty($_.ButtonColor) -and
-            [string]::IsNullOrEmpty($_.ButtonTextColor)
+            (![string]::IsNullOrEmpty($_.BodyTextColor)) -and
+            (![string]::IsNullOrEmpty($_.BackgroundColor)) -and
+            (![string]::IsNullOrEmpty($_.ContainerColor)) -and
+            (![string]::IsNullOrEmpty($_.HeadingTextColor)) -and
+            (![string]::IsNullOrEmpty($_.FooterTextColor)) -and
+            (![string]::IsNullOrEmpty($_.LinkColor)) -and
+            (![string]::IsNullOrEmpty($_.ButtonColor)) -and
+            (![string]::IsNullOrEmpty($_.ButtonTextColor))
         })]
         # Specifies a hashtable containing a color scheme if you wish to use non-default colors.
         [hashtable]$ColorScheme = @{
