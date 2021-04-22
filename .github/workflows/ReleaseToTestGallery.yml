@@ -19,7 +19,7 @@ jobs:
       - name: Determine Version
         id: gitversion
         uses: gittools/actions/gitversion/execute@v0.9.7
-      - name: Remove Dashes from Version
+      - name: Remove Dashes from Prerelease String
         run: |
           $CleanVersion = "${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}" -replace "-",""
           $CleanVersion = "${{ steps.gitversion.outputs.MajorMinorPatch }}" + "-" + $CleanVersion

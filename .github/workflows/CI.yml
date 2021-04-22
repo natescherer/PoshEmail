@@ -112,3 +112,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           target: packages
           path: src
+      - name: Publish Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: testartifact
+          path: ${{ github.workspace }}
