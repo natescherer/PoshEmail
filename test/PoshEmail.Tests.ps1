@@ -263,7 +263,7 @@ InModuleScope $ModuleName {
                 SmtpServer = "127.0.0.1"
                 Port = 1025
                 Body = "Body Text"
-                Attachments = "$PSScriptRoot\attachment.txt"
+                Attachments = "$PSScriptRoot\image.png"
             }
 
             Send-HtmlMailMessage @ShmmParams
@@ -604,7 +604,7 @@ InModuleScope $ModuleName {
                 "      </tr>$NL" +
                 "    </table>$NL" +
                 "  </body>$NL" +
-                "</html>$NL")
+                "</html>")
         }
     }
 }
