@@ -6,11 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Changed
-- Send-HtmlMailMessage parameters have been overhauled to no longer emulate Send-MailMessage as Send-MailMessage is deprecated
+- Message encoding now defaults to UTF-8
+- Send-HtmlMailMessage now uses Mailozaurr module (which uses MailKit) to send email as Send-MailMessage is being deprecated
 
 ### Removed
-- LineLine parameter from Send-HtmlEmail as it was superfluous with the Footer parameter
-- Invoke-CommandWithEmailWrapper
+- UseSsl parameter on Send-HtmlMailMessage, as Mailozaurr/MailKit automatically negotiates encryption
+- LastLine parameter from Send-HtmlMailMessage, as it was superfluous with the Footer parameter
+- Invoke-CommandWithEmailWrapper, as it was not cross-platform friendly
 
 ## [1.1.0] - 2019-02-21
 ### Added
