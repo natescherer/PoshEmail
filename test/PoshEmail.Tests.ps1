@@ -185,7 +185,7 @@ InModuleScope $ModuleName {
                 "      </tr>$NL" +
                 "    </table>$NL" +
                 "  </body>$NL" +
-                "</html>$NL")
+                "</html>")
         }
         It '-BodyAlignment' {
             $ShmmParams = @{
