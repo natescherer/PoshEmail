@@ -422,7 +422,7 @@ function Send-HtmlMailMessage {
         To = $To
         Subject = $Subject
         HTML = $CompleteBody
-        WarningAction = "Ignore"
+        Encoding = $Encoding
     }
 
     if ($Attachments) {
@@ -443,10 +443,6 @@ function Send-HtmlMailMessage {
 
     if ($DeliveryNotificationOption) {
         $MessageParams += @{DeliveryNotificationOption = $DeliveryNotificationOption }
-    }
-
-    if ($Encoding) {
-        $MessageParams += @{Encoding = $Encoding }
     }
 
     if ($Priority) {
