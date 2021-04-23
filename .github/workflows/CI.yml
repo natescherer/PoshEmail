@@ -107,6 +107,7 @@ jobs:
           path: src
           version: ${{ steps.cleanversion.outputs.cleanversion }}
           copyright: (c) YYYY Nate Scherer. All rights reserved.
+          functionstoexportpath: src\public
       - name: Publish Module to Packages
         uses: natescherer/publish-powershell-action@main
         with:
