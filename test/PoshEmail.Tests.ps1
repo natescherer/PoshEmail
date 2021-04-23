@@ -3,6 +3,7 @@
 $global:ModuleName = Split-Path -Path ($PSCommandPath -replace '\.Tests\.ps1$','') -Leaf
 $global:ModulePath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psm1"
 $global:ModuleManifestPath = "$(Split-Path -Path $PSScriptRoot -Parent)\src\$ModuleName.psd1"
+$global:NL = [System.Environment]::NewLine
 $global:EmailSendSleep = 1
 
 Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
@@ -193,25 +194,25 @@ InModuleScope $ModuleName {
                 SmtpServer = "127.0.0.1"
                 Port = "1025"
                 Body = "Body Text"
-                BodyPreformatted = ("`r`n" +
-                    "`r`n" +
-                    "    Directory: C:\code\PoshEmail`r`n" +
-                    "`r`n" +
-                    "`r`n" +
-                    "Mode                LastWriteTime         Length Name`r`n" +
-                    "----                -------------         ------ ----`r`n" +
-                    "d-----       10/24/2018   9:27 AM                .vscode`r`n" +
-                    "d-----       10/11/2018  11:17 AM                docs`r`n" +
-                    "d-----       10/11/2018  11:17 AM                out`r`n" +
-                    "d-----       10/25/2018   7:15 AM                src`r`n" +
-                    "d-----       10/29/2018  11:47 AM                test`r`n" +
-                    "-a----       10/24/2018   9:27 AM            160 .gitignore`r`n" +
-                    "-a----       10/29/2018  10:44 AM           6194 appveyor.yml`r`n" +
-                    "-a----       10/29/2018  10:44 AM           2113 appveyordeploy.ps1`r`n" +
-                    "-a----        10/5/2018   2:39 PM            351 CHANGELOG.md`r`n" +
-                    "-a----        10/5/2018   2:51 PM           2095 CONTRIBUTING.md`r`n" +
-                    "-a----        9/26/2018   2:18 PM           1080 LICENSE`r`n" +
-                    "-a----       10/24/2018   9:27 AM          14016 PoshEmail.build.ps1`r`n" +
+                BodyPreformatted = ("$NL" +
+                    "$NL" +
+                    "    Directory: C:\code\PoshEmail$NL" +
+                    "$NL" +
+                    "$NL" +
+                    "Mode                LastWriteTime         Length Name$NL" +
+                    "----                -------------         ------ ----$NL" +
+                    "d-----       10/24/2018   9:27 AM                .vscode$NL" +
+                    "d-----       10/11/2018  11:17 AM                docs$NL" +
+                    "d-----       10/11/2018  11:17 AM                out$NL" +
+                    "d-----       10/25/2018   7:15 AM                src$NL" +
+                    "d-----       10/29/2018  11:47 AM                test$NL" +
+                    "-a----       10/24/2018   9:27 AM            160 .gitignore$NL" +
+                    "-a----       10/29/2018  10:44 AM           6194 appveyor.yml$NL" +
+                    "-a----       10/29/2018  10:44 AM           2113 appveyordeploy.ps1$NL" +
+                    "-a----        10/5/2018   2:39 PM            351 CHANGELOG.md$NL" +
+                    "-a----        10/5/2018   2:51 PM           2095 CONTRIBUTING.md$NL" +
+                    "-a----        9/26/2018   2:18 PM           1080 LICENSE$NL" +
+                    "-a----       10/24/2018   9:27 AM          14016 PoshEmail.build.ps1$NL" +
                     "-a----       10/24/2018   9:37 AM           1383 README.md")
             }
 
