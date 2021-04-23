@@ -17,12 +17,12 @@ jobs:
           Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
           Install-Module -Name Mailozaurr -RequiredVersion "0.0.10"
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.7
+        uses: gittools/actions/gitversion/setup@v0.9.9
         with:
           versionSpec: '5.x'
       - name: Determine Version
         id: gitversion
-        uses: gittools/actions/gitversion/execute@v0.9.7
+        uses: gittools/actions/gitversion/execute@v0.9.9
       - name: Remove Dashes from Prerelease String
         id: cleanversion
         run: |
