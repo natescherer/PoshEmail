@@ -12,6 +12,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - name: Install Modules
+        run: |
+          Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
+          Install-Module -Name Mailozaurr -RequiredVersion "0.0.10"
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v0.9.7
         with:
