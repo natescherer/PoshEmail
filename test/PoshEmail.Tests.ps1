@@ -10,25 +10,6 @@ Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
 Import-Module -Name $ModulePath -Force -ErrorAction Stop
 
 InModuleScope $ModuleName {
-    BeforeAll {
-        function ConvertTo-NormalBody {
-            param (
-                [string]$InputObject
-            )
-
-            $NL = [System.Environment]::NewLine
-            $Output = ""
-            $Output = $InputObject -replace "=`r`n", ""
-            $Output = $Output -replace "`r`n", ""
-
-            $Output = $Output -replace "=0D=0A", $NL
-            $Output = $Output -replace "=0A", $NL
-            $Output = $Output -replace "=3D", "="
-
-            $Output
-        }
-    }
-
     Describe 'Module Manifest Tests' {
         It 'Passes Test-ModuleManifest' {
             Test-ModuleManifest -Path $ModuleManifestPath | Should -Not -BeNullOrEmpty
@@ -54,9 +35,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Source = $Response.Items[0].Content.Body
-
-            $Source | Should -Be ("<!doctype html>$NL" +
+            $Response.Items[0].Content.Body | Should -Be ("<!doctype html>$NL" +
                 "<html>$NL" +
                 "  <head>$NL" +
                 "    <meta name=`"viewport`" content=`"width=device-width`">$NL" +
@@ -205,9 +184,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-
-            $Source | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; color: #000000; margin: 0; margin-bottom: 15px; text-align: center;`">Body Text</p>$NL"
+            $Response.Items[0].Content.Body | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; color: #000000; margin: 0; margin-bottom: 15px; text-align: center;`">Body Text</p>$NL"
         }    
         It '-BodyPreformatted' {
             $ShmmParams = @{
@@ -246,9 +223,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-
-            $Source | Should -Match ("                      </td>$NL" +
+            $Response.Items[0].Content.Body | Should -Match ("                      </td>$NL" +
                 "                    </tr>$NL" +
                 "                    <tr>$NL" +
                 "                      <td class=`"preformatted`" width=`"100%`" style=`"font-size: 14px; vertical-align: top; max-width: 100%; overflow: auto; padding-top: 15px; padding-right: 15px;background-color: #F5F5F5; border: 1px solid black;`">$NL" +
@@ -298,9 +273,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-
-            $Source | Should -Match "VGhpcyBpcyBhIGxpbmUgb2YgdGV4dCB3aXRoIG5vIGxpbmUgYnJlYWtzIHNvIHRoZSBiYXNlNjQgaXMgdGhlIHNhbWUgb24gYWxsIHBsYXRmb3Jtcw="
+            $Response.Items[0].Content.Body | Should -Match "VGhpcyBpcyBhIGxpbmUgb2YgdGV4dCB3aXRoIG5vIGxpbmUgYnJlYWtzIHNvIHRoZSBiYXNlNjQgaXMgdGhlIHNhbWUgb24gYWxsIHBsYXRmb3Jtcw="
         }
         It '-Bcc' -Pending {
         }
@@ -330,9 +303,8 @@ InModuleScope $ModuleName {
                 $Response = Invoke-RestMethod -Uri http://localhost:9025/api/v2/messages -Credential $PSCreds
                 Invoke-RestMethod -Uri http://localhost:9025/api/v1/messages -Method "DELETE" -Credential $PSCreds | Out-Null
             }
-            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
 
-            $Source | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; color: #000000; margin: 0; margin-bottom: 15px; text-align: left;`">Body Text</p>"
+            $Response.Items[0].Content.Body | Should -Match "<p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; color: #000000; margin: 0; margin-bottom: 15px; text-align: left;`">Body Text</p>"
         }
         It '-DeliveryNotificationOption' -Pending {
         }
@@ -360,9 +332,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-
-            $Source | Should -Match "<h2 style=`"text-align: center; color: #000000;`">Test Heading</h2>"
+            $Response.Items[0].Content.Body | Should -Match "<h2 style=`"text-align: center; color: #000000;`">Test Heading</h2>"
         }
         It '-HeadingAlignment' {
             $ShmmParams = @{
@@ -383,9 +353,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-
-            $Source | Should -Match "<h2 style=`"text-align: left; color: #000000;`">Test Heading</h2>"
+            $Response.Items[0].Content.Body | Should -Match "<h2 style=`"text-align: left; color: #000000;`">Test Heading</h2>"
         }
         It '-Footer' {
             $ShmmParams = @{
@@ -405,9 +373,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-
-            $Source | Should -Match ("<td class=`"content-block`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL" +
+            $Response.Items[0].Content.Body | Should -Match ("<td class=`"content-block`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL" +
                 "                    Test Footer$NL" +
                 "                  </td>$NL")
         }
@@ -430,9 +396,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-
-            $Source | Should -Match ("<table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"btn btn-primary`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;`">$NL" +
+            $Response.Items[0].Content.Body | Should -Match ("<table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"btn btn-primary`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;`">$NL" +
             "                          <tbody>$NL" +
             "                            <tr>$NL" +
             "                              <td align=`"center`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;`">$NL" +
@@ -468,9 +432,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-
-            $Source | Should -Match ("<table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"btn btn-primary`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;`">$NL" +
+            $Response.Items[0].Content.Body | Should -Match ("<table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" class=`"btn btn-primary`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;`">$NL" +
             "                          <tbody>$NL" +
             "                            <tr>$NL" +
             "                              <td align=`"left`" style=`"font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;`">$NL" +
@@ -513,9 +475,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-
-            $Source | Should -Be ("<!doctype html>$NL" +
+            $Response.Items[0].Content.Body | Should -Be ("<!doctype html>$NL" +
                 "<html>$NL" +
                 "  <head>$NL" +
                 "    <meta name=`"viewport`" content=`"width=device-width`">$NL" +
