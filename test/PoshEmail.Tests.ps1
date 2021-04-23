@@ -174,11 +174,6 @@ InModuleScope $ModuleName {
                 "                  <td class=`"content-block`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL" +
                 "                  </td>$NL" +
                 "                </tr>$NL" +
-                "                <tr>$NL" +
-                "                  <td class=`"content-block powered-by`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL" +
-                "                    $NL" +
-                "                  </td>$NL" +
-                "                </tr>$NL" +
                 "              </table>$NL" +
                 "            </div>$NL" +
                 "            <!-- END FOOTER -->$NL" +
@@ -416,30 +411,6 @@ InModuleScope $ModuleName {
                 "                    Test Footer$NL" +
                 "                  </td>$NL")
         }
-        It '-LastLine' {
-            $ShmmParams = @{
-                From = "PoshEmail@test.local"
-                To = "rcpt@test.local"
-                Subject = "PoshEmail Test"
-                SmtpServer = "127.0.0.1"
-                Port = 1025
-                Body = "Body Text"
-                LastLine = "Test LastLine"
-            }
-
-            Send-HtmlMailMessage @ShmmParams
-
-            Start-Sleep -Seconds $EmailSendSleep
-
-            $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
-            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
-
-            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
-
-            $Source | Should -Match ("<td class=`"content-block powered-by`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL" +
-                "                    Test LastLine$NL" +
-                "                  </td>")
-        }
         It '-ButtonText and -ButtonLink' {
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
@@ -660,11 +631,6 @@ InModuleScope $ModuleName {
                 "              <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;`">$NL" +
                 "                <tr>$NL" +
                 "                  <td class=`"content-block`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL" +
-                "                  </td>$NL" +
-                "                </tr>$NL" +
-                "                <tr>$NL" +
-                "                  <td class=`"content-block powered-by`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL" +
-                "                    $NL" +
                 "                  </td>$NL" +
                 "                </tr>$NL" +
                 "              </table>$NL" +

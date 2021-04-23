@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Send-HtmlMailMessage parameters have been overhauled to no longer emulate Send-MailMessage as Send-MailMessage is deprecated
 
 ### Removed
+- LineLine parameter from Send-HtmlEmail as it was superfluous with the Footer parameter
 - Invoke-CommandWithEmailWrapper
 
 ## [1.1.0] - 2019-02-21

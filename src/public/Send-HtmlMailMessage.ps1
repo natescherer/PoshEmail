@@ -164,12 +164,6 @@ function Send-HtmlMailMessage {
         # Specifies a string (with optional HTML formatting) to include in the footer of the message.
         [string]$Footer = "",
 
-        [parameter(ParameterSetName = "Default", Mandatory = $false)]
-        [parameter(ParameterSetName = "Button", Mandatory = $false)]
-        [ValidateNotNull()]
-        # Specifies a string (with optional HTML formatting) to include in the last line of the message.
-        [string]$LastLine = "",
-
         [parameter(ParameterSetName = "Button", Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         # Specifies a string to use as label for an optional button.
@@ -353,12 +347,7 @@ function Send-HtmlMailMessage {
         "            <div class=`"footer`" style=`"clear: both; margin-top: 10px; text-align: center; width: 100%;`">$NL" +
         "              <table border=`"0`" cellpadding=`"0`" cellspacing=`"0`" style=`"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;`">$NL" +
         "                <tr>$NL" +
-        "                  <td class=`"content-block`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;`">$NL")
-
-    $HtmlFooterToLastLine = ("                  </td>$NL" +
-        "                </tr>$NL" +
-        "                <tr>$NL" +
-        "                  <td class=`"content-block powered-by`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: $($ColorScheme.FooterTextColor); text-align: center;`">$NL")
+        "                  <td class=`"content-block`" style=`"font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: $($ColorScheme.FooterTextColor); text-align: center;`">$NL")
 
     $HtmlBottom = ("                  </td>$NL" +
         "                </tr>$NL" +
@@ -395,8 +384,6 @@ function Send-HtmlMailMessage {
         $Footer = "                    $Footer$NL"
     }
 
-    $LastLine = "                    $LastLine$NL"
-
     $Body = $Body -replace "<p>", "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; color: $($ColorScheme.BodyTextColor); margin: 0; margin-bottom: 15px; text-align: $($BodyAlignment.ToLower());`">"
     $Body = $Body -replace "</p>", "</p>$NL"
     if ($BodyPreformatted -ne "") {
@@ -421,10 +408,9 @@ function Send-HtmlMailMessage {
     }
     $Body = $Body -replace "<a ", "<a style=`"text-decoration: underline; color: $($ColorScheme.LinkColor); font-size: 16px; text-align: center;`" "
     $Footer = $Footer -replace "<a ", "<a style=`"text-decoration: underline; color: #999999; font-size: 12px; text-align: center;`" "
-    $LastLine = $LastLine -replace "<a ", "<a style=`"text-decoration: underline; color: #999999; font-size: 12px; text-align: center;`" "
 
     $CompleteBody = $HtmlTop + $Heading + $Body + $BodyPreformatted + $HtmlButton +
-    $HtmlDataToFooter + $Footer + $HtmlFooterToLastLine + $LastLine + $HtmlBottom
+    $HtmlDataToFooter + $Footer + $HtmlBottom
 
     $SmmParams = @{
         SmtpServer = $SmtpServer
