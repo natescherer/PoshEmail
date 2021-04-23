@@ -26,6 +26,7 @@ jobs:
           "BARE_REPOSITORY=$($env:GITHUB_REPOSITORY.split("/")[1])" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
       - name: Install Modules
         run: |
+          Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
           Install-Module -Name Mailozaurr -RequiredVersion "0.0.10"
       - name: Checkout
         uses: actions/checkout@v2
