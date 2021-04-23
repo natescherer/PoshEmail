@@ -43,7 +43,6 @@ $EmailSplat = @{
     Subject = "Alert"
     Heading = "Alert"
     Footer = "Sent at $((Get-Date).ToUniversalTime() | Get-Date -format s) UTC"
-    LastLine = ""
     Body = "This is an alert message."
     SmtpServer = "smtp.office365.com" 
     UseSsl = $true
