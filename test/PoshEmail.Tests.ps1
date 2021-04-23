@@ -252,7 +252,7 @@ InModuleScope $ModuleName {
                 "                    </tr>`r`n" +
                 "                    <tr>`r`n" +
                 "                      <td style=`"font-family: sans-serif; font-size: 14px; vertical-align: top;`">`r`n" +
-                "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: left;`">&nbsp;</p>`r`n")
+                "                        <p style=`"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; text-align: left;`">&nbsp;</p>")
         }
         It '-Attachments' {
             $ShmmParams = @{
@@ -262,7 +262,7 @@ InModuleScope $ModuleName {
                 SmtpServer = "127.0.0.1"
                 Port = 1025
                 Body = "Body Text"
-                Attachments = "$PSScriptRoot\image.png"
+                Attachments = Join-Path -Path $PSScriptRoot -ChildPath "image.png"
             }
 
             Send-HtmlMailMessage @ShmmParams
