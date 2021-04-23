@@ -273,7 +273,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Response.Items[0].Content.Body | Should -Match "VGhpcyBpcyBhIGxpbmUgb2YgdGV4dCB3aXRoIG5vIGxpbmUgYnJlYWtzIHNvIHRoZSBiYXNlNjQgaXMgdGhlIHNhbWUgb24gYWxsIHBsYXRmb3Jtcw="
+            $Response.Items[0].Content.Body | Should -Match "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAACBj"
         }
         It '-Bcc' -Pending {
         }
