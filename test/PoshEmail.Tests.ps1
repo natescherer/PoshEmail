@@ -446,7 +446,7 @@ InModuleScope $ModuleName {
             "                          </tbody>`r`n" +
             "                        </table>")
         }
-        IT '-ColorScheme' {
+        It '-ColorScheme' {
             $ShmmParams = @{
                 From = "PoshEmail@test.local"
                 To = "rcpt@test.local"
@@ -603,6 +603,48 @@ InModuleScope $ModuleName {
                 "    </table>`r`n" +
                 "  </body>`r`n" +
                 "</html>")
+        }
+        It 'Body with Table' {
+            $ShmmParams = @{
+                From = "PoshEmail@test.local"
+                To = "rcpt@test.local"
+                Subject = "PoshEmail Test"
+                SmtpServer = "127.0.0.1"
+                Port = 1025
+                Body = ("<table>`r`n" +
+                    "<tr>`r`n" +
+                    "<th>Company</th>`r`n" +
+                    "<th>Contact</th>`r`n" +
+                    "<th>Country</th>`r`n" +
+                    "</tr>`r`n" +
+                    "<tr>`r`n" +
+                    "<td>Alfred Mann</td>`r`n" +
+                    "<td>Maria Anders</td>`r`n" +
+                    "<td>Germany</td>`r`n" +
+                    "</tr>`r`n" +
+                    "</table>")
+            }
+
+            Send-HtmlMailMessage @ShmmParams
+
+            Start-Sleep -Seconds $EmailSendSleep
+
+            $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
+            Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
+
+            $Response.Items[0].Content.Body | Should -Match ("<table cellpadding=`"5`" style=`"border-collapse: collapse; border: 1px solid black;`">`r`n" +
+                    "<tr>`r`n" +
+                    "<th style=`"background-color: gray; border: 1px solid black;`">Company</th>`r`n" +
+                    "<th style=`"background-color: gray; border: 1px solid black;`">Contact</th>`r`n" +
+                    "<th style=`"background-color: gray; border: 1px solid black;`">Country</th>`r`n" +
+                    "</tr>`r`n" +
+                    "<tr>`r`n" +
+                    "<td style=`"border: 1px solid black;`">Alfred Mann</td>`r`n" +
+                    "<td style=`"border: 1px solid black;`">Maria Anders</td>`r`n" +
+                    "<td style=`"border: 1px solid black;`">Germany</td>`r`n" +
+                    "</tr>`r`n" +
+                    "</table>")
+
         }
     }
 }
