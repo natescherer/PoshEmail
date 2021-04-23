@@ -54,7 +54,7 @@ InModuleScope $ModuleName {
             $Response = Invoke-RestMethod -Uri http://localhost:8025/api/v2/messages
             Invoke-RestMethod -Uri http://localhost:8025/api/v1/messages -Method "DELETE" | Out-Null
 
-            $Source = ConvertTo-NormalBody -InputObject $Response.Items[0].Content.Body
+            $Source = $Response.Items[0].Content.Body
 
             $Source | Should -Be ("<!doctype html>$NL" +
                 "<html>$NL" +
