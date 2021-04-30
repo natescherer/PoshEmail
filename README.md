@@ -1,15 +1,12 @@
 # PoshEmail
 
-[![Build Status](https://img.shields.io/azure-devops/build/natescherer/poshemail/3.svg?logo=azuredevops)](https://dev.azure.com/natescherer/poshemail/_build/latest?definitionId=3&branchName=master) ![Tests](https://img.shields.io/azure-devops/tests/natescherer/poshemail/3.svg?logo=azuredevops) ![Code Coverage](https://img.shields.io/azure-devops/coverage/natescherer/poshemail/3.svg?logo=azuredevops) ![Open Issues](https://img.shields.io/github/issues-raw/natescherer/poshemail.svg?logo=github)
+[![Windows PowerShell 5.1](https://gist.github.com/natescherer/a2b45064937a7332c60c6cbbdadd61db/raw/b0a47e1106a808c4c90ac872d00acf6600819564/PoshEmail_TestResults_Windows_powershell.md_badge.svg)](https://gist.github.com/natescherer/a2b45064937a7332c60c6cbbdadd61db) [![PowerShell 7 on Windows](https://gist.github.com/natescherer/797ca586d176e0af436182c772e35c24/raw/4602f1d3e83979875f7be256f4d71d8a9bddb909/PoshEmail_TestResults_Windows_pwsh.md_badge.svg)](https://gist.github.com/natescherer/797ca586d176e0af436182c772e35c24) [![PowerShell 7 on Linux](https://gist.github.com/natescherer/3322138e20633eedefb88c22bc27346a/raw/faa3032c6c78202defaec43b1c183a98b769a86a/PoshEmail_TestResults_Linux_pwsh.md_badge.svg)](https://gist.github.com/natescherer/3322138e20633eedefb88c22bc27346a) [![PowerShell 7 on macOS](https://gist.github.com/natescherer/0776b2b971957aa9ef92363e77c470c8/raw/9f4160ffc57f43f714c3188624a75433854c5df6/PoshEmail_TestResults_macOS_pwsh.md_badge.svg)](https://gist.github.com/natescherer/0776b2b971957aa9ef92363e77c470c8) [![Code Coverage](https://gist.github.com/natescherer/797ca586d176e0af436182c772e35c24/raw/04ecd27a7b150e87015cbd1523d19cd318538a35/PoshEmail_TestResults_Windows_pwsh_Coverage_badge.svg)](https://gist.github.com/natescherer/797ca586d176e0af436182c772e35c24)
 
-PoshEmail is a PowerShell module designed to provide useful email tasks, including the following:
-
-- Easy sending of responsive HTML emails via Send-HtmlMailMessage
-- Wrapping of commands and scripts to provide email alerts when they start/finish, via Invoke-CommandWithEmailWrapper
+PoshEmail is a PowerShell module designed to send responsive HTML email easily from PowerShell.
 
 ## Getting Started
 
-PoshEmail is compatible with Windows PowerShell 5.1+ and PowerShell Core 6.0+ on Windows. Linux/macOS support is currently under development.
+PoshEmail is supported on with Windows PowerShell 5.1 and PowerShell 7 on Windows/Linux/macOS.
 
 ### Prerequisites
 
@@ -46,7 +43,6 @@ $EmailSplat = @{
     Subject = "Alert"
     Heading = "Alert"
     Footer = "Sent at $((Get-Date).ToUniversalTime() | Get-Date -format s) UTC"
-    LastLine = ""
     Body = "This is an alert message."
     SmtpServer = "smtp.office365.com" 
     UseSsl = $true
@@ -57,22 +53,6 @@ Send-HtmlMailMessage @EmailSplat
 ```
 
 Sends a message.
-
-#### Invoke-CommandWithEmailWrapper
-
-```PowerShell
-Invoke-CommandWithEmailWrapper -ScriptBlock { robocopy c:\source d:\dest } -JobName "RoboCopy" -SmtpServer "smtp01" -EmailTo "admin@contoso.com"
-```
-
-Executes the robocopy command in the ScriptBlock on the local computer, then sends an email with the command's
-output once it completes.
-
-```PowerShell
-Invoke-CommandWithEmailWrapper -Script "c:\scripts\script1.ps1" -JobName "Script1" -SmtpServer "smtp01" -EmailTo "admin@contoso.com" -ComputerName "serv01" -EmailMode "BeforeAndAfter"
-```
-
-Executes the the script c:\scripts\script1.ps1 (on the local computer) on the remote computer "serv01", sending
-emails when the script begins and finishes running.
 
 ### Documentation
 
