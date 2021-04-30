@@ -49,6 +49,7 @@ jobs:
         run: |
           New-Item -Path "docs" -ItemType Directory  -ErrorAction SilentlyContinue | Out-Null
           Remove-Item -Path "docs\*" -Recurse -ErrorAction SilentlyContinue
+          Write-Host $env:GITHUB_WORKSPACE
           Get-ChildItem -Path "$env:GITHUB_WORKSPACE\src" -Include "*.psm1"
           $ModulePath = (Get-ChildItem -Path "$env:GITHUB_WORKSPACE\src" -Include "*.psm1").FullName
           $ModuleName = Split-Path -Path $ModulePath -LeafBase
