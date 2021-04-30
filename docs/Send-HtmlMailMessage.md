@@ -1,10 +1,3 @@
----
-external help file: PoshEmail-help.xml
-Module Name: PoshEmail
-online version: https://github.com/natescherer/PoshEmail
-schema: 2.0.0
----
-
 # Send-HtmlMailMessage
 
 ## SYNOPSIS
@@ -17,8 +10,8 @@ Sends a nicely formatted HTML email.
 Send-HtmlMailMessage -From <String> -Subject <String> -To <String[]> -Body <String> [-BodyAlignment <String>]
  [-BodyPreformatted <String>] [-Attachments <String[]>] [-Bcc <String[]>] [-Cc <String[]>]
  [-Credential <PSCredential>] [-DeliveryNotificationOption <String>] [-Encoding <String>] [-Port <Int32>]
- [-SmtpServer <String>] [-UseSsl] [-Priority <String>] [-Heading <String>] [-HeadingAlignment <String>]
- [-Footer <String>] [-LastLine <String>] [<CommonParameters>]
+ -SmtpServer <String> [-Priority <String>] [-Heading <String>] [-HeadingAlignment <String>] [-Footer <String>]
+ [-ColorScheme <Hashtable>] [<CommonParameters>]
 ```
 
 ### Button
@@ -26,8 +19,8 @@ Send-HtmlMailMessage -From <String> -Subject <String> -To <String[]> -Body <Stri
 Send-HtmlMailMessage -From <String> -Subject <String> -To <String[]> -Body <String> [-BodyAlignment <String>]
  [-BodyPreformatted <String>] [-Attachments <String[]>] [-Bcc <String[]>] [-Cc <String[]>]
  [-Credential <PSCredential>] [-DeliveryNotificationOption <String>] [-Encoding <String>] [-Port <Int32>]
- [-SmtpServer <String>] [-UseSsl] [-Priority <String>] [-Heading <String>] [-HeadingAlignment <String>]
- [-Footer <String>] [-LastLine <String>] -ButtonText <String> -ButtonLink <String> [-ButtonAlignment <String>]
+ -SmtpServer <String> [-Priority <String>] [-Heading <String>] [-HeadingAlignment <String>] [-Footer <String>]
+ -ButtonText <String> -ButtonLink <String> [-ButtonAlignment <String>] [-ColorScheme <Hashtable>]
  [<CommonParameters>]
 ```
 
@@ -47,8 +40,8 @@ Send-HtmlMailMessage -From "server01@contoso.com" -To "admin@contoso.com"
 
 ### -From
 Specifies the address from which the mail is sent.
-Enter a name (optional) and email address, such as Name \<someone@example.com\>.
-This parameter is required.
+Can either be an email address, or, optionally, a name 
+and email address combo in the format 'Someone \<someone@example.com\>'
 
 ```yaml
 Type: String
@@ -80,8 +73,8 @@ Accept wildcard characters: False
 
 ### -To
 Specifies the addresses to which the mail is sent.
-Enter names (optional) and the email address, such as Name \<someone@example.com\>.
-This parameter is required.
+Can either be an email address, or, optionally, a name 
+and email address combo in the format 'Someone \<someone@example.com\>'
 
 ```yaml
 Type: String[]
@@ -96,11 +89,11 @@ Accept wildcard characters: False
 ```
 
 ### -Body
-Specifies a string (with optional HTML formatting) to include in the body of the message.
-This parameter is required.
-Multiple paragraphs should have each paragraph wrapped as follows:
+Specifies a string to use as the body of the message.
+If you have a multi-paragraph body, wrapped each paragraph as follows:
 - \<p\>Paragraph 1\</p\>\<p\>Paragraph 2\</p\>
-If you need to include preformatted data, you should use the -BodyPreformatted attribute as well
+If you want to include preformatted data, it is recommended to use the -BodyPreformatted attribute 
+for that.
 
 ```yaml
 Type: String
@@ -136,7 +129,8 @@ Accept wildcard characters: False
 
 ### -BodyPreformatted
 Specifies a string of preformmated text (code, cmdlet output, etc) to include below the body of the message.
-This will be displayed either in a horizontally-scrolling box or, if Outlook (which can't support scrolling) wrapped with line numbers.
+This will be displayed either in a horizontally-scrolling box or, if Outlook (which can't support 
+scrolling) wrapped with line numbers.
 
 ```yaml
 Type: String
@@ -151,8 +145,7 @@ Accept wildcard characters: False
 ```
 
 ### -Attachments
-Specifies the path and file names of files to be attached to the email message.
-You can use this parameter or pipe the paths and file names to Send-HtmlMailMessage.
+Specifies the path to files to attach to the message.
 
 ```yaml
 Type: String[]
@@ -167,8 +160,10 @@ Accept wildcard characters: False
 ```
 
 ### -Bcc
-Specifies the email addresses that receive a copy of the mail but are not listed as recipients of the message.
-Enter names (optional) and the email address, such as Name \<someone@example.com\>.
+Specifies the email addresses that receive a copy of the mail but are not listed as recipients of the 
+message.
+Can either be an email address, or, optionally, a name and email address combo in the format 
+'Someone \<someone@example.com\>'
 
 ```yaml
 Type: String[]
@@ -184,7 +179,9 @@ Accept wildcard characters: False
 
 ### -Cc
 Specifies the email addresses to which a carbon copy (CC) of the email message is sent.
-Enter names (optional) and the email address, such as Name \<someone@example.com\>.
+Can either be 
+an email address, or, optionally, a name and email address combo in the format 
+'Someone \<someone@example.com\>'.
 
 ```yaml
 Type: String[]
@@ -199,10 +196,7 @@ Accept wildcard characters: False
 ```
 
 ### -Credential
-Specifies a user account that has permission to perform this action.
-The default is the current user.
-Type a user name, such as User01 or Domain01\User01.
-Or, enter a PSCredential object, such as one from the Get-Credential cmdlet.
+Specifies a PSCredential object, containing credentials used to send the message.
 
 ```yaml
 Type: PSCredential
@@ -218,10 +212,6 @@ Accept wildcard characters: False
 
 ### -DeliveryNotificationOption
 Specifies the delivery notification options for the email message.
-You can specify multiple values.
-None is the default value.
-The alias for this parameter is dno.
-The delivery notifications are sent in an email message to the address specified in the value of the From parameter.
 The acceptable values for this parameter are:
 - None.
 No notification.
@@ -233,6 +223,7 @@ Notify if the delivery is unsuccessful.
 Notify if the delivery is delayed.
 - Never.
 Never notify.
+None is the default.
 
 ```yaml
 Type: String
@@ -257,7 +248,7 @@ The acceptable values for this parameter are:
 - BigEndianUnicode
 - Default
 - OEM
-ASCII is the default.
+UTF8 is the default.
 
 ```yaml
 Type: String
@@ -266,14 +257,14 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: UTF8
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
 ### -Port
-Specifies an alternate port on the SMTP server.
-The default value is 25, which is the default SMTP port.
+Specifies the port on which to connect to the SMTP server.
+Defaults to 587.
 
 ```yaml
 Type: Int32
@@ -288,34 +279,16 @@ Accept wildcard characters: False
 ```
 
 ### -SmtpServer
-Specifies the name of the SMTP server that sends the email message.
-The default value is the value of the $PSEmailServer preference variable.
-If the preference variable is not set and this parameter is omitted, the command fails.
+Specifies the FQDN or IP address of the SMTP server that will send the message.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: Named
 Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -UseSsl
-Indicates that the cmdlet uses the Secure Sockets Layer (SSL) protocol to establish a connection to the remote computer to send mail.
-By default, SSL is not used.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -390,21 +363,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -LastLine
-Specifies a string (with optional HTML formatting) to include in the last line of the message.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -ButtonText
 Specifies a string to use as label for an optional button.
 
@@ -455,9 +413,32 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ColorScheme
+Specifies a hashtable containing a color scheme if you wish to use non-default colors.
+
+```yaml
+Type: Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: @{
+            BodyTextColor = "#000000"
+            BackgroundColor = "#f6f6f6"
+            ContainerColor = "#ffffff"
+            HeadingTextColor = "#000000"
+            FooterTextColor = "#999999"
+            LinkColor = "#999999"
+            ButtonColor = "#3498db"
+            ButtonTextColor = "#ffffff"
+        }
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
-For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
