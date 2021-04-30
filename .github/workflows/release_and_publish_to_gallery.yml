@@ -1,4 +1,4 @@
-name: Create Release and Publish to PowerShell Gallery
+name: Release and Publish to PowerShell Gallery
 on: workflow_dispatch
 jobs:
   ReleaseToGallery:
