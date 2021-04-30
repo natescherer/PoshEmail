@@ -21,7 +21,7 @@ jobs:
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v0
         with:
-          versionSpec: '5.x'
+          versionSpec: 5.x
       - name: Determine Version
         id: gitversion
         uses: gittools/actions/gitversion/execute@v0
@@ -49,6 +49,7 @@ jobs:
         run: |
           New-Item -Path "docs" -ItemType Directory  -ErrorAction SilentlyContinue | Out-Null
           Remove-Item -Path "docs\*" -Recurse -ErrorAction SilentlyContinue
+          Get-ChildItem -Path "$env:GITHUB_WORKSPACE\src" -Include "*.psm1"
           $ModulePath = (Get-ChildItem -Path "$env:GITHUB_WORKSPACE\src" -Include "*.psm1").FullName
           $ModuleName = Split-Path -Path $ModulePath -LeafBase
           Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
