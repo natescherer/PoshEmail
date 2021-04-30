@@ -62,14 +62,6 @@ jobs:
           releasenotes: ${{ steps.changelog.outputs.releasenotes }}
           functionstoexportpath: src\public
           description: ${{ steps.metadata.outputs.description }}
-      - name: Update PowerShell Metadata
-        uses: natescherer/update-powershell-metadata-action@main
-        with:
-          path: src
-          version: ${{ steps.cleanversion.outputs.cleanversion }}
-          copyright: (c) YYYY Nate Scherer. All rights reserved.
-          releasenotes: ${{ steps.changelog.outputs.releasenotes }}
-          functionstoexportpath: src\public
       - name: Generate Markdown Help Files
         run: |
           Install-Module -Name platyPs
@@ -84,7 +76,7 @@ jobs:
         run: |
           Copy-Item -Path "$env:GITHUB_WORKSPACE\src" -Destination "$env:GITHUB_WORKSPACE\out" -Recurse
       - name: Create Documentation for Release
-        uses: natescherer/markdown-to-html-with-github-style-action@main
+        uses: natescherer/markdown-to-html-with-github-style-action@v1
         with:
           path: README.md,CHANGELOG.md,docs
           outputpath: out
