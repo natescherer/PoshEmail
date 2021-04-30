@@ -1,7 +1,7 @@
 name: Create Release and Publish to PowerShell Gallery
 on: workflow_dispatch
 jobs:
-  Release:
+  ReleaseToGallery:
     runs-on: windows-latest
     defaults:
       run:
