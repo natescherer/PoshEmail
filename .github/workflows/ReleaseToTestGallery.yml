@@ -1,6 +1,5 @@
 name: ReleaseToTestGallery
-on: 
-  workflow_dispatch:
+on: workflow_dispatch
 jobs:
   PublishToPoshTestGallery:
     runs-on: ubuntu-latest
