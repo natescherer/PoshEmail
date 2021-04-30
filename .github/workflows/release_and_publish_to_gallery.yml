@@ -62,7 +62,7 @@ jobs:
         uses: natescherer/update-powershell-metadata-action@v1
         with:
           path: src
-          version: ${{ steps.cleanversion.outputs.cleanversion }}
+          version: ${{ steps.gitversion.outputs.MajorMinorPatch }}
           copyright: (c) YYYY Nate Scherer. All rights reserved.
           releasenotes: ${{ steps.changelog.outputs.releasenotes }}
           functionstoexportpath: src\public
