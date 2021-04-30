@@ -1,4 +1,4 @@
-name: ReleaseToTestGallery
+name: Publish to PoshTest Gallery
 on: workflow_dispatch
 jobs:
   PublishToPoshTestGallery:
