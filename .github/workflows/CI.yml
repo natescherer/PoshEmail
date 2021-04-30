@@ -96,6 +96,8 @@ jobs:
         run: |
           Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
           Install-Module -Name Mailozaurr -RequiredVersion "0.0.10"
+      - name: Ensure nuget is set up properly
+        uses: fabriciomurta/ensure-nuget-source@v1
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v0.9.9
         with:
