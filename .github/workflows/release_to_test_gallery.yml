@@ -15,6 +15,7 @@ jobs:
         run: |
           Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
           Install-Module -Name Mailozaurr -RequiredVersion "0.0.10"
+          Install-Module -Name platyPs
       - name: Ensure nuget is set up properly
         uses: fabriciomurta/ensure-nuget-source@v1
       - name: Install GitVersion
@@ -46,7 +47,6 @@ jobs:
           functionstoexportpath: src\public
       - name: Generate Markdown Help Files
         run: |
-          Install-Module -Name platyPs
           New-Item -Path "docs" -ItemType Directory  -ErrorAction SilentlyContinue | Out-Null
           Remove-Item -Path "docs\*" -Recurse -ErrorAction SilentlyContinue
           $ModulePath = (Get-ChildItem -Path "$env:GITHUB_WORKSPACE\src" -Include "*.psm1").FullName
