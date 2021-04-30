@@ -1,1 +1,0 @@
-This is a line of text with no line breaks so the base64 is the same on all platforms

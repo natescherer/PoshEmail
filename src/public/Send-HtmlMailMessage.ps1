@@ -23,7 +23,8 @@ function Send-HtmlMailMessage {
     param(
         [parameter(ParameterSetName = "Default", Mandatory = $true)]
         [parameter(ParameterSetName = "Button", Mandatory = $true)]
-        # Specifies the address from which the mail is sent. Enter a name (optional) and email address, such as Name <someone@example.com>. This parameter is required.
+        # Specifies the address from which the mail is sent. Can either be an email address, or, optionally, a name 
+        # and email address combo in the format 'Someone <someone@example.com>'
         [string]$From,
 
         [parameter(ParameterSetName = "Default", Mandatory = $true)]
@@ -33,16 +34,18 @@ function Send-HtmlMailMessage {
 
         [parameter(ParameterSetName = "Default", Mandatory = $true)]
         [parameter(ParameterSetName = "Button", Mandatory = $true)]
-        # Specifies the addresses to which the mail is sent. Enter names (optional) and the email address, such as Name <someone@example.com>. This parameter is required.
+        # Specifies the addresses to which the mail is sent. Can either be an email address, or, optionally, a name 
+        # and email address combo in the format 'Someone <someone@example.com>'
         [string[]]$To,
 
         [parameter(ParameterSetName = "Default", Mandatory = $true)]
         [parameter(ParameterSetName = "Button", Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        # Specifies a string (with optional HTML formatting) to include in the body of the message. This parameter is required.
-        # Multiple paragraphs should have each paragraph wrapped as follows:
+        # Specifies a string to use as the body of the message.
+        # If you have a multi-paragraph body, wrapped each paragraph as follows:
         # - <p>Paragraph 1</p><p>Paragraph 2</p>
-        # If you need to include preformatted data, you should use the -BodyPreformatted attribute as well
+        # If you want to include preformatted data, it is recommended to use the -BodyPreformatted attribute 
+        # for that.
         [string]$Body,
 
         [parameter(ParameterSetName = "Default", Mandatory = $false)]
@@ -59,44 +62,49 @@ function Send-HtmlMailMessage {
         [parameter(ParameterSetName = "Button", Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
         # Specifies a string of preformmated text (code, cmdlet output, etc) to include below the body of the message.
-        # This will be displayed either in a horizontally-scrolling box or, if Outlook (which can't support scrolling) wrapped with line numbers.
+        # This will be displayed either in a horizontally-scrolling box or, if Outlook (which can't support 
+        # scrolling) wrapped with line numbers.
         [string]$BodyPreformatted = "",
 
         [parameter(ParameterSetName = "Default", Mandatory = $false)]
         [parameter(ParameterSetName = "Button", Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
-        # Specifies the path and file names of files to be attached to the email message. You can use this parameter or pipe the paths and file names to Send-HtmlMailMessage.
+        # Specifies the path to files to attach to the message.
         [string[]]$Attachments,
 
         [parameter(ParameterSetName = "Default", Mandatory = $false)]
         [parameter(ParameterSetName = "Button", Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
-        # Specifies the email addresses that receive a copy of the mail but are not listed as recipients of the message. Enter names (optional) and the email address, such as Name <someone@example.com>.
+        # Specifies the email addresses that receive a copy of the mail but are not listed as recipients of the 
+        # message. Can either be an email address, or, optionally, a name and email address combo in the format 
+        # 'Someone <someone@example.com>'
         [string[]]$Bcc,
 
         [parameter(ParameterSetName = "Default", Mandatory = $false)]
         [parameter(ParameterSetName = "Button", Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
-        # Specifies the email addresses to which a carbon copy (CC) of the email message is sent. Enter names (optional) and the email address, such as Name <someone@example.com>.
+        # Specifies the email addresses to which a carbon copy (CC) of the email message is sent. Can either be 
+        # an email address, or, optionally, a name and email address combo in the format 
+        # 'Someone <someone@example.com>'.
         [string[]]$Cc,
 
         [parameter(ParameterSetName = "Default", Mandatory = $false)]
         [parameter(ParameterSetName = "Button", Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
-        # Specifies a user account that has permission to perform this action. The default is the current user.
-        # Type a user name, such as User01 or Domain01\User01. Or, enter a PSCredential object, such as one from the Get-Credential cmdlet.
+        # Specifies a PSCredential object, containing credentials used to send the message.
         [pscredential]$Credential,
 
         [parameter(ParameterSetName = "Default", Mandatory = $false)]
         [parameter(ParameterSetName = "Button", Mandatory = $false)]
         [ValidateSet("None", "OnSuccess", "OnFailure", "Delay", "Never")]
-        # Specifies the delivery notification options for the email message. You can specify multiple values. None is the default value. The alias for this parameter is dno.
-        # The delivery notifications are sent in an email message to the address specified in the value of the From parameter. The acceptable values for this parameter are:
+        # Specifies the delivery notification options for the email message.
+        # The acceptable values for this parameter are:
         # - None. No notification.
         # - OnSuccess. Notify if the delivery is successful.
         # - OnFailure. Notify if the delivery is unsuccessful.
         # - Delay. Notify if the delivery is delayed.
         # - Never. Never notify.
+        # None is the default.
         [string]$DeliveryNotificationOption,
 
         [parameter(ParameterSetName = "Default", Mandatory = $false)]
@@ -111,26 +119,21 @@ function Send-HtmlMailMessage {
         # - BigEndianUnicode
         # - Default
         # - OEM
-        # ASCII is the default.
-        [string]$Encoding,
+        # UTF8 is the default.
+        [string]$Encoding = "UTF8",
 
-        [parameter(ParameterSetName = "Default", Mandatory = $true)]
-        [parameter(ParameterSetName = "Button", Mandatory = $true)]
+        [parameter(ParameterSetName = "Default", Mandatory = $false)]
+        [parameter(ParameterSetName = "Button", Mandatory = $false)]
         [ValidateNotNull()]
-        # Specifies an alternate port on the SMTP server. The default value is 25, which is the default SMTP port.
+        # Specifies the port on which to connect to the SMTP server.
+        # Defaults to 587.
         [int]$Port,
 
         [parameter(ParameterSetName = "Default", Mandatory = $true)]
         [parameter(ParameterSetName = "Button", Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        # Specifies the name of the SMTP server that sends the email message.
-        # The default value is the value of the $PSEmailServer preference variable. If the preference variable is not set and this parameter is omitted, the command fails.
+        # Specifies the FQDN or IP address of the SMTP server that will send the message.
         [string]$SmtpServer,
-
-        [parameter(ParameterSetName = "Default", Mandatory = $false)]
-        [parameter(ParameterSetName = "Button", Mandatory = $false)]
-        # Indicates that the cmdlet uses the Secure Sockets Layer (SSL) protocol to establish a connection to the remote computer to send mail. By default, SSL is not used.
-        [switch]$UseSsl,
 
         [parameter(ParameterSetName = "Default", Mandatory = $false)]
         [parameter(ParameterSetName = "Button", Mandatory = $false)]
@@ -412,49 +415,39 @@ function Send-HtmlMailMessage {
     $CompleteBody = $HtmlTop + $Heading + $Body + $BodyPreformatted + $HtmlButton +
     $HtmlDataToFooter + $Footer + $HtmlBottom
 
-    $SmmParams = @{
+    $MessageParams = @{
         SmtpServer = $SmtpServer
         Port = $Port
         From = $From
         To = $To
         Subject = $Subject
-        Body = $CompleteBody
-        BodyAsHtml = $true
-        WarningAction = "Ignore"
+        HTML = $CompleteBody
+        Encoding = $Encoding
     }
 
     if ($Attachments) {
-        $SmmParams += @{Attachments = $Attachments }
+        $MessageParams += @{Attachments = $Attachments }
     }
 
     if ($Bcc) {
-        $SmmParams += @{Bcc = $Bcc }
+        $MessageParams += @{Bcc = $Bcc }
     }
 
     if ($Cc) {
-        $SmmParams += @{Cc = $Cc }
+        $MessageParams += @{Cc = $Cc }
     }
 
     if ($Credential) {
-        $SmmParams += @{Credential = $Credential }
+        $MessageParams += @{Credential = $Credential }
     }
 
     if ($DeliveryNotificationOption) {
-        $SmmParams += @{DeliveryNotificationOption = $DeliveryNotificationOption }
-    }
-
-    if ($Encoding) {
-        $SmmParams += @{Encoding = $Encoding }
+        $MessageParams += @{DeliveryNotificationOption = $DeliveryNotificationOption }
     }
 
     if ($Priority) {
-        $SmmParams += @{Priority = $Priority }
+        $MessageParams += @{Priority = $Priority }
     }
 
-    if ($UseSsl) {
-        $SmmParams += @{UseSsl = $UseSsl }
-    }
-
-    # Using Start-Job prevents issues described here: https://stackoverflow.com/questions/43349726/send-mailmessage-closes-every-2nd-connection-when-using-attachments
-    Start-Job -ScriptBlock { Send-MailMessage @using:SmmParams } | Wait-Job | Receive-Job
+    Send-EmailMessage @MessageParams
 }

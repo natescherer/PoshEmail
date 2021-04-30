@@ -54,7 +54,7 @@ Description = 'PoshEmail is a PowerShell module designed to provide useful email
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-# RequiredModules = @()
+RequiredModules = @(@{ModuleName="Mailozaurr"; ModuleVersion="0.0.10"})
 
 # Assemblies that must be loaded prior to importing this module
 # RequiredAssemblies = @()
@@ -126,7 +126,7 @@ PrivateData = @{
         # RequireLicenseAcceptance = $false
 
         # External dependent modules of this module
-        # ExternalModuleDependencies = @()
+        ExternalModuleDependencies = @(@{ModuleName="Mailozaurr"; ModuleVersion="0.0.10"})
 
     } # End of PSData hashtable
 
