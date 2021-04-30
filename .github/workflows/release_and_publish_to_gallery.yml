@@ -70,7 +70,7 @@ jobs:
       - name: Generate Markdown Help Files
         run: |
           Remove-Item -Path "docs\*" -Recurse -ErrorAction SilentlyContinue
-          $ModulePath = (Get-ChildItem -Path "$env:GITHUB_WORKSPACE\src" -Include "*.psm1").FullName
+          $ModulePath = (Get-ChildItem -Path "$env:GITHUB_WORKSPACE\src" -Include "*.psm1" -Recurse).FullName
           $ModuleName = Split-Path -Path $ModulePath -LeafBase
           Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
           Import-Module -Name $ModulePath -Force -ErrorAction Stop
