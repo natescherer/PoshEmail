@@ -1,0 +1,6 @@
+description: A PowerShell module for sending responsive HTML email.
+releaseheader: |
+  **NOTE:** This release contains breaking changes. Please review the release notes below before upgrading.
+  
+  The most notable change is that the sending of mail now uses the Mailozaurr module (with MailKit in the backend)
+  as the PowerShell team is deprecating the Send-MailMessage cmdlet previously used by PoshEmail.

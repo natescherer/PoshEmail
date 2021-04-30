@@ -1,0 +1,115 @@
+name: Release
+on: workflow_dispatch
+jobs:
+  Test:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Ensure nuget is set up properly
+        uses: fabriciomurta/ensure-nuget-source@v1
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0
+        with:
+          versionSpec: '5.x'
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0
+      - name: Update Changelog for Release
+        id: changelog
+        uses: natescherer/changelog-management-action@main
+        with:
+          mode: release
+          releaseversion: ${{ steps.gitversion.outputs.MajorMinorPatch }}
+      - name: Get Metadata
+        uses: juliojimenez/yamler@v0
+        id: metadata
+        with:
+          yaml-file: metadata.yml
+      - name: Check if Repository Description Matches Metadata
+        run: |
+          $Description = "${{ steps.metadata.outputs.description }}"
+          $RepoSplat = @{
+            Uri = "https://api.github.com/repos/$env:GITHUB_REPOSITORY"
+            Method = "GET"
+            Headers = @{
+              Accept = "application/vnd.github.v3+json"
+            }
+          }
+          $RepoData = Invoke-RestMethod @RepoSplat
+
+          if ($RepoData.Description -ne $Description) {
+            throw "Repo description does not match metadata! Please fix and re-run."
+          }
+      - name: Update README
+        run: |
+          $Description = "${{ steps.metadata.outputs.description }}"
+          [string]$Content = Get-Content -Path "$env:GITHUB_WORKSPACE\README.md" -Raw
+          $NL = [System.Environment]::NewLine
+          $Content = $Content -replace "(?ms)<!-- REPLACER START: desc -->.*<!-- REPLACER END: desc -->","<!-- REPLACER START: desc -->$NL$Description$NL<!-- REPLACER END: desc -->"
+          Out-File -InputObject $Content -FilePath "$env:GITHUB_WORKSPACE\README.md" -NoNewline
+      - name: Update PowerShell Metadata
+        uses: natescherer/update-powershell-metadata-action@v1
+        with:
+          path: src
+          version: ${{ steps.cleanversion.outputs.cleanversion }}
+          copyright: (c) YYYY Nate Scherer. All rights reserved.
+          releasenotes: ${{ steps.changelog.outputs.releasenotes }}
+          functionstoexportpath: src\public
+          description: ${{ steps.metadata.outputs.description }}
+      - name: Update PowerShell Metadata
+        uses: natescherer/update-powershell-metadata-action@main
+        with:
+          path: src
+          version: ${{ steps.cleanversion.outputs.cleanversion }}
+          copyright: (c) YYYY Nate Scherer. All rights reserved.
+          releasenotes: ${{ steps.changelog.outputs.releasenotes }}
+          functionstoexportpath: src\public
+      - name: Generate Markdown Help Files
+        run: |
+          Install-Module -Name platyPs
+          New-Item -Path "docs" -ItemType Directory  -ErrorAction SilentlyContinue | Out-Null
+          Remove-Item -Path "docs\*" -Recurse -ErrorAction SilentlyContinue
+          $ModulePath = (Get-ChildItem -Path "$env:GITHUB_WORKSPACE\src" -Include "*.psm1").FullName
+          $ModuleName = Split-Path -Path $ModulePath -LeafBase
+          Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
+          Import-Module -Name $ModulePath -Force -ErrorAction Stop
+          New-MarkdownHelp -Module $ModuleName -OutputFolder "docs" -NoMetadata | Out-Null
+      - name: Build 'out' Directory
+        run: |
+          Copy-Item -Path "$env:GITHUB_WORKSPACE\src" -Destination "$env:GITHUB_WORKSPACE\out" -Recurse
+      - name: Create Documentation for Release
+        uses: natescherer/markdown-to-html-with-github-style-action@main
+        with:
+          path: README.md,CHANGELOG.md,docs
+          outputpath: out
+          matchpathstructure: true
+      - name: Commit Changes to Repo
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Release v${{ steps.gitversion.outputs.MajorMinorPatch }}
+          tagging_message: v${{ steps.gitversion.outputs.MajorMinorPatch }}
+          file_pattern: :!test\* :!test/*
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.gitversion.outputs.MajorMinorPatch }}
+          body: |
+            # Release v${{ steps.gitversion.outputs.MajorMinorPatch }}
+            ${{ steps.metadata.outputs.releaseheader }}
+
+            ## Changes
+            ${{ steps.changelog.outputs.releasenotes }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish Module to PowerShell Gallery
+        uses: natescherer/publish-powershell-action@main
+        with:
+          token: ${{ secrets.POWERSHELLGALLERY_TOKEN }}
+          target: gallery
+          path: out
