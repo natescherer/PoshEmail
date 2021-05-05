@@ -41,7 +41,7 @@ jobs:
         with:
           valueFile: metadata.yml
           propertyPath: releaseheader
-          value: 'null'
+          value: ''
           commitChange: false
           updateFile: true
       - name: Check if Repository Description Matches Metadata
