@@ -37,9 +37,13 @@ jobs:
         with:
           yaml-file: metadata.yml
       - name: Blank 'releaseheader' in Metadata
-        uses: mikefarah/yq@v4.7.1
+        uses: fjogeleit/yaml-update-action@v0.4.0
         with:
-          cmd: yq eval -i '.releaseheader = "null"' metadata.yml
+          valueFile: metadata.yml
+          propertyPath: releaseheader
+          value: 'null'
+          commitChange: false
+          updateFile: true
       - name: Check if Repository Description Matches Metadata
         run: |
           $Description = "${{ steps.metadata.outputs.description }}"
