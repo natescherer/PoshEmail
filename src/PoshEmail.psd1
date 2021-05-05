@@ -123,7 +123,7 @@ PrivateData = @{
         # RequireLicenseAcceptance = $false
 
         # External dependent modules of this module
-        ExternalModuleDependencies = @('System.Collections.Hashtable')
+        ExternalModuleDependencies = @('Mailozaurr')
 
     } # End of PSData hashtable
 
