@@ -36,6 +36,12 @@ jobs:
         id: metadata
         with:
           yaml-file: metadata.yml
+      - name: Blank 'releaseheader' in Metadata
+        uses: fjogeleit/yaml-update-action@v0.4.0
+        with:
+          valueFile: metadata.yml
+          propertyPath: releaseheader
+          value: ''
       - name: Check if Repository Description Matches Metadata
         run: |
           $Description = "${{ steps.metadata.outputs.description }}"
