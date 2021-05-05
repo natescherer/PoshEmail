@@ -14,9 +14,7 @@ If I accept your contribution, I'll add you to the Authors section in the README
 
 ## How to Contribute
 
-If you would like to make a simple contribution (a few lines or less), please put it in an Issue with the "contribution" label.
-
-For larger contributions, please fork this project, make the changes/additions, and then issue a Pull Request.
+To contribute, please fork this project, make the changes/additions, and then issue a Pull Request.
 Never done a pull request before? There's an easy tutorial [here](http://makeapullrequest.com/).
 
 ## How to report a bug
