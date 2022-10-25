@@ -1,8 +1,8 @@
-name: Publish to PoshTest Gallery
+name: Publish to JFrog
 on: workflow_dispatch
 jobs:
-  PublishToPoshTestGallery:
-    runs-on: windows-latest
+  PublishToJFrog:
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: pwsh
@@ -36,15 +36,15 @@ jobs:
         uses: natescherer/changelog-management-action@main
         with:
           mode: release
-          releaseversion: ${{ steps.cleanversion.outputs.cleanversion }}
+          releaseVersion: ${{ steps.cleanversion.outputs.cleanversion }}
       - name: Update PowerShell Metadata
-        uses: natescherer/update-powershell-metadata-action@v1.0.0
+        uses: natescherer/update-powershell-metadata-action@v2
         with:
           path: src
           version: ${{ steps.cleanversion.outputs.cleanversion }}
           copyright: (c) YYYY Nate Scherer. All rights reserved.
-          releasenotes: ${{ steps.changelog.outputs.releasenotes }}
-          functionstoexportpath: src\public
+          releaseNotes: ${{ steps.changelog.outputs.releasenotes }}
+          functionsToExportPath: src\public
       - name: Generate Markdown Help Files
         run: |
           New-Item -Path "docs" -ItemType Directory  -ErrorAction SilentlyContinue | Out-Null
@@ -58,14 +58,14 @@ jobs:
         run: |
           Copy-Item -Path "$env:GITHUB_WORKSPACE\src" -Destination "$env:GITHUB_WORKSPACE\out" -Recurse
       - name: Create Documentation for Release
-        uses: natescherer/markdown-to-html-with-github-style-action@v1
+        uses: natescherer/markdown-to-html-with-github-style-action@v1.0.0
         with:
           path: README.md,CHANGELOG.md,docs
           outputpath: out
           matchpathstructure: true
       - name: Publish Module to PoshTestGallery
-        uses: natescherer/publish-powershell-action@main
+        uses: natescherer/publish-powershell-action@v1
         with:
-          token: ${{ secrets.POSHTESTGALLERY_TOKEN }}
+          token: ${{ secrets.JFROG_TOKEN }}
           target: testgallery
           path: out
