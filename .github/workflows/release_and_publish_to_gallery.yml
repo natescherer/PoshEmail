@@ -93,7 +93,7 @@ jobs:
           outputpath: out
           matchpathstructure: true
       - name: Commit Changes to Repo
-        uses: stefanzweifel/git-auto-commit-action@v4.10.0
+        uses: stefanzweifel/git-auto-commit-action@v4.15.2
         with:
           commit_message: Release v${{ steps.gitversion.outputs.MajorMinorPatch }}
           tagging_message: v${{ steps.gitversion.outputs.MajorMinorPatch }}
