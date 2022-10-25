@@ -58,7 +58,7 @@ jobs:
         run: |
           Copy-Item -Path "$env:GITHUB_WORKSPACE\src" -Destination "$env:GITHUB_WORKSPACE\out" -Recurse
       - name: Create Documentation for Release
-        uses: natescherer/markdown-to-html-with-github-style-action@v1.0.0
+        uses: natescherer/markdown-to-html-with-github-style-action@v1.1.0
         with:
           path: README.md,CHANGELOG.md,docs
           outputpath: out
