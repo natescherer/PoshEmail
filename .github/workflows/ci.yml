@@ -77,55 +77,8 @@ jobs:
           fi
         shell: bash
       - name: Upload to Codecov
+        if: github.event_name != 'pull_request'
         uses: codecov/codecov-action@v3
         with:
-          files: ${{ env.CODE_COVERAGE_PATH }}
           fail_ci_if_error: true
-  PublishToPackages:
-    needs: Test
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: pwsh
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Install Modules
-        run: |
-          Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
-          Install-Module -Name Mailozaurr -RequiredVersion "0.0.10"
-      - name: Ensure nuget is set up properly
-        uses: fabriciomurta/ensure-nuget-source@v1
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0
-        with:
-          versionSpec: '5.x'
-      - name: Determine Version
-        id: gitversion
-        uses: gittools/actions/gitversion/execute@v0
-      - name: Remove Dashes from Prerelease String
-        id: cleanversion
-        run: |
-          $CleanVersion = "${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}" -replace "-",""
-          $CleanVersion = "${{ steps.gitversion.outputs.MajorMinorPatch }}" + "-" + $CleanVersion
-          Write-Output -InputObject "::set-output name=cleanversion::$CleanVersion"
-      - name: Update PowerShell Metadata
-        uses: natescherer/update-powershell-metadata-action@v2
-        with:
-          path: src
-          version: ${{ steps.cleanversion.outputs.cleanversion }}
-          copyright: (c) YYYY Nate Scherer. All rights reserved.
-          functionsToExportPath: src\public
-      - name: Publish Module to Packages
-        uses: natescherer/publish-powershell-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          target: packages
-          path: src
-      - name: Publish Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: testartifact
-          path: ${{ github.workspace }}
+          token: ${{ secrets.CODECOV_TOKEN }}
