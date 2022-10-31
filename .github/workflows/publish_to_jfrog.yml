@@ -38,7 +38,7 @@ jobs:
           mode: release
           releaseVersion: ${{ steps.cleanversion.outputs.cleanversion }}
       - name: Update PowerShell Metadata
-        uses: natescherer/update-powershell-metadata-action@v2
+        uses: natescherer/update-powershell-metadata-action@v2.0.2
         with:
           path: src
           version: ${{ steps.cleanversion.outputs.cleanversion }}
