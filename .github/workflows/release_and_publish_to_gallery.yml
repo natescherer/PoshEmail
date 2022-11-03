@@ -67,7 +67,7 @@ jobs:
           $Content = $Content -replace "(?ms)<!-- REPLACER START: desc -->.*<!-- REPLACER END: desc -->","<!-- REPLACER START: desc -->$NL$Description$NL<!-- REPLACER END: desc -->"
           Out-File -InputObject $Content -FilePath "$env:GITHUB_WORKSPACE\README.md" -NoNewline
       - name: Update PowerShell Metadata
-        uses: natescherer/update-powershell-metadata-action@v1.0.0
+        uses: natescherer/update-powershell-metadata-action@v2.0.2
         with:
           path: src
           version: ${{ steps.gitversion.outputs.MajorMinorPatch }}
