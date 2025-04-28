@@ -83,7 +83,7 @@ jobs:
           commit_message: Release v${{ steps.gitversion.outputs.SemVer }}
           file_pattern: ":!test\\* :!test/*"
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           name: v${{ steps.gitversion.outputs.SemVer }}
           tag_name: v${{ steps.gitversion.outputs.SemVer }}
